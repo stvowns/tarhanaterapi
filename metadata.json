@@ -1,0 +1,6 @@
+{
+  "name": "TarhanaTerapi - Nohutlu Hakiki Anne Tarhanası",
+  "description": "Geleneksel 21 gün toprak küpte fermente, ata tohumu koçbaşı nohutlu, %100 katkısız ve organik Anadolu tarhana çorbası.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
