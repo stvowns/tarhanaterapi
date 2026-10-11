@@ -3,7 +3,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { ActiveTab, CartItem, Product, Review, User, Order, SubscriberLead } from './types';
 import { PRODUCTS, REVIEWS } from './data/mockData';
 import { Header } from './components/Header';
@@ -23,6 +24,7 @@ import { EbookModal } from './components/EbookModal';
 import { IngredientsModal } from './components/IngredientsModal';
 import { LegalModal } from './components/LegalModal';
 import { Toast } from './components/Toast';
+import { SeoHead } from './components/SeoHead';
 import { AuthModal } from './components/AuthModal';
 import { UserProfileModal } from './components/UserProfileModal';
 import { AdminModal } from './components/AdminModal';
@@ -68,7 +70,37 @@ function playNotificationChime() {
 }
 
 export default function App() {
-  const [activeTab, setActiveTab] = useState<ActiveTab>('home');
+  const location = useLocation();
+const navigate = useNavigate();
+
+const pathToTab: Record<string, ActiveTab> = {
+  '/': 'home',
+  '/urunler': 'products',
+  '/icerik': 'ingredients',
+  '/hikaye': 'story',
+  '/yorumlar': 'reviews',
+  '/iletisim': 'contact',
+  '/sss': 'contact',
+};
+
+const tabToPath: Record<ActiveTab, string> = {
+  home: '/',
+  products: '/urunler',
+  ingredients: '/icerik',
+  story: '/hikaye',
+  reviews: '/yorumlar',
+  contact: '/iletisim',
+};
+
+const normalizedPath = location.pathname.replace(/\/+$/, '') || '/';
+const activeTab: ActiveTab = pathToTab[normalizedPath] ?? 'home';
+
+const setActiveTab = useCallback(
+  (tab: ActiveTab) => {
+    navigate(tabToPath[tab]);
+  },
+  [navigate]
+);
 
   // User Authentication State
   const [currentUser, setCurrentUser] = useState<User | null>(() => {
@@ -380,9 +412,47 @@ export default function App() {
     showToast('Değerli yorumunuz yayınlandı. Teşekkür ederiz!');
   };
 
+  const seoByTab = {
+    home: {
+      title: 'TarhanaTerapi — Nohutlu Hakiki Anne Tarhanası',
+      description:
+        'Ata tohumu koçbaşı nohutlu, 21 gün toprak küpte fermente, katkısız anne tarhanası. Klasik, acılı, bebek ve aile paketi; Türkiye geneli kargo.',
+      canonical: 'https://tarhanaterapi.com/',
+    },
+    products: {
+      title: 'Tarhana Ürünleri | TarhanaTerapi',
+      description:
+        'Klasik, acılı, bebek dostu ve aile paketi tarhana seçenekleri. Katkısız anne tarhanası cam kavanozda.',
+      canonical: 'https://tarhanaterapi.com/urunler',
+    },
+    ingredients: {
+      title: 'İçindekiler ve Fermantasyon | TarhanaTerapi',
+      description:
+        'TarhanaTerapi içindekiler: ata tohumu nohut, köy yoğurdu, taş değirmen unu, 21 gün toprak küp fermantasyonu.',
+      canonical: 'https://tarhanaterapi.com/icerik',
+    },
+    story: {
+      title: 'Üretim Hikayesi | TarhanaTerapi',
+      description:
+        'Üç nesilden gelen maya ile 21 gün fermente edilen anne tarhanasının Orhangazi kökenli üretim hikayesi.',
+      canonical: 'https://tarhanaterapi.com/hikaye',
+    },
+    reviews: {
+      title: 'Müşteri Yorumları | TarhanaTerapi',
+      description: 'TarhanaTerapi müşterilerinden gerçek ve doğrulanmış ürün yorumları.',
+      canonical: 'https://tarhanaterapi.com/yorumlar',
+    },
+    contact: {
+      title: 'SSS ve İletişim | TarhanaTerapi',
+      description: 'TarhanaTerapi sık sorulan sorular, kargo, teslimat ve iletişim bilgileri.',
+      canonical: 'https://tarhanaterapi.com/iletisim',
+    },
+  };
+  const seo = seoByTab[activeTab] ?? seoByTab.home;
+
   return (
     <div className="min-h-screen bg-background text-on-surface flex flex-col antialiased selection:bg-primary-fixed selection:text-on-primary-fixed">
-      {/* Admin Real-Time Alert Notification Bar (Only visible to logged-in administrator) */}
+      <SeoHead title={seo.title} description={seo.description} canonical={seo.canonical} />      {/* Admin Real-Time Alert Notification Bar (Only visible to logged-in administrator) */}
       {adminAlertBanner &&
         Boolean(
           currentUser?.isAdmin ||
