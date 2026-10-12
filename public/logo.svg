@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" role="img" aria-label="TarhanaTerapi logo">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#c84b31"/>
+      <stop offset="100%" stop-color="#a6331b"/>
+    </linearGradient>
+  </defs>
+  <!-- Brand seal -->
+  <circle cx="32" cy="32" r="30" fill="url(#bg)"/>
+  <circle cx="32" cy="32" r="30" fill="none" stroke="#7f2412" stroke-width="1.2" opacity="0.55"/>
+  <!-- Steam -->
+  <path d="M24 16c-2 3 2 5 0 8" fill="none" stroke="#fff8f7" stroke-width="2" stroke-linecap="round" opacity="0.75"/>
+  <path d="M32 14c-2 3 2 5 0 8" fill="none" stroke="#fff8f7" stroke-width="2" stroke-linecap="round" opacity="0.9"/>
+  <path d="M40 16c-2 3 2 5 0 8" fill="none" stroke="#fff8f7" stroke-width="2" stroke-linecap="round" opacity="0.75"/>
+  <!-- Bowl -->
+  <path d="M15 33 Q15 51 32 51 Q49 51 49 33 Z" fill="#fff8f7"/>
+  <ellipse cx="32" cy="33" rx="17" ry="4.5" fill="#fbeae9"/>
+  <path d="M16 33 Q32 37 48 33" fill="none" stroke="#a6331b" stroke-width="1.2" opacity="0.6"/>
+  <!-- Central chickpea (nohut) -->
+  <circle cx="32" cy="40" r="7.5" fill="#ffc475"/>
+  <circle cx="32" cy="40" r="7.5" fill="none" stroke="#81550e" stroke-width="1" opacity="0.7"/>
+  <circle cx="29.5" cy="37.5" r="2" fill="#fff8f7" opacity="0.65"/>
+  <!-- Tiny wheat leaf accent -->
+  <path d="M46 28 q6 -4 8 2 q-6 4 -8 -2z" fill="#ffddb4" opacity="0.9"/>
+  <circle cx="18" cy="28" r="1.6" fill="#ffddb4" opacity="0.9"/>
+</svg>

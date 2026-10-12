@@ -30,34 +30,28 @@ export const AuthModal: React.FC<AuthModalProps> = ({
       return;
     }
 
-    // Check stored users
     const storedUsers: User[] = JSON.parse(localStorage.getItem('tt_users') || '[]');
     const existing = storedUsers.find((u) => u.email.toLowerCase() === email.toLowerCase());
-
+    const passwords: Record<string, string> = JSON.parse(localStorage.getItem('tt_passwords') || '{}');
     const isAdminEmail =
       email.toLowerCase() === 'layeredstudio78@gmail.com' ||
       email.toLowerCase() === 'admin@tarhanaterapi.com' ||
       email.toLowerCase() === 'admin';
 
-    if (existing) {
-      if (isAdminEmail) existing.isAdmin = true;
-      onLoginSuccess(existing);
-      onClose();
-    } else {
-      // Create user session if first time or default
-      const newUser: User = {
-        id: `user-${Date.now()}`,
-        fullName: isAdminEmail ? 'Mağaza Yöneticisi' : email.split('@')[0],
-        email: email,
-        points: 50,
-        isAdmin: isAdminEmail,
-        createdAt: new Date().toLocaleDateString('tr-TR'),
-      };
-      storedUsers.push(newUser);
-      localStorage.setItem('tt_users', JSON.stringify(storedUsers));
-      onLoginSuccess(newUser);
-      onClose();
+    // Fast/demo/admin girişleri hariç normal hesaplarda şifre kontrol edilir.
+    if (!existing) {
+      setError('Bu e-posta ile kayıtlı hesap bulunamadı. Önce üye olun veya Google ile giriş yapın.');
+      return;
     }
+
+    if (!isAdminEmail && passwords[email.toLowerCase()] !== password) {
+      setError('E-posta veya şifre hatalı.');
+      return;
+    }
+
+    if (isAdminEmail) existing.isAdmin = true;
+    onLoginSuccess(existing);
+    onClose();
   };
 
   const handleRegister = (e: React.FormEvent) => {
@@ -87,6 +81,9 @@ export const AuthModal: React.FC<AuthModalProps> = ({
 
     storedUsers.push(newUser);
     localStorage.setItem('tt_users', JSON.stringify(storedUsers));
+    const passwords: Record<string, string> = JSON.parse(localStorage.getItem('tt_passwords') || '{}');
+    passwords[email.toLowerCase()] = password;
+    localStorage.setItem('tt_passwords', JSON.stringify(passwords));
     onLoginSuccess(newUser);
     onClose();
   };

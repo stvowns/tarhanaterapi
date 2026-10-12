@@ -1,7 +1,7 @@
 import { Product, Ingredient, Review, CookingStep, Recipe } from '../types';
 
 export const ASSETS = {
-  logo: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDJrc-nOj33QA-VQYSxXAy0ZujrAapa7NkSutLZFFNmpqNv4c3-PrJYs-j-Wqf0OuL8VmXxgUeSHI-fvcMRi-G_eeUK9ULrS4NGogFgVI4porv4E4EwtBnw8_HrLcj_6_1Nzv-yrzmK-E-dsTaevLM9Zxe3K0N5XLV1U5KnYJPzKbretVexo9z5SgRFTxmqAecAkeWtDxKU1rzBwfHCz07vRw46EnsCxa8w1lbWADq_z-4iVlg7kMWC',
+  logo: '/logo.svg',
   heroSteamingBowl: 'https://lh3.googleusercontent.com/aida-public/AB6AXuC7i02NIPaM8ghxMPaVT7TvxErjvIr3Dfn8diAiTZMVJMwXb5MiUS_Ytr7Y-99U--2PT23wUk6ZTvQnyMjgXJ1-v0Hz7XCLy7hMPQBQmNsp3k_dNwIxJx6qkdCCkxcKhruZ-ByLps-Y4tv1s2whyJM0hIxEkH3OtYxs7ddzghDmX3RWTdcjmfnut-tH15yQE-tXlq1CJa5aYy9ejkSmUbQbO32XhrVm0LoGurqF3KkprEPIYncc9tCy',
   womanTasting: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDmyPyyT5vK_Te-GLQMSy216y8IxeVeWP9z0UeboXrpj9bnn8sibp5ezULgKvzd_cs0GflTYG3kS9yc_edQNkxypREmhtHJN8O7xdKFCs6yN5vcKQ4-pRM8BNTzV2Bd-wj-X1IrHI1Men4fXoIoYt4y9VMOfcuxCWgIT0fjYSt4V3OALdwGAMb9yVewxVFEZwk1UKGqRClCJIUbwoO379jx5enl6BkAhGahjd4MTZOszPBkbX1I7ixi',
   flatlayIngredients: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDdcoIqaDEFTftw4eqE7e2HhRkxfUCrqsE7hof846DYa6gpxnwOM7a9og9N5l-JIL1G5Z0_OrNY14CvzKqq_y3SeuB0eaemXtXZlQPcWA_xCeZ7_4JiCP4mnnHX72k1ucgJkOdFzlAvXfadzZRw5kXRiOp5oRkPC6BHlGgQuKk06zSOKKs8rrQC0C4rEDWoPAURrjghIDvF2eucUqAoQ53nEgfVguswrV-i7gyAgWPgrRzSHtP_9nD1',
