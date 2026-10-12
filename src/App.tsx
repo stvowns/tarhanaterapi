@@ -619,8 +619,10 @@ const setActiveTab = useCallback(
 
       {/* 2. Main Content Screens */}
       <main className="w-full pt-20 flex-1">
-        {activeTab === 'home' && (
-          <div className="flex flex-col w-full">
+        <style>{`@keyframes pageFadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } } .page-fade-in { animation: pageFadeIn .28s ease both; }`}</style>
+        <div key={activeTab} className="page-fade-in flex flex-col w-full min-h-[60vh]">
+          {activeTab === 'home' && (
+            <div className="flex flex-col w-full">
             <Hero
               onExploreProducts={() => {
                 const el = document.getElementById('urunler');
@@ -669,6 +671,7 @@ const setActiveTab = useCallback(
         )}
 
         {activeTab === 'contact' && <ContactPage onShowToast={showToast} />}
+        </div>
       </main>
 
       {/* 3. Footer */}
