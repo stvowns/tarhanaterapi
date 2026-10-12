@@ -77,70 +77,78 @@ export const AuthModal: React.FC<AuthModalProps> = ({
 
   if (!isOpen) return null;
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
     if (!email || !password) {
       setError('Lütfen tüm alanları doldurun.');
       return;
     }
-
-    const storedUsers: User[] = JSON.parse(localStorage.getItem('tt_users') || '[]');
-    const existing = storedUsers.find((u) => u.email.toLowerCase() === email.toLowerCase());
-    const passwords: Record<string, string> = JSON.parse(localStorage.getItem('tt_passwords') || '{}');
-    const isAdminEmail =
-      email.toLowerCase() === 'layeredstudio78@gmail.com' ||
-      email.toLowerCase() === 'admin@tarhanaterapi.com' ||
-      email.toLowerCase() === 'admin';
-
-    // Fast/demo/admin girişleri hariç normal hesaplarda şifre kontrol edilir.
-    if (!existing) {
-      setError('Bu e-posta ile kayıtlı hesap bulunamadı. Önce üye olun veya Google ile giriş yapın.');
-      return;
+    try {
+      const { data, error: loginError } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+      if (loginError || !data.user) {
+        setError('E-posta veya şifre hatalı.');
+        return;
+      }
+      const u = data.user;
+      const user: User = {
+        id: u.id,
+        fullName: (u.user_metadata?.full_name as string) || u.email?.split('@')[0] || 'Kullanıcı',
+        email: u.email || '',
+        phone: (u.user_metadata?.phone as string) || '',
+        points: 0,
+        isAdmin:
+          u.email?.toLowerCase() === 'layeredstudio78@gmail.com' ||
+          u.email?.toLowerCase() === 'admin@tarhanaterapi.com',
+        createdAt: new Date().toLocaleDateString('tr-TR'),
+      };
+      onLoginSuccess(user);
+      onClose();
+    } catch {
+      setError('Giriş sırasında bir hata oluştu.');
     }
-
-    if (!isAdminEmail && passwords[email.toLowerCase()] !== password) {
-      setError('E-posta veya şifre hatalı.');
-      return;
-    }
-
-    if (isAdminEmail) existing.isAdmin = true;
-    onLoginSuccess(existing);
-    onClose();
   };
 
-  const handleRegister = (e: React.FormEvent) => {
+  const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
     if (!fullName || !email || !password) {
       setError('Lütfen gerekli alanları doldurun.');
       return;
     }
-
-    const storedUsers: User[] = JSON.parse(localStorage.getItem('tt_users') || '[]');
-    const existing = storedUsers.find((u) => u.email.toLowerCase() === email.toLowerCase());
-
-    if (existing) {
-      setError('Bu e-posta adresiyle kayıtlı bir hesap zaten var.');
-      return;
+    try {
+      const { data, error: signUpError } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          data: { full_name: fullName, phone },
+        },
+      });
+      if (signUpError || !data.user) {
+        setError(signUpError?.message || 'Kayıt başarısız.');
+        return;
+      }
+      const u = data.user;
+      const user: User = {
+        id: u.id,
+        fullName:
+          (u.user_metadata?.full_name as string) ||
+          fullName ||
+          u.email?.split('@')[0] ||
+          'Kullanıcı',
+        email: u.email || email,
+        phone: phone || (u.user_metadata?.phone as string) || '',
+        points: 100,
+        createdAt: new Date().toLocaleDateString('tr-TR'),
+      };
+      onLoginSuccess(user);
+      onClose();
+    } catch {
+      setError('Kayıt sırasında bir hata oluştu.');
     }
-
-    const newUser: User = {
-      id: `user-${Date.now()}`,
-      fullName,
-      email,
-      phone,
-      points: 100, // Hoş geldin 100 puanı
-      createdAt: new Date().toLocaleDateString('tr-TR'),
-    };
-
-    storedUsers.push(newUser);
-    localStorage.setItem('tt_users', JSON.stringify(storedUsers));
-    const passwords: Record<string, string> = JSON.parse(localStorage.getItem('tt_passwords') || '{}');
-    passwords[email.toLowerCase()] = password;
-    localStorage.setItem('tt_passwords', JSON.stringify(passwords));
-    onLoginSuccess(newUser);
-    onClose();
   };
 
   const handleFastDemoLogin = () => {
