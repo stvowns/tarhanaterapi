@@ -30,7 +30,6 @@ export const AdminModal: React.FC<AdminModalProps> = ({
   const [copiedSql, setCopiedSql] = useState(false);
 
   const isAuthorized =
-    isUnlocked ||
     Boolean(
       currentUser?.isAdmin ||
         currentUser?.email === 'layeredstudio78@gmail.com' ||

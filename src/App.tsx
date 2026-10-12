@@ -280,9 +280,33 @@ const setActiveTab = useCallback(
 
     // If user is logged in, award loyalty points (+25 points)
     if (currentUser) {
-      const updatedUser = { ...currentUser, points: currentUser.points + 25 };
+      const updatedUser = {
+        ...currentUser,
+        points: currentUser.points + 25,
+        phone: newOrder.customerPhone || currentUser.phone,
+        city: newOrder.customerCity || currentUser.city,
+        district: newOrder.customerDistrict || currentUser.district,
+        address: newOrder.customerAddress || currentUser.address,
+      };
       setCurrentUser(updatedUser);
       localStorage.setItem('tt_current_user', JSON.stringify(updatedUser));
+
+      const storedUsers: User[] = JSON.parse(localStorage.getItem('tt_users') || '[]');
+      const idx = storedUsers.findIndex((u) => u.email.toLowerCase() === currentUser.email.toLowerCase());
+      if (idx >= 0) {
+        storedUsers[idx] = { ...storedUsers[idx], ...updatedUser };
+        localStorage.setItem('tt_users', JSON.stringify(storedUsers));
+      }
+
+      // Supabase Auth metadata (if logged in via Supabase)
+      supabase.auth.updateUser({
+        data: {
+          phone: updatedUser.phone,
+          city: updatedUser.city,
+          district: updatedUser.district,
+          address: updatedUser.address,
+        },
+      }).catch(() => {});
     }
   };
 
@@ -294,9 +318,14 @@ const setActiveTab = useCallback(
     showToast(`Sipariş durumu güncellendi: ${newStatus}`);
 
     try {
+      const { data: sessionData } = await supabase.auth.getSession();
+      const token = sessionData.session?.access_token;
       await fetch('/.netlify/functions/update-order-status', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
         body: JSON.stringify({
           orderId,
           status: newStatus,
@@ -429,13 +458,19 @@ const setActiveTab = useCallback(
   useEffect(() => {
     if (!currentUser?.isAdmin) return;
     let active = true;
-    fetch('/.netlify/functions/list-orders')
-      .then((res) => (res.ok ? res.json() : null))
-      .then((data) => {
-        if (!active || !data?.orders) return;
-        setOrders(data.orders);
+    supabase.auth.getSession().then(({ data: sessionData }) => {
+      if (!active) return;
+      const token = sessionData.session?.access_token;
+      fetch('/.netlify/functions/list-orders', {
+        headers: token ? { Authorization: `Bearer ${token}` } : {},
       })
-      .catch(() => {});
+        .then((res) => (res.ok ? res.json() : null))
+        .then((data) => {
+          if (!active || !data?.orders) return;
+          setOrders(data.orders);
+        })
+        .catch(() => {});
+    });
     return () => {
       active = false;
     };
@@ -470,7 +505,34 @@ const setActiveTab = useCallback(
     };
   }, [currentUser?.email]);
 
-  const seoByTab = {
+  useEffect(() => {
+    if (!currentUser?.email || currentUser.address) return;
+    let active = true;
+    supabase
+      .from('orders')
+      .select('customer_phone,customer_city,customer_district,customer_address')
+      .eq('customer_email', currentUser.email)
+      .order('created_at', { ascending: false })
+      .limit(1)
+      .then(({ data }) => {
+        if (!active || !data || !data.length) return;
+        const o = data[0];
+        if (!o.customer_address) return;
+        const updatedUser = {
+          ...currentUser,
+          phone: currentUser.phone || o.customer_phone,
+          city: currentUser.city || o.customer_city,
+          district: currentUser.district || o.customer_district,
+          address: currentUser.address || o.customer_address,
+        };
+        setCurrentUser(updatedUser);
+        localStorage.setItem('tt_current_user', JSON.stringify(updatedUser));
+      });
+    return () => {
+      active = false;
+    };
+  }, [currentUser?.email, currentUser?.address]);
+    const seoByTab = {
     home: {
       title: 'TarhanaTerapi — Nohutlu Hakiki Anne Tarhanası',
       description:

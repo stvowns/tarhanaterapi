@@ -1,5 +1,8 @@
 const SUPABASE_URL = process.env.SUPABASE_URL;
 const SUPABASE_SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
+const SUPABASE_ANON_KEY = process.env.VITE_SUPABASE_ANON_KEY || process.env.SUPABASE_ANON_KEY;
+const ADMIN_EMAILS = ['layeredstudio78@gmail.com', 'admin@tarhanaterapi.com'];
+
 const RESEND_API_KEY = process.env.RESEND_API_KEY;
 
 const notifyEmail = async (to, subject, html) => {
@@ -15,8 +18,32 @@ const notifyEmail = async (to, subject, html) => {
   }
 };
 
+
+async function getAdminEmail(authHeader) {
+  if (!authHeader || !authHeader.startsWith('Bearer ')) return null;
+  const token = authHeader.slice(7).trim();
+  if (!token) return null;
+  const res = await fetch(`${SUPABASE_URL}/auth/v1/user`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      apikey: SUPABASE_ANON_KEY,
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  if (!res.ok) return null;
+  const user = await res.json();
+  const email = String(user?.email || '').toLowerCase();
+  return ADMIN_EMAILS.includes(email) ? email : null;
+}
+
 exports.handler = async (event) => {
   if (event.httpMethod !== 'POST') return { statusCode: 405, body: JSON.stringify({ error: 'Method not allowed' }) };
+
+  const adminEmail = await getAdminEmail(event.headers?.authorization || event.headers?.Authorization);
+  if (!adminEmail) {
+    return { statusCode: 401, body: JSON.stringify({ error: 'Yetkisiz istek' }) };
+  }
 
   let payload = {};
   try { payload = JSON.parse(event.body || '{}'); } catch { return { statusCode: 400, body: JSON.stringify({ error: 'Invalid JSON' }) }; }
