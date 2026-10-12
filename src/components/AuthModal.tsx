@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { User } from '../types';
 import { supabase } from '../lib/supabase';
 
@@ -19,6 +19,61 @@ export const AuthModal: React.FC<AuthModalProps> = ({
   const [fullName, setFullName] = useState('');
   const [phone, setPhone] = useState('');
   const [error, setError] = useState('');
+  const googleBtnRef = useRef<HTMLDivElement>(null);
+  const [googleReady, setGoogleReady] = useState(false);
+
+  useEffect(() => {
+    if (!isOpen) return;
+    const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID || '70592447972-72sr6a876b6493t9klok0drdamk16bam.apps.googleusercontent.com';
+    const render = () => {
+      const g = (window as any).google;
+      if (!g?.accounts?.id || !googleBtnRef.current) return;
+      g.accounts.id.initialize({
+        client_id: clientId,
+        callback: async (response: { credential?: string }) => {
+          if (!response?.credential) return;
+          const { data, error } = await supabase.auth.signInWithIdToken({ provider: 'google', token: response.credential });
+          if (error || !data?.user) {
+            setError('Google ile giriş başarısız.');
+            return;
+          }
+          const u = data.user;
+          const user: User = {
+            id: u.id,
+            fullName: u.user_metadata?.full_name || u.email?.split('@')[0] || 'Kullanıcı',
+            email: u.email || '',
+            points: 0,
+            isAdmin:
+              u.email?.toLowerCase() === 'layeredstudio78@gmail.com' ||
+              u.email?.toLowerCase() === 'admin@tarhanaterapi.com',
+            createdAt: new Date().toLocaleDateString('tr-TR'),
+          };
+          onLoginSuccess(user);
+          onClose();
+        },
+        ux_mode: 'popup',
+      });
+      googleBtnRef.current.innerHTML = '';
+      g.accounts.id.renderButton(googleBtnRef.current, { theme: 'outline', size: 'large', width: 320, text: 'continue_with', shape: 'rectangular' });
+      setGoogleReady(true);
+    };
+
+    if ((window as any).google?.accounts?.id) {
+      render();
+      return;
+    }
+    const existingScript = document.querySelector('script[src="https://accounts.google.com/gsi/client"]');
+    if (existingScript) {
+      existingScript.addEventListener('load', render);
+      return;
+    }
+    const script = document.createElement('script');
+    script.src = 'https://accounts.google.com/gsi/client';
+    script.async = true;
+    script.defer = true;
+    script.onload = render;
+    document.head.appendChild(script);
+  }, [isOpen]);
 
   if (!isOpen) return null;
 
@@ -192,23 +247,17 @@ export const AuthModal: React.FC<AuthModalProps> = ({
             </div>
           )}
 
-          <button
-            type="button"
-            onClick={async () => {
-              try {
-                await supabase.auth.signInWithOAuth({
-                  provider: 'google',
-                  options: { redirectTo: window.location.origin },
-                });
-              } catch {
-                setError('Google ile giriş başlatılamadı.');
-              }
-            }}
-            className="w-full mb-4 py-2.5 rounded-lg border border-outline-variant/40 bg-white text-on-surface text-xs font-semibold flex items-center justify-center gap-2 cursor-pointer hover:bg-surface-container-low"
-          >
-            <span className="material-symbols-outlined text-[18px]">login</span>
-            Google ile devam et
-          </button>
+          <div className="w-full flex justify-center mb-3" ref={googleBtnRef} />
+
+          {!googleReady && (
+            <button
+              type="button"
+              disabled
+              className="w-full mb-4 py-2.5 rounded-lg border border-outline-variant/40 bg-surface-container-low text-outline text-xs font-semibold flex items-center justify-center gap-2"
+            >
+              Google yükleniyor...
+            </button>
+          )}
 
           <div className="text-center text-[10px] text-outline mb-4">
             veya e-posta ile
