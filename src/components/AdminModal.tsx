@@ -110,13 +110,15 @@ export const AdminModal: React.FC<AdminModalProps> = ({
   const storedUsers = getStoredUsers();
 
   // Export Subscribers to CSV (UTF-8 BOM for Excel support)
+  const safeCsv = (value: string) => /^[=+\-@]/.test((value || '').trim()) ? `'${value}` : String(value || '').replace(/"/g, '""');
+
   const exportSubscribersCSV = () => {
     const BOM = '\uFEFF';
     const header = 'ID,E-posta,Kaynak,Kayit_Tarihi\n';
     const rows = subscribers
       .map(
         (s) =>
-          `${s.id},"${s.email}","${s.source === 'ebook' ? 'E-Kitap Indirme' : 'Sifa Bulteni'}","${s.createdAt}"`
+          `${s.id},"${safeCsv(s.email)}","${s.source === 'ebook' ? 'E-Kitap Indirme' : 'Sifa Bulteni'}","${safeCsv(s.createdAt)}"`
       )
       .join('\n');
     const blob = new Blob([BOM + header + rows], { type: 'text/csv;charset=utf-8;' });
@@ -139,8 +141,9 @@ export const AdminModal: React.FC<AdminModalProps> = ({
           .map((it) => `${it.quantity}x ${it.name} (${it.weight})`)
           .join('; ');
         const payment = o.paymentMethod === 'credit_card' ? 'Kredi Karti' : 'Kapida Odeme';
-        const cleanAddress = (o.customerAddress || '').replace(/"/g, '""');
-        return `"${o.orderNumber}","${o.customerName}","${o.customerEmail}","${o.customerPhone}","${o.customerCity}","${o.customerDistrict}","${cleanAddress}","${payment}","${itemsSummary}",${o.total},"${o.status}","${o.createdAt}"`;
+        const safe = (v: string) => (/^[=+\-@]/.test((v || '').trim()) ? "'" + v : String(v || '').replace(/"/g, '""'));
+        return `"${safe(o.orderNumber)}","${safe(o.customerName)}","${safe(o.customerEmail)}","${safe(o.customerPhone)}","${safe(o.customerCity)}","${safe(o.customerDistrict)}","${safe(o.customerAddress)}","${safe(payment)}","${safe(itemsSummary)}",${o.total},"${safe(o.status)}","${safe(o.createdAt)}"`;
+
       })
       .join('\n');
     const blob = new Blob([BOM + header + rows], { type: 'text/csv;charset=utf-8;' });

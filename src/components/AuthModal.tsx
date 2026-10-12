@@ -24,7 +24,8 @@ export const AuthModal: React.FC<AuthModalProps> = ({
 
   useEffect(() => {
     if (!isOpen) return;
-    const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID || '70592447972-72sr6a876b6493t9klok0drdamk16bam.apps.googleusercontent.com';
+const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
+    if (!clientId) return;
     const render = () => {
       const g = (window as any).google;
       if (!g?.accounts?.id || !googleBtnRef.current) return;

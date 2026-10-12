@@ -29,7 +29,8 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
     district: currentUser?.district || 'Kadıköy',
     address: currentUser?.address || '',
     note: '',
-    paymentMethod: 'credit_card' as 'credit_card' | 'cod',
+    kvkkConsent: false,
+    paymentMethod: 'cod' as 'credit_card' | 'cod',
     cardNumber: '',
     cardExpiry: '',
     cardCvc: '',
@@ -80,6 +81,10 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
 
   const handleCompleteOrder = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!formData.kvkkConsent) {
+      alert('Siparişi tamamlayabilmek için KVKK aydınlatma metni onayı gereklidir.');
+      return;
+    }
     setIsSubmitting(true);
 
     const payload = {
@@ -103,6 +108,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
       shippingFee,
       discount: 0,
       total: totalAmount,
+      kvkkConsent: formData.kvkkConsent,
     };
 
     try {
@@ -341,38 +347,8 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
           {step === 2 && (
             <form onSubmit={handleCompleteOrder} className="flex flex-col gap-4">
               {/* Payment Methods */}
-              <div className="grid grid-cols-2 gap-3 mb-2">
-                <button
-                  type="button"
-                  onClick={() => setFormData({ ...formData, paymentMethod: 'credit_card' })}
-                  className={`p-3 rounded-xl border text-left flex flex-col gap-1 transition-all ${
-                    formData.paymentMethod === 'credit_card'
-                      ? 'border-primary bg-primary-fixed/20 shadow-xs'
-                      : 'border-outline-variant/40 bg-surface-container-lowest'
-                  }`}
-                >
-                  <span className="material-symbols-outlined text-primary text-[20px]">
-                    credit_card
-                  </span>
-                  <span className="font-semibold text-xs text-on-surface">Kredi / Banka Kartı</span>
-                  <span className="text-[10px] text-outline">3D Secure Güvenli Ödeme</span>
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() => setFormData({ ...formData, paymentMethod: 'cod' })}
-                  className={`p-3 rounded-xl border text-left flex flex-col gap-1 transition-all ${
-                    formData.paymentMethod === 'cod'
-                      ? 'border-primary bg-primary-fixed/20 shadow-xs'
-                      : 'border-outline-variant/40 bg-surface-container-lowest'
-                  }`}
-                >
-                  <span className="material-symbols-outlined text-secondary text-[20px]">
-                    local_shipping
-                  </span>
-                  <span className="font-semibold text-xs text-on-surface">Kapıda Ödeme</span>
-                  <span className="text-[10px] text-outline">Nakit veya Kartla Kapıda</span>
-                </button>
+              <div className="mb-2 rounded-xl border border-outline-variant/40 bg-surface-container-low p-3 text-xs text-on-surface-variant">
+                Kredi kartı ile çevrim içi ödeme yakında aktif olacak. Şimdilik seçeneğiniz Kapıda Ödeme.
               </div>
 
               {formData.paymentMethod === 'credit_card' ? (
@@ -436,6 +412,19 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
                 </span>
                 <span>256-Bit SSL ile tüm işlemleriniz banka güvencesi altındadır.</span>
               </div>
+
+              <label className="flex items-start gap-2 text-xs text-on-surface mt-1">
+                <input
+                  type="checkbox"
+                  checked={formData.kvkkConsent}
+                  onChange={(e) => setFormData({ ...formData, kvkkConsent: e.target.checked })}
+                  className="mt-0.5"
+                  required
+                />
+                <span>
+                  KVKK Aydınlatma Metni'ni okudum, kişisel verilerimin işlenmesine açık rıza veriyorum.
+                </span>
+              </label>
 
               <div className="flex justify-between items-center pt-4 border-t border-outline-variant/20">
                 <button

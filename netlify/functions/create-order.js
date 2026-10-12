@@ -1,3 +1,4 @@
+const RATE_LIMIT = new Map();
 const SUPABASE_URL = process.env.SUPABASE_URL;
 const SUPABASE_SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
 const RESEND_API_KEY = process.env.RESEND_API_KEY;
@@ -58,12 +59,56 @@ exports.handler = async (event) => {
     return { statusCode: 400, body: JSON.stringify({ error: 'Invalid JSON' }) };
   }
 
-  const required = ['customerName', 'customerEmail', 'customerPhone', 'customerCity', 'customerDistrict', 'customerAddress', 'total'];
+  
+function rateLimited(ip) {
+  const now = Date.now();
+  const windowMs = 60 * 1000;
+  const max = 5;
+  const recent = (RATE_LIMIT.get(ip) || []).filter((t) => now - t < windowMs);
+  if (recent.length >= max) return true;
+  recent.push(now);
+  RATE_LIMIT.set(ip, recent);
+  return false;
+}
+
+const PRODUCT_PRICES = {
+  'tarhana-classic': 450,
+  'tarhana-spicy': 500,
+  'tarhana-baby': 400,
+  'tarhana-family': 750,
+  'starter-set': 330,
+  'pantry-set': 355,
+};
+
+const required = ['customerName', 'customerEmail', 'customerPhone', 'customerCity', 'customerDistrict', 'customerAddress', 'total'];
   for (const key of required) {
-    if (payload[key] === undefined || payload[key] === null || payload[key] === '') {
-      return { statusCode: 400, body: JSON.stringify({ error: `${key} is required` }) };
+    if (payload[key] === undefined || payload[key] === null || payload[key] === '' || (Array.isArray(payload[key]) && payload[key].length === 0)) {
+      return { statusCode: 400, body: JSON.stringify({ error: 'missing required field' }) };
     }
   }
+
+  const ip = (event.headers?.['x-forwarded-for'] || event.headers?.['client-ip'] || 'unknown').split(',')[0].trim();
+  if (rateLimited(ip)) {
+    return { statusCode: 429, body: JSON.stringify({ error: 'Too many requests' }) };
+  }
+
+  if (payload.kvkkConsent !== true) {
+    return { statusCode: 400, body: JSON.stringify({ error: 'KVKK consent required' }) };
+  }
+
+  const normalizedItems = Array.isArray(payload.items) ? payload.items : [];
+  let subtotal = 0;
+  for (const item of normalizedItems) {
+    const price = PRODUCT_PRICES[item.productId];
+    const qty = Number(item.quantity);
+    if (!price || !Number.isInteger(qty) || qty < 1) {
+      return { statusCode: 400, body: JSON.stringify({ error: 'Invalid product or quantity' }) };
+    }
+    subtotal += price * qty;
+  }
+  const shippingFee = subtotal >= 300 || normalizedItems.length === 0 ? 0 : 45;
+  const discount = 0;
+  const total = subtotal + shippingFee - discount;
 
   const orderNumber = `TT-${Date.now().toString().slice(-6)}`;
   const order = {
@@ -76,17 +121,17 @@ exports.handler = async (event) => {
     customer_district: payload.customerDistrict,
     payment_method: payload.paymentMethod || 'cod',
     delivery_note: payload.deliveryNote || payload.delivery_note || null,
-    subtotal: payload.subtotal || payload.total || 0,
-    shipping_fee: payload.shippingFee || 0,
-    discount: payload.discount || 0,
-    total: payload.total,
+    items: normalizedItems.map((it) => ({ productId: it.productId, name: it.name, price: PRODUCT_PRICES[it.productId], quantity: it.quantity, weight: it.weight || '', image: it.image || '' })),
+    subtotal,
+    shipping_fee: shippingFee,
+    discount,
+    total,
     status: 'Yeni Sipariş',
-    items: Array.isArray(payload.items) ? payload.items : [],
   };
 
   try {
     const created = await insertOrder(order);
-    const summary = `Yeni sipariş ${orderNumber}\n${payload.customerName} - ${payload.customerCity}\nToplam: ${payload.total} TL`;
+    const summary = `Yeni sipariş ${orderNumber}\n${payload.customerName} - ${payload.customerCity}\nToplam: ${total} TL`;
 
     await Promise.allSettled([
       notifyTelegram(summary),
