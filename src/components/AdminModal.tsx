@@ -66,49 +66,11 @@ export const AdminModal: React.FC<AdminModalProps> = ({
 
   if (!isAuthorized) {
     return (
-      <div className="fixed inset-0 z-50 flex items-center justify-center p-4 overflow-y-auto">
-        <div
-          className="fixed inset-0 bg-inverse-surface/80 backdrop-blur-xs transition-opacity"
-          onClick={onClose}
-        />
-        <div className="relative w-full max-w-md bg-surface rounded-2xl shadow-2xl border border-surface-container-high p-6 my-8 z-10 text-center">
-          <div className="w-14 h-14 rounded-2xl bg-primary/10 text-primary flex items-center justify-center mx-auto mb-4">
-            <span className="material-symbols-outlined text-[32px]">lock</span>
-          </div>
-          <h3 className="font-headline-sm text-lg font-bold text-on-surface">
-            Yönetici Doğrulaması
-          </h3>
-          <p className="text-xs text-on-surface-variant mt-1.5 mb-6">
-            Bu ekran yalnızca mağaza yöneticileri içindir. Lütfen yetkili şifrenizi girin.
-          </p>
-          <form onSubmit={handlePasswordSubmit} className="flex flex-col gap-3">
-            <input
-              type="password"
-              placeholder="Yönetici Şifresi"
-              value={adminPasswordInput}
-              onChange={(e) => setAdminPasswordInput(e.target.value)}
-              className="w-full px-4 py-2.5 rounded-xl border border-outline-variant/60 text-sm focus:border-primary focus:outline-none"
-              autoFocus
-            />
-            {authError && (
-              <p className="text-xs text-rose-600 font-medium">{authError}</p>
-            )}
-            <div className="flex gap-2 mt-2">
-              <button
-                type="button"
-                onClick={onClose}
-                className="flex-1 py-2.5 rounded-xl border border-outline-variant text-xs font-semibold hover:bg-surface-container cursor-pointer"
-              >
-                Vazgeç
-              </button>
-              <button
-                type="submit"
-                className="flex-1 py-2.5 rounded-xl bg-primary text-on-primary text-xs font-semibold hover:bg-primary-container cursor-pointer"
-              >
-                Giriş Yap
-              </button>
-            </div>
-          </form>
+      <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+        <div className="fixed inset-0 bg-inverse-surface/80 backdrop-blur-xs" onClick={onClose} />
+        <div className="relative z-10 w-full max-w-md bg-background rounded-xl shadow-xl p-6 text-center">
+          <p className="text-sm font-medium mb-4">Yönetici yetkisi gerekli. Lütfen yöneticileri atanan SUPABASE hesabınızla giriş yapın.</p>
+          <button onClick={onClose} className="px-4 py-2 rounded bg-primary text-on-primary text-sm font-medium">Kapat</button>
         </div>
       </div>
     );
