@@ -6,6 +6,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { ActiveTab, CartItem, Product, Review, User, Order, SubscriberLead } from './types';
+import { supabase } from './lib/supabase';
 import { PRODUCTS, REVIEWS } from './data/mockData';
 import { Header } from './components/Header';
 import { Hero } from './components/Hero';
@@ -366,6 +367,46 @@ const setActiveTab = useCallback(
     setReviewsList((prev) => [fullReview, ...prev]);
     showToast('Değerli yorumunuz yayınlandı. Teşekkür ederiz!');
   };
+
+  useEffect(() => {
+    let active = true;
+    supabase.auth.getSession().then(({ data }) => {
+      if (!active) return;
+      const user = data.session?.user;
+      if (user) {
+        setCurrentUser({
+          id: user.id,
+          fullName: user.user_metadata?.full_name || user.email?.split('@')[0] || 'Kullanıcı',
+          email: user.email || '',
+          points: 0,
+          isAdmin:
+            user.email?.toLowerCase() === 'layeredstudio78@gmail.com' ||
+            user.email?.toLowerCase() === 'admin@tarhanaterapi.com',
+          createdAt: new Date().toLocaleDateString('tr-TR'),
+        });
+      }
+    });
+
+    const { data: authSub } = supabase.auth.onAuthStateChange((_event, session) => {
+      const user = session?.user;
+      if (!user) return;
+      setCurrentUser({
+        id: user.id,
+        fullName: user.user_metadata?.full_name || user.email?.split('@')[0] || 'Kullanıcı',
+        email: user.email || '',
+        points: 0,
+        isAdmin:
+          user.email?.toLowerCase() === 'layeredstudio78@gmail.com' ||
+          user.email?.toLowerCase() === 'admin@tarhanaterapi.com',
+        createdAt: new Date().toLocaleDateString('tr-TR'),
+      });
+    });
+
+    return () => {
+      active = false;
+      authSub.subscription.unsubscribe();
+    };
+  }, []);
 
   const seoByTab = {
     home: {

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { User } from '../types';
+import { supabase } from '../lib/supabase';
 
 interface AuthModalProps {
   isOpen: boolean;
@@ -193,6 +194,28 @@ export const AuthModal: React.FC<AuthModalProps> = ({
               {error}
             </div>
           )}
+
+          <button
+            type="button"
+            onClick={async () => {
+              try {
+                await supabase.auth.signInWithOAuth({
+                  provider: 'google',
+                  options: { redirectTo: window.location.origin },
+                });
+              } catch {
+                setError('Google ile giriş başlatılamadı.');
+              }
+            }}
+            className="w-full mb-4 py-2.5 rounded-lg border border-outline-variant/40 bg-white text-on-surface text-xs font-semibold flex items-center justify-center gap-2 cursor-pointer hover:bg-surface-container-low"
+          >
+            <span className="material-symbols-outlined text-[18px]">login</span>
+            Google ile devam et
+          </button>
+
+          <div className="text-center text-[10px] text-outline mb-4">
+            veya e-posta ile
+          </div>
 
           {mode === 'login' ? (
             <form onSubmit={handleLogin} className="flex flex-col gap-3.5">
