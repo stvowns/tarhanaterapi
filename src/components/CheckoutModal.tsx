@@ -16,6 +16,8 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
   currentUser,
   onCreateOrder,
 }) => {
+  const [orderCode, setOrderCode] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [step, setStep] = useState<1 | 2 | 3>(1);
 
   // Form states
@@ -34,6 +36,20 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
   });
 
   useEffect(() => {
+    if (!isOpen) return;
+    setStep(1);
+    setOrderCode('');
+    setIsSubmitting(false);
+    setFormData((prev) => ({
+      ...prev,
+      note: '',
+      cardNumber: '',
+      cardExpiry: '',
+      cardCvc: '',
+    }));
+  }, [isOpen]);
+
+  useEffect(() => {
     if (currentUser) {
       setFormData((prev) => ({
         ...prev,
@@ -47,9 +63,6 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
     }
   }, [currentUser]);
 
-  const [orderCode, setOrderCode] = useState('');
-
-  const [isSubmitting, setIsSubmitting] = useState(false);
 
   if (!isOpen) return null;
 

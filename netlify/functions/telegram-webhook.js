@@ -73,11 +73,21 @@ const fetchOrders = async () => {
   return (r.ok && Array.isArray(r.data)) ? r.data.map(toOrder) : [];
 };
 
+const summaryText = (orders) => {
+  const trMonth = new Date(Date.now() + 3 * 60 * 60 * 1000).toISOString().slice(0, 7);
+  const monthOrders = orders.filter((o) => String(o.createdAt || '').slice(0, 7) === trMonth);
+  const revenue = monthOrders.reduce((sum, o) => sum + (Number(o.total) || 0), 0);
+  const active = orders.filter((o) => o.status !== 'Tamamlandı').length;
+  return `📊 Bu Ay Özeti\n\nBu ay toplam sipariş: ${monthOrders.length}\nBu ay ciro: ${revenue.toFixed(2)} TL\nAktif sipariş: ${active}\nToplam kayıtlı sipariş: ${orders.length}`;
+};
 const activeKeyboard = (orders) => ({
-  inline_keyboard: orders
-    .filter((o) => o.status !== 'Tamamlandı')
-    .slice(0, 20)
-    .map((o) => [{ text: `${o.orderNumber} - ${o.customerName} (${o.status})`, callback_data: `order:${o.id}` }]),
+  inline_keyboard: [
+    ...orders
+      .filter((o) => o.status !== 'Tamamlandı')
+      .slice(0, 20)
+      .map((o) => [{ text: `${o.orderNumber} - ${o.customerName} (${o.status})`, callback_data: `order:${o.id}` }]),
+    [{ text: '📊 Bu Ay Özeti', callback_data: 'summary' }],
+  ],
 });
 
 const orderKeyboard = (o) => ({
@@ -152,6 +162,12 @@ exports.handler = async (event) => {
 
       if (data === 'orders') {
         await sendActiveOrders(chatId, messageId);
+        return { statusCode: 200, body: 'ok' };
+      }
+
+      if (data === 'summary') {
+        const orders = await fetchOrders();
+        await tg('editMessageText', { chat_id: chatId, message_id: messageId, text: summaryText(orders), reply_markup: activeKeyboard(orders) });
         return { statusCode: 200, body: 'ok' };
       }
 
