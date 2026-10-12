@@ -49,6 +49,8 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
 
   const [orderCode, setOrderCode] = useState('');
 
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   if (!isOpen) return null;
 
   const rawSubtotal = cartItems.reduce(
@@ -63,20 +65,17 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
     setStep(2);
   };
 
-  const handleCompleteOrder = (e: React.FormEvent) => {
+  const handleCompleteOrder = async (e: React.FormEvent) => {
     e.preventDefault();
-    const generatedCode = 'TT-' + Math.floor(100000 + Math.random() * 900000);
-    setOrderCode(generatedCode);
+    setIsSubmitting(true);
 
-    const newOrder: Order = {
-      id: `ord-${Date.now()}`,
-      orderNumber: generatedCode,
+    const payload = {
       customerName: formData.fullName,
       customerEmail: formData.email,
       customerPhone: formData.phone,
-      customerAddress: formData.address,
       customerCity: formData.city,
       customerDistrict: formData.district,
+      customerAddress: formData.address,
       deliveryNote: formData.note,
       paymentMethod: formData.paymentMethod,
       items: cartItems.map((ci) => ({
@@ -91,18 +90,62 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
       shippingFee,
       discount: 0,
       total: totalAmount,
-      status: 'Yeni Sipariş',
-      createdAt: new Date().toLocaleDateString('tr-TR', {
-        day: '2-digit',
-        month: '2-digit',
-        year: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit',
-      }),
     };
 
-    onCreateOrder(newOrder);
-    setStep(3);
+    try {
+      const response = await fetch('/.netlify/functions/create-order', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data.error || 'Sipariş kaydedilemedi');
+      }
+
+      const finalOrderNumber = data.orderNumber || `TT-${Date.now()}`;
+
+      const newOrder: Order = {
+        id: data.id || `ord-${Date.now()}`,
+        orderNumber: finalOrderNumber,
+        customerName: formData.fullName,
+        customerEmail: formData.email,
+        customerPhone: formData.phone,
+        customerAddress: formData.address,
+        customerCity: formData.city,
+        customerDistrict: formData.district,
+        deliveryNote: formData.note,
+        paymentMethod: formData.paymentMethod,
+        items: cartItems.map((ci) => ({
+          productId: ci.product.id,
+          name: ci.product.name,
+          price: ci.product.price,
+          quantity: ci.quantity,
+          weight: ci.selectedWeight || ci.product.weight,
+          image: ci.product.image,
+        })),
+        subtotal: rawSubtotal,
+        shippingFee,
+        discount: 0,
+        total: totalAmount,
+        status: 'Yeni Sipariş',
+        createdAt: new Date().toLocaleDateString('tr-TR', {
+          day: '2-digit',
+          month: '2-digit',
+          year: 'numeric',
+          hour: '2-digit',
+          minute: '2-digit',
+        }),
+      };
+
+      setOrderCode(finalOrderNumber);
+      onCreateOrder(newOrder);
+      setStep(3);
+    } catch (err) {
+      alert(err instanceof Error ? err.message : 'Sipariş kaydedilemedi');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -391,9 +434,10 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
                 </button>
                 <button
                   type="submit"
-                  className="px-6 py-2.5 bg-primary text-on-primary hover:bg-primary-container rounded-lg font-title-md text-sm font-semibold transition-colors cursor-pointer shadow-xs"
+                  disabled={isSubmitting}
+                  className="px-6 py-2.5 bg-primary text-on-primary hover:bg-primary-container rounded-lg font-title-md text-sm font-semibold transition-colors cursor-pointer shadow-xs disabled:opacity-60"
                 >
-                  Siparişi Onayla (₺{totalAmount})
+                  {isSubmitting ? 'Kaydediliyor...' : `Siparişi Onayla (₺${totalAmount})`}
                 </button>
               </div>
             </form>

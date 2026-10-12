@@ -121,46 +121,8 @@ const setActiveTab = useCallback(
     },
   ]);
 
-  // Orders State (Persisted in localStorage)
-  const [orders, setOrders] = useState<Order[]>(() => {
-    try {
-      const saved = localStorage.getItem('tt_orders');
-      if (saved) return JSON.parse(saved);
-      // Default initial demo order
-      return [
-        {
-          id: 'ord-demo-1',
-          orderNumber: 'TT-742918',
-          customerName: 'Ayşe Yılmaz',
-          customerEmail: 'ayse.yilmaz@tarhanaterapi.com',
-          customerPhone: '0532 123 45 67',
-          customerAddress: 'Caferağa Mah. Şifa Sok. No: 12 D: 4',
-          customerCity: 'İstanbul',
-          customerDistrict: 'Kadıköy',
-          deliveryNote: 'Zili çalmayınız lütfen',
-          paymentMethod: 'credit_card',
-          items: [
-            {
-              productId: PRODUCTS[0].id,
-              name: PRODUCTS[0].name,
-              price: PRODUCTS[0].price,
-              quantity: 1,
-              weight: '500g Cam Kavanoz',
-              image: PRODUCTS[0].image,
-            },
-          ],
-          subtotal: 450,
-          shippingFee: 0,
-          discount: 0,
-          total: 450,
-          status: 'Kargoya Verildi',
-          createdAt: '11.02.2025 14:30',
-        },
-      ];
-    } catch {
-      return [];
-    }
-  });
+  // Orders State (DB'de saklanır; yerel cache yok)
+  const [orders, setOrders] = useState<Order[]>(() => []);
 
   // Collected Email Leads (Newsletter & E-book)
   const [subscribers, setSubscribers] = useState<SubscriberLead[]>(() => {
@@ -213,14 +175,7 @@ const setActiveTab = useCallback(
   // Toast feedback
   const [toastMessage, setToastMessage] = useState<string | null>(null);
 
-  // Sync state to localStorage
-  useEffect(() => {
-    try {
-      localStorage.setItem('tt_orders', JSON.stringify(orders));
-    } catch {
-      // Ignore
-    }
-  }, [orders]);
+  // Orders State DB'de; localStorage'a yazılmaz.
 
   useEffect(() => {
     try {
