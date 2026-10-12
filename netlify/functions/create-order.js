@@ -75,9 +75,9 @@ const PRODUCT_PRICES = {
   'tarhana-classic': 450,
   'tarhana-spicy': 500,
   'tarhana-baby': 400,
-  'tarhana-family': 750,
-  'starter-set': 330,
-  'pantry-set': 355,
+  'tarhana-starter-set': 750,
+  'tarhana-family-pack': 330,
+  'tarhana-gourmet-duo': 355,
 };
 
 const required = ['customerName', 'customerEmail', 'customerPhone', 'customerCity', 'customerDistrict', 'customerAddress', 'total'];
