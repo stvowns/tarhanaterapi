@@ -4,17 +4,26 @@ const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
 const TELEGRAM_ADMIN_CHAT_ID = process.env.TELEGRAM_ADMIN_CHAT_ID;
 const RESEND_API_KEY = process.env.RESEND_API_KEY;
 
-const pool = new Pool({
-  host: 'db.atrvalwnvruzsbpkgfrl.supabase.co',
-  port: 5432,
-  user: 'postgres',
-  password: process.env.SUPABASE_DB_PASSWORD,
-  database: 'postgres',
-  ssl: { rejectUnauthorized: false },
-});
+const dns = require('dns');
+
+let pool = null;
+async function getPool() {
+  if (pool) return pool;
+  const { address } = await dns.promises.lookup('db.atrvalwnvruzsbpkgfrl.supabase.co', { family: 4 });
+  pool = new Pool({
+    host: address,
+    port: 5432,
+    user: 'postgres',
+    password: process.env.SUPABASE_DB_PASSWORD,
+    database: 'postgres',
+    ssl: { rejectUnauthorized: false },
+  });
+  return pool;
+}
 
 async function insertOrder(order) {
-  const client = await pool.connect();
+  const p = await getPool();
+  const client = await p.connect();
   try {
     const sql = `insert into orders
       (order_number, customer_name, customer_email, customer_phone, customer_address, customer_city, customer_district, payment_method, subtotal, shipping_fee, discount, total, status)
