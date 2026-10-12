@@ -16,11 +16,20 @@ export const ContactPage: React.FC<ContactPageProps> = ({ onShowToast }) => {
   });
   const [submitted, setSubmitted] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.name || !formData.message) return;
+    try {
+      await fetch('/.netlify/functions/contact-message', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
+      });
+      onShowToast('Mesajınız başarıyla iletildi. Müşteri ekibimiz en kısa sürede dönüş yapacaktır.');
+    } catch {
+      onShowToast('Mesajınız alındı ancak bildirim gönderimi başarısız oldu.');
+    }
     setSubmitted(true);
-    onShowToast('Mesajınız başarıyla iletildi. Müşteri ekibimiz en kısa sürede dönüş yapacaktır.');
     setTimeout(() => {
       setSubmitted(false);
       setFormData({

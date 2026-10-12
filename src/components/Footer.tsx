@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { ActiveTab } from '../types';
 import { ASSETS } from '../data/mockData';
+import { GIZLILIK_POLITIKASI, MESAFELI_SATIS, KVKK_AYDINLATMA } from '../data/legal';
 
 interface FooterProps {
   setActiveTab: (tab: ActiveTab) => void;
@@ -210,7 +211,7 @@ export const Footer: React.FC<FooterProps> = ({
               onClick={() =>
                 onOpenLegalModal(
                   'Gizlilik Politikası',
-                  'TarhanaTerapi olarak kişisel verilerinizin gizliliğine ve güvenliğine en üst seviyede hassasiyet gösteriyoruz. Sipariş sırasında alınan bilgileriniz asla 3. şahıslarla paylaşılmaz.'
+                  GIZLILIK_POLITIKASI
                 )
               }
               className="font-body-sm text-on-surface-variant hover:text-on-surface cursor-pointer"
@@ -221,7 +222,7 @@ export const Footer: React.FC<FooterProps> = ({
               onClick={() =>
                 onOpenLegalModal(
                   'Mesafeli Satış Sözleşmesi',
-                  'Tüm siparişler 6502 sayılı Tüketicinin Korunması Hakkında Kanun ve Mesafeli Sözleşmeler Yönetmeliği hükümleri çerçevesinde güvence altındadır.'
+                  MESAFELI_SATIS
                 )
               }
               className="font-body-sm text-on-surface-variant hover:text-on-surface cursor-pointer"
@@ -232,7 +233,7 @@ export const Footer: React.FC<FooterProps> = ({
               onClick={() =>
                 onOpenLegalModal(
                   'KVKK Aydınlatma Metni',
-                  '6698 sayılı Kişisel Verilerin Korunması Kanunu uyarınca, verileriniz sipariş yönetimi ve kargo takibi amacıyla sınırlı olarak işlenmektedir.'
+                  KVKK_AYDINLATMA
                 )
               }
               className="font-body-sm text-on-surface-variant hover:text-on-surface cursor-pointer"

@@ -28,6 +28,22 @@ export const AdminModal: React.FC<AdminModalProps> = ({
   const [authError, setAuthError] = useState('');
   const [isUnlocked, setIsUnlocked] = useState(false);
   const [copiedSql, setCopiedSql] = useState(false);
+  const [dateFrom, setDateFrom] = useState('');
+  const [dateTo, setDateTo] = useState('');
+
+  const parseOrderDate = (value: string) => {
+    const match = value?.match(/(\\d{2})\\.(\\d{2})\\.(\\d{4})/);
+    if (!match) return '';
+    return `${match[3]}-${match[2]}-${match[1]}`;
+  };
+
+  const filteredOrders = orders.filter((order) => {
+    const orderDate = parseOrderDate(order.createdAt);
+    if (!orderDate) return true;
+    if (dateFrom && orderDate < dateFrom) return false;
+    if (dateTo && orderDate > dateTo) return false;
+    return true;
+  });
 
   const isAuthorized =
     Boolean(
@@ -135,7 +151,7 @@ export const AdminModal: React.FC<AdminModalProps> = ({
     const BOM = '\uFEFF';
     const header =
       'Siparis_No,Musteri_Adi,Eposta,Telefon,Il,Ilce,Adres,Odeme_Yontemi,Urunler,Toplam_Tutar,Durum,Tarih\n';
-    const rows = orders
+    const rows = filteredOrders
       .map((o) => {
         const itemsSummary = o.items
           .map((it) => `${it.quantity}x ${it.name} (${it.weight})`)
@@ -360,9 +376,15 @@ CREATE TABLE subscribers (
               </div>
             ) : (
               <div className="flex flex-col gap-4">
-                <div className="flex items-center justify-between pb-2 border-b border-outline-variant/20">
+                <div className="flex items-center justify-between pb-2 border-b border-outline-variant/20 flex-wrap gap-2">
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs text-outline">Tarih:</span>
+                    <input type="date" value={dateFrom} onChange={(e) => setDateFrom(e.target.value)} className="text-xs border border-outline-variant/40 rounded px-2 py-1" />
+                    <span className="text-xs text-outline">-</span>
+                    <input type="date" value={dateTo} onChange={(e) => setDateTo(e.target.value)} className="text-xs border border-outline-variant/40 rounded px-2 py-1" />
+                  </div>
                   <span className="text-xs text-outline font-medium">
-                    Toplam {orders.length} sipariş kayıtlı
+                    Toplam {filteredOrders.length} sipariş kayıtlı (filtre uygulandı: {orders.length})
                   </span>
                   <button
                     onClick={exportOrdersCSV}
@@ -373,7 +395,7 @@ CREATE TABLE subscribers (
                   </button>
                 </div>
 
-                {orders.map((order) => (
+                {filteredOrders.map((order) => (
                   <div
                     key={order.id}
                     className="p-5 rounded-xl bg-surface-container-lowest border border-outline-variant/30 shadow-xs flex flex-col gap-3"

@@ -31,9 +31,9 @@ export const LegalModal: React.FC<LegalModalProps> = ({
             <span className="material-symbols-outlined text-[20px]">close</span>
           </button>
         </div>
-        <p className="font-body-md text-sm text-on-surface-variant leading-relaxed mb-6">
+        <div className="font-body-md text-sm text-on-surface-variant leading-relaxed mb-6 max-h-[60vh] overflow-y-auto pr-2 whitespace-pre-line">
           {content}
-        </p>
+        </div>
         <div className="text-right">
           <button
             onClick={onClose}
