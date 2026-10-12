@@ -211,6 +211,7 @@ const setActiveTab = useCallback(
     } catch {
       // Ignore
     }
+    supabase.auth.signOut();
     showToast('Oturum kapatıldı.');
   };
 
