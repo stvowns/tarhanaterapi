@@ -1,53 +1,23 @@
-const { Pool } = require('pg');
-
+const SUPABASE_URL = process.env.SUPABASE_URL;
+const SUPABASE_SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
+const RESEND_API_KEY = process.env.RESEND_API_KEY;
 const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
 const TELEGRAM_ADMIN_CHAT_ID = process.env.TELEGRAM_ADMIN_CHAT_ID;
-const RESEND_API_KEY = process.env.RESEND_API_KEY;
-
-const dns = require('dns');
-
-let pool = null;
-async function getPool() {
-  if (pool) return pool;
-  const { address } = await dns.promises.lookup('db.atrvalwnvruzsbpkgfrl.supabase.co', { family: 4 });
-  pool = new Pool({
-    host: address,
-    port: 5432,
-    user: 'postgres',
-    password: process.env.SUPABASE_DB_PASSWORD,
-    database: 'postgres',
-    ssl: { rejectUnauthorized: false },
-  });
-  return pool;
-}
 
 async function insertOrder(order) {
-  const p = await getPool();
-  const client = await p.connect();
-  try {
-    const sql = `insert into orders
-      (order_number, customer_name, customer_email, customer_phone, customer_address, customer_city, customer_district, payment_method, subtotal, shipping_fee, discount, total, status)
-      values ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13)
-      returning id`;
-    const result = await client.query(sql, [
-      order.order_number,
-      order.customer_name,
-      order.customer_email,
-      order.customer_phone,
-      order.customer_address,
-      order.customer_city,
-      order.customer_district,
-      order.payment_method,
-      order.subtotal,
-      order.shipping_fee,
-      order.discount,
-      order.total,
-      order.status,
-    ]);
-    return result.rows[0];
-  } finally {
-    client.release();
-  }
+  const res = await fetch(`${SUPABASE_URL}/rest/v1/orders`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      apikey: SUPABASE_SERVICE_ROLE_KEY,
+      Authorization: `Bearer ${SUPABASE_SERVICE_ROLE_KEY}`,
+      Prefer: 'return=representation',
+    },
+    body: JSON.stringify(order),
+  });
+  if (!res.ok) throw new Error(await res.text());
+  const data = await res.json();
+  return data[0];
 }
 
 async function notifyTelegram(summary) {
