@@ -31,9 +31,6 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
     note: '',
     kvkkConsent: false,
     paymentMethod: 'cod' as 'credit_card' | 'cod',
-    cardNumber: '',
-    cardExpiry: '',
-    cardCvc: '',
   });
 
   useEffect(() => {
@@ -44,9 +41,6 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
     setFormData((prev) => ({
       ...prev,
       note: '',
-      cardNumber: '',
-      cardExpiry: '',
-      cardCvc: '',
     }));
   }, [isOpen]);
 
@@ -351,66 +345,8 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
                 Kredi kartı ile çevrim içi ödeme yakında aktif olacak. Şimdilik seçeneğiniz Kapıda Ödeme.
               </div>
 
-              {formData.paymentMethod === 'credit_card' ? (
-                <div className="flex flex-col gap-3 p-4 bg-surface-container-lowest rounded-xl border border-outline-variant/30">
-                  <div>
-                    <label className="block text-xs font-semibold text-on-surface mb-1">
-                      Kart Numarası
-                    </label>
-                    <input
-                      type="text"
-                      required
-                      placeholder="4000 1234 5678 9010"
-                      maxLength={19}
-                      value={formData.cardNumber}
-                      onChange={(e) => setFormData({ ...formData, cardNumber: e.target.value })}
-                      className="w-full px-3 py-2 text-sm rounded-lg bg-surface-container-low border border-outline-variant/40"
-                    />
-                  </div>
-                  <div className="grid grid-cols-2 gap-3">
-                    <div>
-                      <label className="block text-xs font-semibold text-on-surface mb-1">
-                        Son Kullanma Tarihi
-                      </label>
-                      <input
-                        type="text"
-                        required
-                        placeholder="AA/YY (Örn: 12/28)"
-                        maxLength={5}
-                        value={formData.cardExpiry}
-                        onChange={(e) => setFormData({ ...formData, cardExpiry: e.target.value })}
-                        className="w-full px-3 py-2 text-sm rounded-lg bg-surface-container-low border border-outline-variant/40"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-xs font-semibold text-on-surface mb-1">
-                        CVV / Güvenlik Kodu
-                      </label>
-                      <input
-                        type="password"
-                        required
-                        placeholder="123"
-                        maxLength={4}
-                        value={formData.cardCvc}
-                        onChange={(e) => setFormData({ ...formData, cardCvc: e.target.value })}
-                        className="w-full px-3 py-2 text-sm rounded-lg bg-surface-container-low border border-outline-variant/40"
-                      />
-                    </div>
-                  </div>
-                </div>
-              ) : (
-                <div className="p-4 bg-secondary-fixed/30 rounded-xl text-xs text-on-surface leading-relaxed">
-                  <p className="font-semibold text-secondary mb-1">Kapıda Ödeme Bilgilendirmesi:</p>
-                  Siparişiniz özel korumalı kutuda kapınıza kadar gelir. Kurye teslimi sırasında nakit
-                  veya temassız kredi kartınızla güvenle ödeyebilirsiniz.
-                </div>
-              )}
-
-              <div className="p-3 bg-surface-container-low rounded-lg text-xs text-on-surface-variant flex items-center gap-2">
-                <span className="material-symbols-outlined text-primary text-[18px]">
-                  lock
-                </span>
-                <span>256-Bit SSL ile tüm işlemleriniz banka güvencesi altındadır.</span>
+              <div className="p-4 bg-secondary-fixed/30 rounded-xl text-xs text-on-surface leading-relaxed">
+                Kapıda Ödeme seçili. Siparişiniz özel korumalı kutuda kapınıza kadar gelir; kurye teslimi sırasında nakit veya temassız ödeme alabilir.
               </div>
 
               <label className="flex items-start gap-2 text-xs text-on-surface mt-1">

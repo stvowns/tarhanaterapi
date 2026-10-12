@@ -80,7 +80,7 @@ const PRODUCT_PRICES = {
   'tarhana-gourmet-duo': 355,
 };
 
-const required = ['customerName', 'customerEmail', 'customerPhone', 'customerCity', 'customerDistrict', 'customerAddress', 'total'];
+const required = ['customerName', 'customerEmail', 'customerPhone', 'customerCity', 'customerDistrict', 'customerAddress'];
   for (const key of required) {
     if (payload[key] === undefined || payload[key] === null || payload[key] === '' || (Array.isArray(payload[key]) && payload[key].length === 0)) {
       return { statusCode: 400, body: JSON.stringify({ error: 'missing required field' }) };
@@ -144,6 +144,7 @@ const required = ['customerName', 'customerEmail', 'customerPhone', 'customerCit
       body: JSON.stringify({ orderNumber, id: created.id }),
     };
   } catch (err) {
-    return { statusCode: 500, body: JSON.stringify({ error: err.message }) };
+    console.error('create-order error', err);
+    return { statusCode: 500, body: JSON.stringify({ error: 'Sipariş alınamadı' }) };
   }
 };

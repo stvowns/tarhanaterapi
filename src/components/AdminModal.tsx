@@ -24,9 +24,6 @@ export const AdminModal: React.FC<AdminModalProps> = ({
   onClearNewOrderAlert,
 }) => {
   const [activeTab, setActiveTab] = useState<'orders' | 'subscribers' | 'database'>('orders');
-  const [adminPasswordInput, setAdminPasswordInput] = useState('');
-  const [authError, setAuthError] = useState('');
-  const [isUnlocked, setIsUnlocked] = useState(false);
   const [copiedSql, setCopiedSql] = useState(false);
   const [dateFrom, setDateFrom] = useState('');
   const [dateTo, setDateTo] = useState('');
@@ -51,16 +48,6 @@ export const AdminModal: React.FC<AdminModalProps> = ({
         currentUser?.email === 'layeredstudio78@gmail.com' ||
         currentUser?.email === 'admin@tarhanaterapi.com'
     );
-
-  const handlePasswordSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (adminPasswordInput.trim() === '1954' || adminPasswordInput.trim().toLowerCase() === 'admin') {
-      setIsUnlocked(true);
-      setAuthError('');
-    } else {
-      setAuthError('Geçersiz yönetici şifresi. Lütfen tekrar deneyin.');
-    }
-  };
 
   if (!isOpen) return null;
 

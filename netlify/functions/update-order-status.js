@@ -64,7 +64,7 @@ exports.handler = async (event) => {
     body: JSON.stringify({ status }),
   });
 
-  if (!res.ok) return { statusCode: 500, body: JSON.stringify({ error: await res.text() }) };
+  if (!res.ok) { console.error('update-order-status supabase error', await res.text()); return { statusCode: 500, body: JSON.stringify({ error: 'Sipariş güncellenemedi' }) }; }
   const data = await res.json();
 
   if (customerEmail) {

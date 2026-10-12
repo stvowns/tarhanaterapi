@@ -40,7 +40,7 @@ exports.handler = async (event) => {
     },
   });
 
-  if (!res.ok) return { statusCode: 500, body: JSON.stringify({ error: await res.text() }) };
+  if (!res.ok) { console.error('list-orders supabase error', await res.text()); return { statusCode: 500, body: JSON.stringify({ error: 'Siparişler alınamadı' }) }; }
   const rows = await res.json();
 
   const orders = rows.map((r) => ({

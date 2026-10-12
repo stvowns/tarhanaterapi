@@ -21,27 +21,60 @@ const notifyEmail = async (subject, html) => {
   });
 };
 
+const rateLimit = {};
+
+const checkRateLimit = (ip) => {
+  const now = Date.now();
+  const entry = rateLimit[ip] || { count: 0, ts: now };
+  if (now - entry.ts > 60000) { entry.count = 0; entry.ts = now; }
+  entry.count++;
+  rateLimit[ip] = entry;
+  return entry.count <= 5;
+};
+
 exports.handler = async (event) => {
+  const ip = String(event.headers?.['x-nf-client-connection-ip'] || event.headers?.['x-forwarded-for'] || 'unknown').split(',')[0].trim();
+
+  if (!checkRateLimit(ip)) {
+    return { statusCode: 429, headers: { 'Content-Type': 'application/json', 'Retry-After': '60' }, body: JSON.stringify({ error: 'Too many requests' }) };
+  }
+
   if (event.httpMethod !== 'POST') return { statusCode: 405, body: JSON.stringify({ error: 'Method not allowed' }) };
 
   let payload = {};
   try { payload = JSON.parse(event.body || '{}'); } catch { return { statusCode: 400, body: JSON.stringify({ error: 'Invalid JSON' }) }; }
 
-  const name = String(payload.name || '').trim();
-  const email = String(payload.email || '').trim();
-  const phone = String(payload.phone || '').trim();
-  const topic = String(payload.topic || '').trim();
-  const message = String(payload.message || '').trim();
+  const rawName = String(payload.name || '');
+  const rawEmail = String(payload.email || '');
+  const rawPhone = String(payload.phone || '');
+  const rawTopic = String(payload.topic || '');
+  const rawMessage = String(payload.message || '');
 
-  if (!name || !message) {
+  if (!rawName || !rawMessage) {
     return { statusCode: 400, body: JSON.stringify({ error: 'required fields missing' }) };
   }
+
+  const name = rawName.trim().slice(0, 100);
+  const email = rawEmail.trim().slice(0, 254);
+  const phone = rawPhone.trim().slice(0, 32);
+  const topic = (rawTopic.trim() || 'Genel').slice(0, 64);
+  const message = rawMessage.trim().slice(0, 5000);
+
+  if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    return { statusCode: 400, body: JSON.stringify({ error: 'invalid_email' }) };
+  }
+
+  const sName = sanitize(name);
+  const sEmail = sanitize(email);
+  const sPhone = sanitize(phone);
+  const sTopic = sanitize(topic);
+  const sMessage = sanitize(message).replace(/\n/g, '<br/>');
 
   const text = `Yeni iletişim mesajı\nAd: ${name}\nE-posta: ${email}\nTelefon: ${phone}\nKonu: ${topic}\nMesaj: ${message}`;
 
   await Promise.allSettled([
     notifyTelegram(text),
-    notifyEmail(`İletişim Formu: ${topic}`, `<p><strong>Ad:</strong> ${name}</p><p><strong>E-posta:</strong> ${email}</p><p><strong>Telefon:</strong> ${phone}</p><p><strong>Konu:</strong> ${topic}</p><p><strong>Mesaj:</strong><br/>${message.replace(/\n/g, '<br/>')}</p>`),
+    notifyEmail(`İletişim Formu: ${topic}`, `<p><strong>Ad:</strong> ${sName}</p><p><strong>E-posta:</strong> ${sEmail}</p><p><strong>Telefon:</strong> ${sPhone}</p><p><strong>Konu:</strong> ${sTopic}</p><p><strong>Mesaj:</strong><br/>${sMessage}</p>`),
   ]);
 
   return { statusCode: 200, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ success: true }) };
