@@ -1,23 +1,44 @@
-const SUPABASE_URL = process.env.SUPABASE_URL;
-const SUPABASE_SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
-const RESEND_API_KEY = process.env.RESEND_API_KEY;
+const { Pool } = require('pg');
+
 const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
 const TELEGRAM_ADMIN_CHAT_ID = process.env.TELEGRAM_ADMIN_CHAT_ID;
+const RESEND_API_KEY = process.env.RESEND_API_KEY;
+
+const pool = new Pool({
+  host: 'db.atrvalwnvruzsbpkgfrl.supabase.co',
+  port: 5432,
+  user: 'postgres',
+  password: process.env.SUPABASE_DB_PASSWORD,
+  database: 'postgres',
+  ssl: { rejectUnauthorized: false },
+});
 
 async function insertOrder(order) {
-  const res = await fetch(`${SUPABASE_URL}/rest/v1/orders`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      apikey: SUPABASE_SERVICE_ROLE_KEY,
-      Authorization: `Bearer ${SUPABASE_SERVICE_ROLE_KEY}`,
-      Prefer: 'return=representation',
-    },
-    body: JSON.stringify(order),
-  });
-  if (!res.ok) throw new Error(await res.text());
-  const data = await res.json();
-  return data[0];
+  const client = await pool.connect();
+  try {
+    const sql = `insert into orders
+      (order_number, customer_name, customer_email, customer_phone, customer_address, customer_city, customer_district, payment_method, subtotal, shipping_fee, discount, total, status)
+      values ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13)
+      returning id`;
+    const result = await client.query(sql, [
+      order.order_number,
+      order.customer_name,
+      order.customer_email,
+      order.customer_phone,
+      order.customer_address,
+      order.customer_city,
+      order.customer_district,
+      order.payment_method,
+      order.subtotal,
+      order.shipping_fee,
+      order.discount,
+      order.total,
+      order.status,
+    ]);
+    return result.rows[0];
+  } finally {
+    client.release();
+  }
 }
 
 async function notifyTelegram(summary) {
@@ -58,9 +79,9 @@ exports.handler = async (event) => {
     return { statusCode: 400, body: JSON.stringify({ error: 'Invalid JSON' }) };
   }
 
-  const required = ['customerName', 'customerEmail', 'customerPhone', 'customerCity', 'customerDistrict', 'customerAddress', 'items', 'total'];
+  const required = ['customerName', 'customerEmail', 'customerPhone', 'customerCity', 'customerDistrict', 'customerAddress', 'total'];
   for (const key of required) {
-    if (payload[key] === undefined || payload[key] === null) {
+    if (payload[key] === undefined || payload[key] === null || payload[key] === '') {
       return { statusCode: 400, body: JSON.stringify({ error: `${key} is required` }) };
     }
   }
@@ -75,7 +96,7 @@ exports.handler = async (event) => {
     customer_city: payload.customerCity,
     customer_district: payload.customerDistrict,
     payment_method: payload.paymentMethod || 'cod',
-    subtotal: payload.subtotal || 0,
+    subtotal: payload.subtotal || payload.total || 0,
     shipping_fee: payload.shippingFee || 0,
     discount: payload.discount || 0,
     total: payload.total,
@@ -84,11 +105,8 @@ exports.handler = async (event) => {
 
   try {
     const created = await insertOrder(order);
-
-    // Optional item insert can be added here with the created order id.
-    // await insertOrderItems(created.id, payload.items);
-
     const summary = `Yeni sipariş ${orderNumber}\n${payload.customerName} - ${payload.customerCity}\nToplam: ${payload.total} TL`;
+
     await Promise.allSettled([
       notifyTelegram(summary),
       notifyEmail(payload.customerEmail, `Siparişiniz alındı: ${orderNumber}`, `<p>Sipariş numaranız: ${orderNumber}</p>`),
