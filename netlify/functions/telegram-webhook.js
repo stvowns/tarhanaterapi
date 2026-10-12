@@ -143,7 +143,10 @@ exports.handler = async (event) => {
   const chatId = message?.chat?.id || callback?.message?.chat?.id;
 
   if (!chatId) return { statusCode: 200, body: 'ok' };
-  if (TELEGRAM_ADMIN_CHAT_ID && String(chatId) !== String(TELEGRAM_ADMIN_CHAT_ID)) return { statusCode: 200, body: 'ignored' };
+  if (TELEGRAM_ADMIN_CHAT_ID && String(chatId) !== String(TELEGRAM_ADMIN_CHAT_ID)) {
+    await tg('sendMessage', { chat_id: chatId, text: `Yetkisiz sohbet (id:${chatId}). Yönetici ID: ${TELEGRAM_ADMIN_CHAT_ID}. Bu sohbetten /orders kullanılmaz.` });
+    return { statusCode: 200, body: 'ignored' };
+  }
 
   try {
     if (message?.text) {

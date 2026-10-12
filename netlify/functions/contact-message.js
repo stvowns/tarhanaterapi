@@ -23,6 +23,17 @@ const notifyEmail = async (subject, html) => {
 
 const rateLimit = {};
 
+const escapeHtml = (s) =>
+  String(s || '').replace(/[&<>"']/g, (c) => ({
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    "'": '&#39;',
+  }[c]));
+
+const sanitize = escapeHtml;
+
 const checkRateLimit = (ip) => {
   const now = Date.now();
   const entry = rateLimit[ip] || { count: 0, ts: now };
