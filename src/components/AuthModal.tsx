@@ -226,7 +226,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
             }}
             className={`flex-1 py-3 text-xs font-semibold border-b-2 transition-all cursor-pointer ${
               mode === 'login'
-                ? 'border-primary text-primary bg-primary-fixed/20'
+                ? 'border-primary text-on-primary bg-primary'
                 : 'border-transparent text-outline hover:text-on-surface'
             }`}
           >
@@ -239,7 +239,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
             }}
             className={`flex-1 py-3 text-xs font-semibold border-b-2 transition-all cursor-pointer ${
               mode === 'register'
-                ? 'border-primary text-primary bg-primary-fixed/20'
+                ? 'border-secondary text-on-secondary bg-secondary'
                 : 'border-transparent text-outline hover:text-on-surface'
             }`}
           >

@@ -75,11 +75,13 @@ exports.handler = async (event) => {
     customer_city: payload.customerCity,
     customer_district: payload.customerDistrict,
     payment_method: payload.paymentMethod || 'cod',
+    delivery_note: payload.deliveryNote || payload.delivery_note || null,
     subtotal: payload.subtotal || payload.total || 0,
     shipping_fee: payload.shippingFee || 0,
     discount: payload.discount || 0,
     total: payload.total,
     status: 'Yeni Sipariş',
+    items: Array.isArray(payload.items) ? payload.items : [],
   };
 
   try {

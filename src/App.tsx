@@ -286,11 +286,28 @@ const setActiveTab = useCallback(
     }
   };
 
-  const handleUpdateOrderStatus = (orderId: string, newStatus: Order['status']) => {
+  const handleUpdateOrderStatus = async (orderId: string, newStatus: Order['status']) => {
+    const target = orders.find((o) => o.id === orderId);
     setOrders((prev) =>
       prev.map((o) => (o.id === orderId ? { ...o, status: newStatus } : o))
     );
     showToast(`Sipariş durumu güncellendi: ${newStatus}`);
+
+    try {
+      await fetch('/.netlify/functions/update-order-status', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          orderId,
+          status: newStatus,
+          customerName: target?.customerName,
+          customerEmail: target?.customerEmail,
+          orderNumber: target?.orderNumber,
+        }),
+      });
+    } catch {
+      showToast('Durum güncellendi; DB senkronizasyonu başarısız olabilir.');
+    }
   };
 
   // Simulate incoming order for instant testing
@@ -408,6 +425,50 @@ const setActiveTab = useCallback(
       authSub.subscription.unsubscribe();
     };
   }, []);
+
+  useEffect(() => {
+    if (!currentUser?.isAdmin) return;
+    let active = true;
+    fetch('/.netlify/functions/list-orders')
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data) => {
+        if (!active || !data?.orders) return;
+        setOrders(data.orders);
+      })
+      .catch(() => {});
+    return () => {
+      active = false;
+    };
+  }, [currentUser?.isAdmin]);
+
+  useEffect(() => {
+    if (!currentUser?.email) return;
+    const channel = supabase
+      .channel(`customer-orders-${currentUser.email}`)
+      .on(
+        'postgres_changes',
+        {
+          event: 'UPDATE',
+          schema: 'public',
+          table: 'orders',
+          filter: `customer_email=eq.${currentUser.email}`,
+        },
+        (payload: any) => {
+          const status = payload?.new?.status;
+          if (status) showToast(`Siparişiniz güncellendi: ${status}`);
+          setOrders((prev) =>
+            prev.map((o) =>
+              o.id === payload?.new?.id ? { ...o, status: status || o.status } : o
+            )
+          );
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [currentUser?.email]);
 
   const seoByTab = {
     home: {
