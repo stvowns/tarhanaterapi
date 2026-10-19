@@ -74,11 +74,13 @@ function rateLimited(ip) {
 const PRODUCT_PRICES = {
   'tarhana-classic': 450,
   'tarhana-spicy': 500,
-  'tarhana-baby': 400,
-  'tarhana-starter-set': 750,
-  'tarhana-family-pack': 330,
-  'tarhana-gourmet-duo': 355,
+  'tarhana-baby': 500,
+  'tarhana-starter-set': 850,
+  'tarhana-family-pack': 450,
+  'tarhana-gourmet-duo': 900,
 };
+const FREE_SHIPPING_THRESHOLD = 2000;
+const STANDARD_SHIPPING_FEE = 45;
 
 const required = ['customerName', 'customerEmail', 'customerPhone', 'customerCity', 'customerDistrict', 'customerAddress'];
   for (const key of required) {
@@ -92,8 +94,19 @@ const required = ['customerName', 'customerEmail', 'customerPhone', 'customerCit
     return { statusCode: 429, body: JSON.stringify({ error: 'Too many requests' }) };
   }
 
-  if (payload.kvkkConsent !== true) {
-    return { statusCode: 400, body: JSON.stringify({ error: 'KVKK consent required' }) };
+  const kvkkConsent =
+    payload.kvkkConsent === true ||
+    payload.kvkkConsent === 'true' ||
+    payload.kvkkConsent === 'on' ||
+    payload.kvkkConsent === 1;
+  if (!kvkkConsent) {
+    return {
+      statusCode: 400,
+      body: JSON.stringify({
+        error: 'Siparişi tamamlamak için KVKK onay kutusunu işaretlemeniz gerekiyor.',
+        code: 'KVKK_CONSENT_REQUIRED',
+      }),
+    };
   }
 
   const normalizedItems = Array.isArray(payload.items) ? payload.items : [];
@@ -106,7 +119,10 @@ const required = ['customerName', 'customerEmail', 'customerPhone', 'customerCit
     }
     subtotal += price * qty;
   }
-  const shippingFee = subtotal >= 300 || normalizedItems.length === 0 ? 0 : 45;
+  const shippingFee =
+    subtotal >= FREE_SHIPPING_THRESHOLD || normalizedItems.length === 0
+      ? 0
+      : STANDARD_SHIPPING_FEE;
   const discount = 0;
   const total = subtotal + shippingFee - discount;
 

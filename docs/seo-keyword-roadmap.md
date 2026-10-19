@@ -49,7 +49,7 @@ Google + ChatGPT/Gemini/Perplexity/Copilot'ta `tarhana`, `ev yapımı tarhana`, 
 ## Paketleme odaklı ekstra (TarhanaTerapi'ye özel)
 - Uzun kış ve bebek segmenti odaklı rehber içerikleri.
 - Tarif sayfalarına Recipe schema (`recipeIngredient`, `recipeInstructions`, `totalTime`).
-- Jelibon paket (500g cam kavanoz + pamuk çuval) için fiyat/büyüklük tabloları.
+- Jelibon paket (1 kg pamuk torba + pamuk çuval) için fiyat/büyüklük tabloları.
 - Local SEO: Orhangazi merkezde elden teslim + aynı gün kargo bloğu.
 
 ## Başarı kriterleri (90 gün)

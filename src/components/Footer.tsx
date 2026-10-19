@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { ActiveTab } from '../types';
 import { ASSETS } from '../data/mockData';
 import { GIZLILIK_POLITIKASI, MESAFELI_SATIS, KVKK_AYDINLATMA } from '../data/legal';
+import { CONTENT_UPDATED_LABEL, routePaths } from '../lib/site';
 
 interface FooterProps {
   setActiveTab: (tab: ActiveTab) => void;
@@ -88,36 +89,62 @@ export const Footer: React.FC<FooterProps> = ({
           <div className="lg:col-span-2 flex flex-col gap-3">
             <span className="font-title-lg text-on-surface font-semibold">Keşfet</span>
             <nav className="flex flex-col gap-2">
-              <button
-                onClick={() => handleNav('products')}
+              <a
+                href={routePaths.products}
+                onClick={(e) => {
+                  e.preventDefault();
+                  handleNav('products');
+                }}
                 className="text-left font-body-md text-on-surface-variant hover:text-primary transition-colors cursor-pointer"
               >
                 Şifalı Çorbalar
-              </button>
-              <button
-                onClick={() => handleNav('ingredients')}
+              </a>
+              <a
+                href={routePaths.ingredients}
+                onClick={(e) => {
+                  e.preventDefault();
+                  handleNav('ingredients');
+                }}
                 className="text-left font-body-md text-on-surface-variant hover:text-primary transition-colors cursor-pointer"
               >
                 Nohut Terapi
-              </button>
-              <button
-                onClick={() => handleNav('story')}
+              </a>
+              <a
+                href={routePaths.story}
+                onClick={(e) => {
+                  e.preventDefault();
+                  handleNav('story');
+                }}
                 className="text-left font-body-md text-on-surface-variant hover:text-primary transition-colors cursor-pointer"
               >
                 Gelenek &amp; Maya
-              </button>
-              <button
-                onClick={() => handleNav('reviews')}
+              </a>
+              <a
+                href="/rehber"
+                className="text-left font-body-md text-on-surface-variant hover:text-primary transition-colors cursor-pointer"
+              >
+                Tarhana Rehberi
+              </a>
+              <a
+                href={routePaths.reviews}
+                onClick={(e) => {
+                  e.preventDefault();
+                  handleNav('reviews');
+                }}
                 className="text-left font-body-md text-on-surface-variant hover:text-primary transition-colors cursor-pointer"
               >
                 Müşteri Yorumları
-              </button>
-              <button
-                onClick={() => handleNav('contact')}
+              </a>
+              <a
+                href={routePaths.contact}
+                onClick={(e) => {
+                  e.preventDefault();
+                  handleNav('contact');
+                }}
                 className="text-left font-body-md text-on-surface-variant hover:text-primary transition-colors cursor-pointer"
               >
                 İletişim &amp; Adres
-              </button>
+              </a>
             </nav>
           </div>
 
@@ -203,7 +230,11 @@ export const Footer: React.FC<FooterProps> = ({
         {/* Bottom Bar */}
         <div className="mt-16 pt-8 border-t border-outline-variant/20 flex flex-col sm:flex-row items-center justify-between gap-4">
           <p className="font-body-sm text-on-surface-variant text-xs">
-            © 2025 TarhanaTerapi. Tüm hakları saklıdır. Bursa Orhangazi'nin şifasıyla sevgiyle üretilmiştir.
+            © 2026 TarhanaTerapi. Tüm hakları saklıdır. Bursa Orhangazi'nin şifasıyla sevgiyle
+            üretilmiştir.
+            <span className="block mt-1 text-[11px] text-outline">
+              Son içerik güncellemesi: {CONTENT_UPDATED_LABEL}
+            </span>
           </p>
 
           <div className="flex items-center gap-4 text-xs">

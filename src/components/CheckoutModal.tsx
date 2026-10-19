@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { FREE_SHIPPING_THRESHOLD, STANDARD_SHIPPING_FEE } from '../lib/commerce';
 import { CartItem, Order, User } from '../types';
 
 interface CheckoutModalProps {
@@ -18,6 +19,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
 }) => {
   const [orderCode, setOrderCode] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [formError, setFormError] = useState('');
   const [step, setStep] = useState<1 | 2 | 3>(1);
 
   // Form states
@@ -38,6 +40,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
     setStep(1);
     setOrderCode('');
     setIsSubmitting(false);
+    setFormError('');
     setFormData((prev) => ({
       ...prev,
       note: '',
@@ -65,7 +68,10 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
     (sum, item) => sum + item.product.price * item.quantity,
     0
   );
-  const shippingFee = rawSubtotal >= 300 || cartItems.length === 0 ? 0 : 45;
+  const shippingFee =
+    rawSubtotal >= FREE_SHIPPING_THRESHOLD || cartItems.length === 0
+      ? 0
+      : STANDARD_SHIPPING_FEE;
   const totalAmount = rawSubtotal + shippingFee;
 
   const handleSubmitStep1 = (e: React.FormEvent) => {
@@ -75,8 +81,9 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
 
   const handleCompleteOrder = async (e: React.FormEvent) => {
     e.preventDefault();
+    setFormError('');
     if (!formData.kvkkConsent) {
-      alert('Siparişi tamamlayabilmek için KVKK aydınlatma metni onayı gereklidir.');
+      setFormError('Siparişi tamamlamak için KVKK onay kutusunu işaretlemeniz gerekiyor.');
       return;
     }
     setIsSubmitting(true);
@@ -95,7 +102,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
         name: ci.product.name,
         price: ci.product.price,
         quantity: ci.quantity,
-        weight: ci.selectedWeight || ci.product.weight,
+        weight: ci.product.weight,
         image: ci.product.image,
       })),
       subtotal: rawSubtotal,
@@ -134,7 +141,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
           name: ci.product.name,
           price: ci.product.price,
           quantity: ci.quantity,
-          weight: ci.selectedWeight || ci.product.weight,
+          weight: ci.product.weight,
           image: ci.product.image,
         })),
         subtotal: rawSubtotal,
@@ -155,7 +162,12 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
       onCreateOrder(newOrder);
       setStep(3);
     } catch (err) {
-      alert(err instanceof Error ? err.message : 'Sipariş kaydedilemedi');
+      const message = err instanceof Error ? err.message : 'Sipariş kaydedilemedi';
+      setFormError(
+        /KVKK/i.test(message)
+          ? 'Siparişi tamamlamak için KVKK onay kutusunu işaretlemeniz gerekiyor.'
+          : message
+      );
     } finally {
       setIsSubmitting(false);
     }
@@ -351,16 +363,27 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
 
               <label className="flex items-start gap-2 text-xs text-on-surface mt-1">
                 <input
+                  id="kvkk-consent"
                   type="checkbox"
                   checked={formData.kvkkConsent}
-                  onChange={(e) => setFormData({ ...formData, kvkkConsent: e.target.checked })}
+                  onChange={(e) => {
+                    setFormData({ ...formData, kvkkConsent: e.target.checked });
+                    setFormError('');
+                  }}
                   className="mt-0.5"
+                  aria-invalid={!formData.kvkkConsent && Boolean(formError)}
+                  aria-describedby={formError ? 'kvkk-consent-error' : undefined}
                   required
                 />
                 <span>
                   KVKK Aydınlatma Metni'ni okudum, kişisel verilerimin işlenmesine açık rıza veriyorum.
                 </span>
               </label>
+              {formError && (
+                <p id="kvkk-consent-error" role="alert" className="text-xs text-error font-medium">
+                  {formError}
+                </p>
+              )}
 
               <div className="flex justify-between items-center pt-4 border-t border-outline-variant/20">
                 <button

@@ -85,7 +85,7 @@ export const StoryPage: React.FC<StoryPageProps> = ({ onGoToShop }) => {
             <h3 className="font-title-lg text-on-surface font-bold">Kadın Kooperatifleri İmecesi</h3>
             <p className="font-body-sm text-on-surface-variant leading-relaxed">
               Bursa Orhangazi ve Güney Marmara köylerindeki yerel üretici kadınlarla doğrudan çalışıyoruz. Aracısız,
-              adil ticaret ilkesiyle her kavanoz kırsal kalkınmaya doğrudan can suyu oluyor.
+              adil ticaret ilkesiyle her paket kırsal kalkınmaya doğrudan can suyu oluyor.
             </p>
           </div>
 
@@ -108,7 +108,7 @@ export const StoryPage: React.FC<StoryPageProps> = ({ onGoToShop }) => {
               Bu Şifayı Kendi Sofranıza Taşıyın
             </h3>
             <p className="font-body-md opacity-90 mt-2">
-              Köy ocaklarının dumanını ve anne elinin samimiyetini özlediyseniz, bugün ilk kavanozunuzla
+              Köy ocaklarının dumanını ve anne elinin samimiyetini özlediyseniz, bugün ilk paketinizle
               tanışın.
             </p>
           </div>

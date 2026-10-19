@@ -1,4 +1,4 @@
-export const GIZLILIK_POLITIKASI = `TarhanaTerapi olarak kişisel verilerinizin gizliliğine ve güvenliğine en üst seviyede önem veriyoruz. Bu Gizlilik Politikası, web sitemizi (tarhanaterapi.com) ziyaret ettiğinizde veya sipariş verdiğinizde toplanan bilgilerin nasıl kullanıldığını ve korunduğunu açıklar.
+export const GIZLILIK_POLITIKASI = `TarhanaTerapi olarak kişisel verilerinizin gizliliğine ve güvenliğine en üst seviyede önem veriyoruz. Bu Gizlilik Politikası, web sitemizi (tarhanaterapi.netlify.app) ziyaret ettiğinizde veya sipariş verdiğinizde toplanan bilgilerin nasıl kullanıldığını ve korunduğunu açıklar.
 
 1. Toplanan Bilgiler
 - Kimlik ve iletişim bilgileri: ad, soyad, e-posta, telefon, teslimat adresi.

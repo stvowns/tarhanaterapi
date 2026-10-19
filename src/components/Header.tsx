@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { ActiveTab, CartItem, User } from '../types';
 import { ASSETS } from '../data/mockData';
+import { routePaths } from '../lib/site';
 
 interface HeaderProps {
   activeTab: ActiveTab;
@@ -48,8 +49,12 @@ export const Header: React.FC<HeaderProps> = ({
       <div className="h-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-10 flex items-center justify-between gap-4">
         {/* Brand Zone - Clean spacing so it never collides with navigation */}
         <div className="flex items-center shrink-0 pr-4">
-          <button
-            onClick={() => handleNavClick('home')}
+          <a
+            href="/"
+            onClick={(e) => {
+              e.preventDefault();
+              handleNavClick('home');
+            }}
             className="flex items-center gap-2.5 group text-left cursor-pointer focus:outline-none"
           >
             <img
@@ -60,7 +65,7 @@ export const Header: React.FC<HeaderProps> = ({
             <span className="font-headline-sm text-primary tracking-tight font-bold whitespace-nowrap text-lg sm:text-xl">
               TarhanaTerapi
             </span>
-          </button>
+          </a>
         </div>
 
         {/* Desktop Navigation Links */}
@@ -68,9 +73,13 @@ export const Header: React.FC<HeaderProps> = ({
           {navLinks.map((link) => {
             const isActive = activeTab === link.id;
             return (
-              <button
+              <a
                 key={link.id}
-                onClick={() => handleNavClick(link.id)}
+                href={routePaths[link.id]}
+                onClick={(e) => {
+                  e.preventDefault();
+                  handleNavClick(link.id);
+                }}
                 className={`transition-all duration-200 px-3 py-1.5 rounded-lg text-xs xl:text-sm font-medium whitespace-nowrap cursor-pointer ${
                   isActive
                     ? 'bg-surface-container-high text-primary font-bold shadow-2xs'
@@ -78,7 +87,7 @@ export const Header: React.FC<HeaderProps> = ({
                 }`}
               >
                 {link.label}
-              </button>
+              </a>
             );
           })}
         </nav>
@@ -173,9 +182,13 @@ export const Header: React.FC<HeaderProps> = ({
             {navLinks.map((link) => {
               const isActive = activeTab === link.id;
               return (
-                <button
+                <a
                   key={link.id}
-                  onClick={() => handleNavClick(link.id)}
+                  href={routePaths[link.id]}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    handleNavClick(link.id);
+                  }}
                   className={`flex items-center justify-between text-left py-2.5 px-3.5 rounded-lg text-sm font-medium ${
                     isActive
                       ? 'bg-surface-container-high text-primary font-bold'
@@ -188,7 +201,7 @@ export const Header: React.FC<HeaderProps> = ({
                       check
                     </span>
                   )}
-                </button>
+                </a>
               );
             })}
 

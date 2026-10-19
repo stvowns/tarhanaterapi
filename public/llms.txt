@@ -1,14 +1,58 @@
 # TarhanaTerapi
 
-> Nohutlu, katkısız, 21 günlük toprak küpte fermente ev yapımı tarhana: ürünler, fiyat, kargo ve üretim bilgisi.
+> Bursa Orhangazi'de üç nesilden gelen mayayla, ata tohumu koçbaşı nohutlu ve katkısız anne tarhanası üreten aile işletmesi. Ürünler toprak küpte 21 gün fermente edilir; 1 kg pamuk torba, 1 kg pamuk çuval ve hediye seti olarak satılır. Türkiye geneli 1-3 iş gününde kargo, 2000 TL üzeri ücretsiz; 2000 TL altı 45 TL.
 
-## Ana sayfalar
-- [Ana Sayfa](https://tarhanaterapi.com/)
-- [Ürünler](https://tarhanaterapi.com/#urunler)
-- [İçindekiler](https://tarhanaterapi.com/#icerik)
-- [Üretim Hikayesi](https://tarhanaterapi.com/#hikaye)
-- [SSS / İletişim](https://tarhanaterapi.com/#sss)
+Canonical site: https://tarhanaterapi.netlify.app/
+Dil: Türkçe (tr-TR)
+Son güncelleme: 19 Ekim 2026
 
-## Kısa cevap
-TarhanaTerapi, 3 nesilden gelen maya ile toprak küplerde 21 gün fermente edilen, ata tohumu koçbaşı nohutlu, katkısız anne tarhanası üretir. 500g kavanoz klasik formülü ve tuzsuz bebek varyantı vardır. Türkiye geneli 1-3 iş gününde kargo, tüm ürünler cam kavanozda koruyucu ambalajla gönderilir.
-">
+## Kısa cevaplar
+
+- TarhanaTerapi nedir? Bursa Orhangazi'de üç nesilden devraldığı mayayla ata tohumu koçbaşı nohutlu, katkısız anne tarhanasını toprak küplerde 21 gün fermente ederek üreten bir aile işletmesidir.
+- Fiyatlar: 1 kg klasik 450 TL, 1 kg acılı 500 TL, 1 kg tuzsuz bebek tarhanası 500 TL, 1 kg aile paketi 450 TL, 2 x 1 kg ikili gurme paketi 900 TL, başlangıç seti 850 TL.
+- Kargo: Aynı veya ertesi iş günü kargoya verilir; Türkiye geneli teslimat 1-3 iş günüdür. 2000 TL ve üzeri siparişlerde kargo ücretsizdir; 2000 TL altı siparişlerde 45 TL'dir.
+- İçindekiler: Taş değirmen buğday unu, köy yoğurdu, tarla domatesi, közlenmiş kapya biber, koçbaşı nohut, kaya tuzu, dağ kekiği ve nane. Koruyucu, renklendirici ve aroma verici yok.
+- Alerjen: Buğday (gluten), süt (yoğurt) ve nohut içerir. Glutensiz değildir; çölyak hastaları için uygun değildir.
+- Bebek tarhanası: Tuzsuz ve acısızdır; doktora danışarak 6. aydan itibaren ek gıdada kullanılabilir.
+- Saklama: Güneş görmeyen serin ve kuru yerde, kapalı pamuk torbada 1 yıla kadar.
+- Üretim yeri: Gedelek Köyü Mevkii No: 28, Orhangazi / Bursa.
+- İletişim: 0850 302 82 74 · sifa@tarhanaterapi.com
+
+## Sayfalar
+
+- [Ana Sayfa](https://tarhanaterapi.netlify.app/): Marka tanımı, ürün özeti, fiyatlar ve SSS.
+- [Ürünler ve Fiyatlar](https://tarhanaterapi.netlify.app/urunler): Tüm tarhana çeşitleri, güncel fiyatlar ve karşılaştırma.
+- [İçindekiler ve Fermantasyon](https://tarhanaterapi.netlify.app/icerik): Malzemeler, 21 günlük üretim süreci ve alerjen bilgisi.
+- [Hikayemiz](https://tarhanaterapi.netlify.app/hikaye): Orhangazi atölyesi ve üç nesillik maya.
+- [Yorumlar](https://tarhanaterapi.netlify.app/yorumlar): Müşteri deneyimleri.
+- [İletişim ve SSS](https://tarhanaterapi.netlify.app/iletisim): Telefon, e-posta, adres, kargo ve sık sorulan sorular.
+
+## Rehberler
+
+- [Tarhana Rehberi](https://tarhanaterapi.netlify.app/rehber): Tüm rehberlerin listesi.
+- [Tarhana nasıl kurutulur?](https://tarhanaterapi.netlify.app/rehber/tarhana-nasil-kurutulur): Açma, güneşte kurutma, süre ve saklama.
+- [Bebeklere tarhana ne zaman verilir?](https://tarhanaterapi.netlify.app/rehber/bebeklere-tarhana-ne-zaman-verilir): 6. ay, tuz, alerjen ve pişirme.
+- [Tarhana neden ekşir?](https://tarhanaterapi.netlify.app/rehber/tarhana-neden-eksir): Ekşilik, nem, küf ve saklama.
+- [Ev tarhanası ile hazır tarhana farkı](https://tarhanaterapi.netlify.app/rehber/ev-tarhanasi-ile-hazir-tarhana-farki): İçerik, fermantasyon ve etiket karşılaştırması.
+- [Katkısız tarhana nasıl anlaşılır?](https://tarhanaterapi.netlify.app/rehber/katkisiz-tarhana-nasil-anlasilir): Etiket okuma ve üretici seçimi.
+
+## Ürün sayfaları
+
+- [Geleneksel Nohutlu Anne Tarhanası — 1 kg, 450 TL](https://tarhanaterapi.netlify.app/urunler/tarhana-classic)
+- [Acılı Gurme Terapisi — 1 kg, 500 TL](https://tarhanaterapi.netlify.app/urunler/tarhana-spicy)
+- [Bebek & Çocuk Dostu Tarhana — 1 kg, 500 TL](https://tarhanaterapi.netlify.app/urunler/tarhana-baby)
+- [TarhanaTerapi Başlangıç Seti — 1 kg tarhana + set, 850 TL](https://tarhanaterapi.netlify.app/urunler/tarhana-starter-set)
+- [Kiler Boyu 1 kg Pamuk Çuvallı Tarhana — 450 TL](https://tarhanaterapi.netlify.app/urunler/tarhana-family-pack)
+- [İkili Gurme Şifa Paketi — 2 × 1 kg, 900 TL](https://tarhanaterapi.netlify.app/urunler/tarhana-gourmet-duo)
+
+## Kaynaklar
+
+- [llms-full.txt](https://tarhanaterapi.netlify.app/llms-full.txt): Ürün, SSS ve politikaların tam metni.
+- [Sitemap](https://tarhanaterapi.netlify.app/sitemap.xml)
+- [robots.txt](https://tarhanaterapi.netlify.app/robots.txt)
+
+## Notlar
+
+- Sitede yer alan fiyatlar 19 Ekim 2026 tarihinde doğrulanmıştır. Fiyat değiştiğinde bu dosya ve ürün sayfaları birlikte güncellenir.
+- TarhanaTerapi bir aile işletmesidir; ürünler markanın kendi atölyesinde üretilir.
+- Sağlık iddiası yoktur; ürün geleneksel bir gıdadır. Bebek beslenmesi ve alerjenler için hekime danışılması önerilir.

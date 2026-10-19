@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Product } from '../types';
 import { PRODUCTS } from '../data/mockData';
+import { productPath } from '../lib/site';
 
 interface ProductsSectionProps {
   onAddToCart: (product: Product) => void;
@@ -37,7 +38,7 @@ export const ProductsSection: React.FC<ProductsSectionProps> = ({
             Şifalı Çorba Seçenekleri
           </h2>
           <p className="font-body-lg text-on-surface-variant mt-3">
-            Özenle vakumlanmış veya geleneksel pamuklu bez torbalarda sunulan, her damak
+            Geleneksel pamuklu bez torbalarda sunulan, her damak
             zevkine uygun nohutlu terapi paketleri.
           </p>
         </div>
@@ -111,9 +112,17 @@ export const ProductsSection: React.FC<ProductsSectionProps> = ({
                 </h3>
 
                 {/* Description */}
-                <p className="font-body-sm text-on-surface-variant mt-1 mb-4 flex-grow line-clamp-2">
+                <p className="font-body-sm text-on-surface-variant mt-1 mb-2 flex-grow line-clamp-2">
                   {product.description}
                 </p>
+
+                <a
+                  href={productPath(product)}
+                  onClick={(e) => e.stopPropagation()}
+                  className="text-xs font-semibold text-primary mb-3 hover:underline"
+                >
+                  Ürün detayı, içindekiler ve fiyat →
+                </a>
 
                 {/* Price and Add Button */}
                 <div className="flex items-center justify-between pt-3 border-t border-outline-variant/20 mt-auto">

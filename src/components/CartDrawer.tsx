@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { FREE_SHIPPING_THRESHOLD, STANDARD_SHIPPING_FEE } from '../lib/commerce';
 import { CartItem } from '../types';
 
 interface CartDrawerProps {
@@ -32,8 +33,11 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
 
   const discountAmount = Math.round((rawSubtotal * discountPercent) / 100);
   const subtotalAfterDiscount = rawSubtotal - discountAmount;
-  const freeShippingThreshold = 300;
-  const shippingFee = subtotalAfterDiscount >= freeShippingThreshold || cartItems.length === 0 ? 0 : 45;
+  const freeShippingThreshold = FREE_SHIPPING_THRESHOLD;
+  const shippingFee =
+    subtotalAfterDiscount >= freeShippingThreshold || cartItems.length === 0
+      ? 0
+      : STANDARD_SHIPPING_FEE;
   const remainingForFreeShipping = Math.max(0, freeShippingThreshold - subtotalAfterDiscount);
   const finalTotal = subtotalAfterDiscount + shippingFee;
 
@@ -152,8 +156,13 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                     </h4>
                     <p className="text-xs text-outline mt-0.5">{item.product.weight}</p>
                     <div className="font-headline-sm text-sm text-primary font-bold mt-1">
-                      ₺{item.product.price}
+                      ₺{item.product.price * item.quantity}
                     </div>
+                    {item.quantity > 1 && (
+                      <p className="text-[11px] text-outline mt-0.5">
+                        {item.quantity} × ₺{item.product.price}
+                      </p>
+                    )}
                   </div>
 
                   {/* Stepper & Remove */}

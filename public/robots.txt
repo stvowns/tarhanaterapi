@@ -1,6 +1,8 @@
+# TarhanaTerapi — AI arama ve klasik arama botlarına tam açık.
 User-agent: *
 Allow: /
 
+# AI arama / cevap motorları
 User-agent: GPTBot
 Allow: /
 
@@ -16,6 +18,9 @@ Allow: /
 User-agent: Claude-SearchBot
 Allow: /
 
+User-agent: Claude-User
+Allow: /
+
 User-agent: PerplexityBot
 Allow: /
 
@@ -25,5 +30,32 @@ Allow: /
 User-agent: Google-Extended
 Allow: /
 
-Sitemap: https://tarhanaterapi.com/sitemap.xml
-">
+User-agent: Googlebot
+Allow: /
+
+User-agent: Googlebot-Image
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+User-agent: Applebot
+Allow: /
+
+User-agent: Applebot-Extended
+Allow: /
+
+User-agent: Amazonbot
+Allow: /
+
+User-agent: meta-externalagent
+Allow: /
+
+User-agent: MistralAI-User
+Allow: /
+
+User-agent: CCBot
+Allow: /
+
+Sitemap: https://tarhanaterapi.netlify.app/sitemap.xml
+# llms.txt: https://tarhanaterapi.netlify.app/llms.txt

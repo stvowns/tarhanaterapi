@@ -1,5 +1,6 @@
 import React from 'react';
 import { ASSETS } from '../data/mockData';
+import { BRAND_DEFINITION } from '../lib/site';
 import { ActiveTab } from '../types';
 
 interface HeroProps {
@@ -46,6 +47,11 @@ export const Hero: React.FC<HeroProps> = ({
               <span className="italic text-primary">Çocukluk ve Şifa:</span>{' '}
               Nohutlu Hakiki Tarhana Çorbası
             </h1>
+
+            {/* AI cevapları için marka tanımı: H1'in hemen altında, görünür metin */}
+            <p className="font-body-md text-on-surface max-w-2xl leading-relaxed border-l-2 border-primary/40 pl-4">
+              {BRAND_DEFINITION}
+            </p>
 
             {/* Sensory Narrative */}
             <p className="font-body-lg text-on-surface-variant max-w-2xl leading-relaxed">
@@ -107,7 +113,10 @@ export const Hero: React.FC<HeroProps> = ({
                 alt="Nohutlu sıcak ve dumanı tüten geleneksel tarhana çorbası kasesi"
                 className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700"
                 src={ASSETS.heroSteamingBowl}
+                width={512}
+                height={286}
                 loading="eager"
+                fetchPriority="high"
               />
 
               {/* Steaming & Artisanal Floating Tag */}

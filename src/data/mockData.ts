@@ -2,13 +2,15 @@ import { Product, Ingredient, Review, CookingStep, Recipe } from '../types';
 
 export const ASSETS = {
   logo: '/logo.svg',
-  heroSteamingBowl: 'https://lh3.googleusercontent.com/aida-public/AB6AXuC7i02NIPaM8ghxMPaVT7TvxErjvIr3Dfn8diAiTZMVJMwXb5MiUS_Ytr7Y-99U--2PT23wUk6ZTvQnyMjgXJ1-v0Hz7XCLy7hMPQBQmNsp3k_dNwIxJx6qkdCCkxcKhruZ-ByLps-Y4tv1s2whyJM0hIxEkH3OtYxs7ddzghDmX3RWTdcjmfnut-tH15yQE-tXlq1CJa5aYy9ejkSmUbQbO32XhrVm0LoGurqF3KkprEPIYncc9tCy',
-  womanTasting: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDmyPyyT5vK_Te-GLQMSy216y8IxeVeWP9z0UeboXrpj9bnn8sibp5ezULgKvzd_cs0GflTYG3kS9yc_edQNkxypREmhtHJN8O7xdKFCs6yN5vcKQ4-pRM8BNTzV2Bd-wj-X1IrHI1Men4fXoIoYt4y9VMOfcuxCWgIT0fjYSt4V3OALdwGAMb9yVewxVFEZwk1UKGqRClCJIUbwoO379jx5enl6BkAhGahjd4MTZOszPBkbX1I7ixi',
-  flatlayIngredients: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDdcoIqaDEFTftw4eqE7e2HhRkxfUCrqsE7hof846DYa6gpxnwOM7a9og9N5l-JIL1G5Z0_OrNY14CvzKqq_y3SeuB0eaemXtXZlQPcWA_xCeZ7_4JiCP4mnnHX72k1ucgJkOdFzlAvXfadzZRw5kXRiOp5oRkPC6BHlGgQuKk06zSOKKs8rrQC0C4rEDWoPAURrjghIDvF2eucUqAoQ53nEgfVguswrV-i7gyAgWPgrRzSHtP_9nD1',
-  productClassic: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBRir_mkdMIg1Gsju3bt3RzMiTb4yoORkTilqQkP6zH7LkNwFOmT16Pzd2nQ3Bjttq6cg6f_SBTi4huQcaJ6kgZ9QJbo8g7fDuzuI2XgVWPrH_Yv4uwNnQysTWH3sv2faYGx1MuvcgdPFURo1aOQ_dMsF422Rz2SG4E6R1Ktkl2d33KxbWw1YzIuxf0ZVoWCXlygeM1kqWMRgy77Z2HrMrLcBo5iztxNrvZMu5StqVxuK_0Ir8EYfoY',
-  productSpicy: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCtRrtToN6XtcsHt5JmZ6mR4XGQPCAGvSxaktIlxr0mjDyEzCdal_4k_PAgT-LIhKno0-0r7mKmvjfB0vTvCajf0JOY8nszEas25Zq-UercFl1TwCTq4wQhMUajRDG-Nn3OTHoZ9pzYEUubmxlPazw24BNgd-N9-kPBtL6YtougRVT1owJot2J43TJbI2ZD0OnAPAb4AzCR8TXjJ_vmGVssJYzNo1eqe9-wxdyEabQi8SQNXsR0Tf3l',
-  productBaby: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAj3FwPwkYu2Zo-Bu5M-O1QmHYTgsVTTfIAy2TUvGaWju7NegWsv2Og9e7YFKMBB0KGL3N5eD6NjnywJOmHSnvpYGZ1XKXHEbFqs5tth-HyMSSEQvzf2qaRTLtSWqXc4FzouITMRZ_38L_NHNEdON8AwviliS9SiTU3z2zEr7XmsxDFtVFlG1yhty94oiQH76DlR9kUvmpmWyTnfqCZiPiwVzBqY5DvZBuhOGbL1pOLZCtyV3eR5NVW',
-  productStarterSet: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBb6ADlqg5SBVHxOWzSKucWfYK6J4xMpaqFF-mZks4WhCvAKUV3v30UUUHfZmQxxwE_iDzC5CJev7VI8WtHo1kTYTgdH8KRHZPUEzY4qiR56yNgV_VVhKgI_Vx09Etkm0Wf4-wNYKAoqOD16zjuTuy-jGwn_pbZfSCewRs5jb-Rp7P6b-Q09IUGOXg3PCzWbze3qI_s8ODkK0hl61_a-ZN5rnG8MptXqtNZX65QfiI3M7TBYMsrbmDh',
+  heroSteamingBowl: '/images/hero-tarhana.webp',
+  womanTasting: '/images/woman-tasting.webp',
+  flatlayIngredients: '/images/ingredients-flatlay.webp',
+  productClassic: '/images/urun-klasik.webp',
+  productSpicy: '/images/urun-acili.webp',
+  productBaby: '/images/urun-bebek.webp',
+  productStarterSet: '/images/urun-set.webp',
+  productFamily: '/images/urun-aile.webp',
+  productDuo: '/images/urun-gurme-ikili.webp',
 };
 
 export const PRODUCTS: Product[] = [
@@ -19,11 +21,11 @@ export const PRODUCTS: Product[] = [
     tagColor: 'primary',
     rating: 4.9,
     reviewsCount: 420,
-    description: '500g Cam Kavanoz. Klasik lezzet, yoğun aromalı süzme yoğurt ve güneşte kurutulmuş sebzeler.',
+    description: '1 kg Pamuk Torba. Klasik lezzet, yoğun aromalı süzme yoğurt ve güneşte kurutulmuş sebzeler.',
     details: '21 gün boyunca toprak küplerde dinlendirilen anne mayalı canlı tarhana hamuruna haşlanmış yerli koçbaşı nohutlar eşlik eder. Güneşte ağır ağır kurutulup geleneksel gözenekli eleklerden geçirilmiştir. Koruyucu, renklendirici veya katkı maddesi içermez.',
     price: 450,
     originalPrice: 520,
-    weight: '500g Cam Kavanoz',
+    weight: '1 kg Pamuk Torba',
     image: ASSETS.productClassic,
     category: 'classic',
     ingredients: [
@@ -52,11 +54,11 @@ export const PRODUCTS: Product[] = [
     tagColor: 'secondary',
     rating: 4.8,
     reviewsCount: 215,
-    description: '500g Cam Kavanoz. Maraş ipek pul biberi, dağ kekiği ve nohutla kavrulmuş iştah kabartan acılık.',
+    description: '1 kg Pamuk Torba. Maraş ipek pul biberi, dağ kekiği ve nohutla kavrulmuş iştah kabartan acılık.',
     details: 'Geleneksel fermantasyon sürecinde güneşte kurutulmuş acı Maraş biberi ve ipek pul biber eklenerek hazırlanır. Yoğurdun yumuşatıcı probiyotik etkisi acının yakıcılığını dengeler; kış aylarında metabolizmayı canlandıran sıcacık bir şölen sunar.',
     price: 500,
     originalPrice: 580,
-    weight: '500g Cam Kavanoz',
+    weight: '1 kg Pamuk Torba',
     image: ASSETS.productSpicy,
     category: 'spicy',
     ingredients: [
@@ -85,11 +87,11 @@ export const PRODUCTS: Product[] = [
     tagColor: 'tertiary',
     rating: 5.0,
     reviewsCount: 310,
-    description: '500g Pamuk Torba. İlave tuz içermez, ince çekilmiş nohut unu ve tatlı sebzelerle bebek damaklarına uygun.',
+    description: '1 kg Pamuk Torba. İlave tuz içermez, ince çekilmiş nohut unu ve tatlı sebzelerle bebek damaklarına uygun.',
     details: '6. aydan itibaren ek gıdaya geçen bebekler ve hassas mideye sahip çocuklar için sıfır tuz ve sıfır acı formülüyle üretilmiştir. Havuç, tatlı balkabağı ve tatlı kapya biber püresiyle zenginleştirilmiş, sindirimi son derece kolaylaştırılmıştır.',
-    price: 400,
-    originalPrice: 460,
-    weight: '500g Pamuk Torba',
+    price: 500,
+    originalPrice: 580,
+    weight: '1 kg Pamuk Torba',
     image: ASSETS.productBaby,
     category: 'baby',
     ingredients: [
@@ -117,15 +119,15 @@ export const PRODUCTS: Product[] = [
     tagColor: 'primary-container',
     rating: 4.9,
     reviewsCount: 180,
-    description: 'Toprak El Yapımı Kase + Şimşir Ağacı Kaşık + 500g Anne Tarhanası + Haşlanmış Koçbaşı Nohut.',
-    details: 'Avanos ustaları tarafından çömlek çarkında elde şekillendirilip pişirilen terracotta kase, Karadeniz şimşir ağacından oyulmuş kaşık, 500g klasik kavanoz tarhana ve vakumlu haşlanmış çıtır nohut kavanozu ile eksiksiz bir Anadolu ritüeli hediyesi.',
-    price: 750,
-    originalPrice: 890,
-    weight: 'Özel Hediye Kutusu (Tam Set)',
+    description: 'Toprak El Yapımı Kase + Şimşir Ağacı Kaşık + 1 kg Anne Tarhanası + Haşlanmış Koçbaşı Nohut.',
+    details: 'Avanos ustaları tarafından çömlek çarkında elde şekillendirilip pişirilen terracotta kase, Karadeniz şimşir ağacından oyulmuş kaşık, 1 kg klasik pamuk torba tarhana ve vakumlu haşlanmış çıtır nohut paketi ile eksiksiz bir Anadolu ritüeli hediyesi.',
+    price: 850,
+    originalPrice: 990,
+    weight: 'Özel Hediye Kutusu (1 kg Tarhana + Set)',
     image: ASSETS.productStarterSet,
     category: 'sets',
     ingredients: [
-      '500g Geleneksel Nohutlu Anne Tarhanası',
+      '1 kg Geleneksel Nohutlu Anne Tarhanası',
       '250g Vakumlu Haşlanmış Organik Koçbaşı Nohut',
       'Elde Şekillendirilmiş Terracotta Toprak Kase',
       'Doğal Şimşir Kaşık',
@@ -143,17 +145,17 @@ export const PRODUCTS: Product[] = [
   },
   {
     id: 'tarhana-family-pack',
-    name: 'Kiler Boyu 1000g Pamuk Çuvallı Tarhana',
-    tag: 'Tasarruf Paketi',
+    name: 'Kiler Boyu 1 kg Pamuk Çuvallı Tarhana',
+    tag: 'Pamuk Çuval',
     tagColor: 'primary',
     rating: 4.9,
     reviewsCount: 145,
-    description: '1000g Nefes Alan Doğal Pamuk Bez Torbada. Kalabalık aile sofraları ve uzun kış günleri için.',
+    description: '1 kg Nefes Alan Doğal Pamuk Bez Torbada. Kalabalık aile sofraları ve uzun kış günleri için.',
     details: 'Geleneksel köy evlerinde asıldığı gibi nefes alan pamuk torbasında tazeliğini aylarca korur. Yüksek proteinli ve canlı probiyotikli yapısıyla tüm ailenin haftalık şifa kaynağı.',
-    price: 330,
-    originalPrice: 370,
-    weight: '1000g Pamuk Çuval',
-    image: ASSETS.productClassic,
+    price: 450,
+    originalPrice: 520,
+    weight: '1 kg Pamuk Çuval',
+    image: ASSETS.productFamily,
     category: 'classic',
     ingredients: [
       'Ata Tohumu Koçbaşı Nohut',
@@ -179,14 +181,14 @@ export const PRODUCTS: Product[] = [
     tagColor: 'secondary',
     rating: 4.9,
     reviewsCount: 98,
-    description: '500g Klasik + 500g Acılı Gurme Cam Kavanoz. Hem sofranın sakinlerine hem acı tutkunlarına.',
-    details: 'Evdeki tüm damak tatlarını memnun eden özel avantajlı ikili koli. Yanında özel tereyağlı çıtır nohut sosu reçetesi hediye olarak gelir.',
-    price: 355,
-    originalPrice: 380,
-    weight: '2 x 500g Cam Kavanoz',
-    image: ASSETS.productSpicy,
+    description: '1 kg Klasik + 1 kg Acılı Gurme Pamuk Torba. Hem sofranın sakinlerine hem acı tutkunlarına.',
+    details: 'Evdeki tüm damak tatlarını memnun eden özel avantajlı ikili koli; toplam 2 kg. Yanında özel tereyağlı çıtır nohut sosu reçetesi hediye olarak gelir.',
+    price: 900,
+    originalPrice: 1000,
+    weight: '2 x 1 kg Pamuk Torba',
+    image: ASSETS.productDuo,
     category: 'sets',
-    ingredients: ['Klasik Nohutlu Tarhana (500g)', 'Acılı Gurme Terapisi (500g)'],
+    ingredients: ['Klasik Nohutlu Tarhana (1 kg)', 'Acılı Gurme Terapisi (1 kg)'],
     nutrition: {
       calories: 345,
       protein: '15.8g',
@@ -338,7 +340,7 @@ export const REVIEWS: Review[] = [
     rating: 5,
     date: '1 hafta önce',
     productName: 'Acılı Gurme Terapisi',
-    content: 'Kış aylarında hastalandığımda tek ilacım bu çorba oldu. Hazmı çok hafif, yoğurdun hafif ekşiliği tam ayarında. 3 kavanoz daha sipariş verdim bile.',
+    content: 'Kış aylarında hastalandığımda tek ilacım bu çorba oldu. Hazmı çok hafif, yoğurdun hafif ekşiliği tam ayarında. 3 paket daha sipariş verdim bile.',
     verified: true,
     avatarColor: 'secondary'
   },
@@ -465,6 +467,30 @@ export const RECIPES_EBOOK: Recipe[] = [
 
 export const FAQS = [
   {
+    q: 'TarhanaTerapi nedir, ne üretir?',
+    a: "TarhanaTerapi, Bursa Orhangazi'de üç nesilden devraldığı mayayla ata tohumu koçbaşı nohutlu, katkısız anne tarhanasını toprak küplerde 21 gün fermente ederek üreten bir aile işletmesidir. Klasik, acılı, bebek dostu, 1 kg aile paketi ve hediye seti seçenekleri Türkiye geneline kargolanır."
+  },
+  {
+    q: 'Tarhana fiyatları ne kadar?',
+    a: "Ekim 2026 itibarıyla 1 kg klasik pamuk torba 450 TL, 1 kg acılı gurme 500 TL, 1 kg tuzsuz bebek tarhanası 500 TL, 1 kg pamuk çuvallı aile paketi 450 TL, 2 x 1 kg ikili gurme paketi 900 TL ve 1 kg tarhana içeren başlangıç seti 850 TL'dir. 2000 TL üzeri siparişlerde kargo ücretsizdir; 2000 TL altı siparişlerde 45 TL'dir."
+  },
+  {
+    q: 'Kargo ücreti ne kadar, kaç günde teslim edilir?',
+    a: "Siparişler aynı veya ertesi iş günü kargoya verilir; Türkiye geneli teslimat 1-3 iş günüdür. 2000 TL ve üzeri siparişlerde kargo ücretsizdir; 2000 TL altı siparişlerde kargo 45 TL'dir. Pamuk torbalar hava yastıklı koruyucu ambalajla gönderilir."
+  },
+  {
+    q: 'Tarhana glutensiz mi, çölyak hastaları kullanabilir mi?',
+    a: "Hayır. TarhanaTerapi tarhanası buğday unu içerdiği için glutensiz değildir ve çölyak hastaları için uygun değildir. Bebek tarhanası da buğday unu içerir; yalnızca tuz ve acı biber kullanılmaz."
+  },
+  {
+    q: 'Tarhana nerede üretiliyor?',
+    a: "Üretim, Bursa Orhangazi'deki Gedelek Köyü Mevkii No: 28 adresindeki aile atölyesinde yapılır. İstanbul Kadıköy Moda'da bir tadım noktası bulunur. Siparişler Türkiye'nin her iline kargolanır."
+  },
+  {
+    q: 'Tarhana nasıl pişirilir?',
+    a: "Bir kase tarhanayı 1-2 bardak soğuk suyla topak kalmayacak şekilde karıştırın. Kaynayan et suyu veya suya ekleyip 10-15 dakika kısık ateşte karıştırarak pişirin. Üzerine tereyağında nane ve haşlanmış nohut ekleyebilirsiniz."
+  },
+  {
     q: 'TarhanaTerapi çorbalarında neden nohut var?',
     a: 'Nohut, Anadolu\'nun en kadim baklagilidir. Tarhananın fermantasyon sürecinde yoğurt ve buğdayla harmanlandığında bitkisel protein ve prebiyotik lif dengesini doruk noktaya taşır. Ayrıca çorbaya eşsiz bir tokluk hissi ve ipeksi kıvam kazandırır.'
   },
@@ -478,10 +504,10 @@ export const FAQS = [
   },
   {
     q: 'Kargo kaç günde teslim edilir ve nasıl paketlenir?',
-    a: 'Siparişleriniz aynı gün veya ertesi gün kargoya verilir. Cam kavanozlarımız kırılmaya karşı %100 dayanıklı hava yastıklı özel koruyucularla sarılır. Türkiye geneli teslimat süresi 1-3 iş günüdür. ₺300 üzeri alışverişlerde kargo tamamen ücretsizdir.'
+    a: 'Siparişleriniz aynı gün veya ertesi gün kargoya verilir. Ürünlerimiz nemden ve darbelerden korunacak şekilde hava yastıklı özel koruyucularla sarılır. Türkiye geneli teslimat süresi 1-3 iş günüdür. ₺2000 üzeri alışverişlerde kargo tamamen ücretsizdir; ₺2000 altı siparişlerde kargo 45 TL\'dir.'
   },
   {
     q: 'Açıldıktan sonra nasıl saklanmalıdır?',
-    a: 'Güneş görmeyen, serin ve kuru bir kilerde veya cam kavanozunda buzdolabında 1 yıla kadar tazeliğini korur. İçinde hiçbir kimyasal koruyucu olmadığı için nemden uzak tutulmalıdır.'
+    a: 'Güneş görmeyen, serin ve kuru bir kilerde veya kapalı saklama kabında buzdolabında 1 yıla kadar tazeliğini korur. İçinde hiçbir kimyasal koruyucu olmadığı için nemden uzak tutulmalıdır.'
   }
 ];

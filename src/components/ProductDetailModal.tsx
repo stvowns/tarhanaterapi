@@ -13,13 +13,12 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
   onAddToCart,
 }) => {
   const [quantity, setQuantity] = useState(1);
-  const [selectedWeight, setSelectedWeight] = useState(product?.weight || '500g');
   const [isAdded, setIsAdded] = useState(false);
 
   if (!product) return null;
 
   const handleAdd = () => {
-    onAddToCart(product, quantity, selectedWeight);
+    onAddToCart(product, quantity, product.weight);
     setIsAdded(true);
     setTimeout(() => {
       setIsAdded(false);
@@ -104,27 +103,14 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
                 {product.details}
               </p>
 
-              {/* Weight Options */}
+              {/* Fixed weight / packaging */}
               <div className="mb-6">
-                <label className="block text-xs font-bold uppercase tracking-wider text-outline mb-2">
-                  Gramaj / Ambalaj Seçimi
-                </label>
-                <div className="flex gap-2">
-                  {['500g Cam Kavanoz', '1000g Pamuk Çuval'].map((w) => (
-                    <button
-                      key={w}
-                      type="button"
-                      onClick={() => setSelectedWeight(w)}
-                      className={`px-3 py-2 text-xs rounded-lg border font-medium transition-all ${
-                        selectedWeight === w
-                          ? 'border-primary bg-primary-fixed/30 text-primary font-bold shadow-2xs'
-                          : 'border-outline-variant/40 bg-surface text-on-surface hover:bg-surface-container-low'
-                      }`}
-                    >
-                      {w}
-                    </button>
-                  ))}
-                </div>
+                <span className="block text-xs font-bold uppercase tracking-wider text-outline mb-2">
+                  Gramaj / Ambalaj
+                </span>
+                <span className="inline-block px-3 py-2 text-xs rounded-lg border border-outline-variant/40 bg-surface-container-low font-medium text-on-surface">
+                  {product.weight}
+                </span>
               </div>
 
               {/* Nutrition Grid */}

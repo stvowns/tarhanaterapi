@@ -66,9 +66,9 @@ Aşçının Sırrı:
 
 BÖLÜM 3: KİLERDE TAZELİĞİ KORUMA REHBERİ
 --------------------------------------------------------------------------------
-- Cam kavanozda, direkt ışıktan uzak ve 18-22°C oda sıcaklığında saklayınız.
-- Kavanozun içine 1 adet kurutulmuş defne yaprağı koymak nem ve güvelenmeyi tamamen engeller.
-- Asla ıslak veya metal kaşıkla kavanoza girmeyiniz; kuru tahta kaşık tercih ediniz.
+- Pamuk torbada veya kapalı saklama kabında, direkt ışıktan uzak ve 18-22°C oda sıcaklığında saklayınız.
+- Saklama kabının içine 1 adet kurutulmuş defne yaprağı koymak nem ve güvelenmeyi tamamen engeller.
+- Asla ıslak veya metal kaşıkla saklama kabına girmeyiniz; kuru tahta kaşık tercih ediniz.
 
 Şifa ve afiyet dolu sofralar dileriz!
 İletişim & Destek: sifa@tarhanaterapi.com | www.tarhanaterapi.com

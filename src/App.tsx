@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { ActiveTab, CartItem, Product, Review, User, Order, SubscriberLead } from './types';
 import { supabase } from './lib/supabase';
@@ -26,6 +26,7 @@ import { IngredientsModal } from './components/IngredientsModal';
 import { LegalModal } from './components/LegalModal';
 import { Toast } from './components/Toast';
 import { SeoHead } from './components/SeoHead';
+import { FaqSection } from './components/FaqSection';
 import { AuthModal } from './components/AuthModal';
 import { UserProfileModal } from './components/UserProfileModal';
 import { AdminModal } from './components/AdminModal';
@@ -36,6 +37,23 @@ import { IngredientsPage } from './pages/IngredientsPage';
 import { StoryPage } from './pages/StoryPage';
 import { ReviewsPage } from './pages/ReviewsPage';
 import { ContactPage } from './pages/ContactPage';
+import { ProductPage } from './pages/ProductPage';
+import { GuidesPage } from './pages/GuidesPage';
+import { GuidePage } from './pages/GuidePage';
+import { GUIDES } from './data/guides';
+import {
+  GUIDE_INDEX_PATH,
+  SITE_URL,
+  guideUrl,
+  jsonLdForGuide,
+  jsonLdForGuideIndex,
+  jsonLdForRoute,
+  productSeoDescription,
+  productUrl,
+  routePaths,
+  routeSeo,
+  type SiteRoute,
+} from './lib/site';
 
 function playNotificationChime() {
   try {
@@ -94,7 +112,17 @@ const tabToPath: Record<ActiveTab, string> = {
 };
 
 const normalizedPath = location.pathname.replace(/\/+$/, '') || '/';
-const activeTab: ActiveTab = pathToTab[normalizedPath] ?? 'home';
+const productMatch = normalizedPath.match(/^\/urunler\/([^/]+)$/);
+const currentProduct = productMatch
+  ? PRODUCTS.find((product) => product.id === decodeURIComponent(productMatch[1])) ?? null
+  : null;
+const guideMatch = normalizedPath.match(/^\/rehber\/([^/]+)$/);
+const currentGuide = guideMatch
+  ? GUIDES.find((guide) => guide.slug === decodeURIComponent(guideMatch[1])) ?? null
+  : null;
+const isGuideIndex = normalizedPath === GUIDE_INDEX_PATH;
+const activeTab: ActiveTab =
+  currentProduct ? 'products' : currentGuide || isGuideIndex ? 'home' : pathToTab[normalizedPath] ?? 'home';
 
 const setActiveTab = useCallback(
   (tab: ActiveTab) => {
@@ -118,7 +146,7 @@ const setActiveTab = useCallback(
     {
       product: PRODUCTS[0],
       quantity: 1,
-      selectedWeight: '500g Cam Kavanoz',
+      selectedWeight: PRODUCTS[0].weight,
     },
   ]);
 
@@ -358,7 +386,7 @@ const setActiveTab = useCallback(
           name: PRODUCTS[1].name,
           price: PRODUCTS[1].price,
           quantity: 1,
-          weight: '500g Cam Kavanoz',
+          weight: PRODUCTS[1].weight,
           image: PRODUCTS[1].image,
         },
       ],
@@ -532,47 +560,56 @@ const setActiveTab = useCallback(
       active = false;
     };
   }, [currentUser?.email, currentUser?.address]);
-    const seoByTab = {
-    home: {
-      title: 'TarhanaTerapi — Nohutlu Hakiki Anne Tarhanası',
-      description:
-        'Ata tohumu koçbaşı nohutlu, 21 gün toprak küpte fermente, katkısız anne tarhanası. Klasik, acılı, bebek ve aile paketi; Türkiye geneli kargo.',
-      canonical: 'https://tarhanaterapi.com/',
-    },
-    products: {
-      title: 'Tarhana Ürünleri | TarhanaTerapi',
-      description:
-        'Klasik, acılı, bebek dostu ve aile paketi tarhana seçenekleri. Katkısız anne tarhanası cam kavanozda.',
-      canonical: 'https://tarhanaterapi.com/urunler',
-    },
-    ingredients: {
-      title: 'İçindekiler ve Fermantasyon | TarhanaTerapi',
-      description:
-        'TarhanaTerapi içindekiler: ata tohumu nohut, köy yoğurdu, taş değirmen unu, 21 gün toprak küp fermantasyonu.',
-      canonical: 'https://tarhanaterapi.com/icerik',
-    },
-    story: {
-      title: 'Üretim Hikayesi | TarhanaTerapi',
-      description:
-        'Üç nesilden gelen maya ile 21 gün fermente edilen anne tarhanasının Orhangazi kökenli üretim hikayesi.',
-      canonical: 'https://tarhanaterapi.com/hikaye',
-    },
-    reviews: {
-      title: 'Müşteri Yorumları | TarhanaTerapi',
-      description: 'TarhanaTerapi müşterilerinden gerçek ve doğrulanmış ürün yorumları.',
-      canonical: 'https://tarhanaterapi.com/yorumlar',
-    },
-    contact: {
-      title: 'SSS ve İletişim | TarhanaTerapi',
-      description: 'TarhanaTerapi sık sorulan sorular, kargo, teslimat ve iletişim bilgileri.',
-      canonical: 'https://tarhanaterapi.com/iletisim',
-    },
-  };
-  const seo = seoByTab[activeTab] ?? seoByTab.home;
+  const seo = useMemo(() => {
+    if (currentGuide) {
+      return {
+        title: `${currentGuide.title} | TarhanaTerapi`,
+        description: currentGuide.description,
+        canonical: guideUrl(currentGuide),
+        jsonLd: jsonLdForGuide(currentGuide),
+      };
+    }
+
+    if (isGuideIndex) {
+      return {
+        title: 'Tarhana Rehberi: Kurutma, Saklama ve Bebek Beslenmesi | TarhanaTerapi',
+        description:
+          'Tarhana nasıl kurutulur, neden ekşir, bebeklere ne zaman verilir ve katkısız tarhana nasıl anlaşılır? Uygulamalı tarhana rehberleri.',
+        canonical: `${SITE_URL}${GUIDE_INDEX_PATH}`,
+        jsonLd: jsonLdForGuideIndex(),
+      };
+    }
+
+    if (currentProduct) {
+      return {
+        title: `${currentProduct.name} — ${currentProduct.price} TL | TarhanaTerapi`,
+        description: productSeoDescription(currentProduct),
+        canonical: productUrl(currentProduct),
+        jsonLd: jsonLdForRoute('products', currentProduct),
+      };
+    }
+
+    const route: SiteRoute =
+      (Object.keys(routePaths) as SiteRoute[]).find(
+        (key) => routePaths[key] === normalizedPath
+      ) ?? 'home';
+
+    return {
+      ...routeSeo[route],
+      canonical: `${SITE_URL}${routePaths[route]}`,
+      jsonLd: jsonLdForRoute(route),
+    };
+  }, [currentProduct, currentGuide, isGuideIndex, normalizedPath]);
 
   return (
     <div className="min-h-screen bg-background text-on-surface flex flex-col antialiased selection:bg-primary-fixed selection:text-on-primary-fixed">
-      <SeoHead title={seo.title} description={seo.description} canonical={seo.canonical} />      {/* Admin Real-Time Alert Notification Bar (Only visible to logged-in administrator) */}
+      <SeoHead
+        title={seo.title}
+        description={seo.description}
+        canonical={seo.canonical}
+        jsonLd={seo.jsonLd}
+      />
+      {/* Admin Real-Time Alert Notification Bar (Only visible to logged-in administrator) */}
       {adminAlertBanner &&
         Boolean(
           currentUser?.isAdmin ||
@@ -621,7 +658,10 @@ const setActiveTab = useCallback(
       <main className="w-full pt-20 flex-1">
         <style>{`@keyframes pageFadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } } .page-fade-in { animation: pageFadeIn .45s ease both; }`}</style>
         <div key={activeTab} className="page-fade-in flex flex-col w-full min-h-[60vh]">
-          {activeTab === 'home' && (
+          {currentGuide && <GuidePage guide={currentGuide} />}
+          {isGuideIndex && <GuidesPage />}
+
+          {!currentGuide && !isGuideIndex && activeTab === 'home' && (
             <div className="flex flex-col w-full">
             <Hero
               onExploreProducts={() => {
@@ -647,16 +687,23 @@ const setActiveTab = useCallback(
               onOpenCookingAssistant={() => setIsCookingAssistantOpen(true)}
             />
             <ReviewsSection onViewAllReviews={() => setActiveTab('reviews')} />
+            <FaqSection />
             <NewsletterSection onDownloadEbook={handleDownloadEbook} />
           </div>
         )}
 
-        {activeTab === 'products' && (
-          <ProductsPage
-            onAddToCart={(p) => handleAddToCart(p, 1)}
-            onSelectProduct={(p) => setSelectedProduct(p)}
-          />
-        )}
+        {activeTab === 'products' &&
+          (currentProduct ? (
+            <ProductPage
+              product={currentProduct}
+              onAddToCart={(p) => handleAddToCart(p, 1)}
+            />
+          ) : (
+            <ProductsPage
+              onAddToCart={(p) => handleAddToCart(p, 1)}
+              onSelectProduct={(p) => setSelectedProduct(p)}
+            />
+          ))}
 
         {activeTab === 'ingredients' && (
           <IngredientsPage onGoToShop={() => setActiveTab('products')} />
