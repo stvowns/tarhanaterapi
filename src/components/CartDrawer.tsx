@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { FREE_SHIPPING_THRESHOLD, STANDARD_SHIPPING_FEE } from '../lib/commerce';
 import { CartItem } from '../types';
+import { productPath } from '../lib/site';
 
 interface CartDrawerProps {
   isOpen: boolean;
@@ -140,30 +141,37 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
               cartItems.map((item) => (
                 <div
                   key={item.product.id}
-                  className="flex gap-4 p-3 rounded-xl bg-surface-container-lowest border border-outline-variant/30 shadow-2xs items-center"
+                  className="flex gap-3 p-3 rounded-xl bg-surface-container-lowest border border-outline-variant/30 shadow-2xs items-center"
                 >
-                  {/* Thumbnail */}
-                  <img
-                    src={item.product.image}
-                    alt={item.product.name}
-                    className="w-18 h-18 object-cover rounded-lg bg-surface-container shrink-0"
-                  />
+                  <a
+                    href={productPath(item.product)}
+                    onClick={onClose}
+                    title={`${item.product.name} ürün sayfasına git`}
+                    className="flex flex-1 min-w-0 items-center gap-4 group"
+                  >
+                    {/* Thumbnail */}
+                    <img
+                      src={item.product.image}
+                      alt={item.product.name}
+                      className="w-18 h-18 object-cover rounded-lg bg-surface-container shrink-0"
+                    />
 
-                  {/* Info */}
-                  <div className="flex-1 min-w-0">
-                    <h4 className="font-title-md text-sm text-on-surface truncate font-semibold">
-                      {item.product.name}
-                    </h4>
-                    <p className="text-xs text-outline mt-0.5">{item.product.weight}</p>
-                    <div className="font-headline-sm text-sm text-primary font-bold mt-1">
-                      ₺{item.product.price * item.quantity}
+                    {/* Info */}
+                    <div className="flex-1 min-w-0">
+                      <h4 className="font-title-md text-sm text-on-surface truncate font-semibold group-hover:text-primary transition-colors">
+                        {item.product.name}
+                      </h4>
+                      <p className="text-xs text-outline mt-0.5">{item.product.weight}</p>
+                      <div className="font-headline-sm text-sm text-primary font-bold mt-1">
+                        ₺{item.product.price * item.quantity}
+                      </div>
+                      {item.quantity > 1 && (
+                        <p className="text-[11px] text-outline mt-0.5">
+                          {item.quantity} × ₺{item.product.price}
+                        </p>
+                      )}
                     </div>
-                    {item.quantity > 1 && (
-                      <p className="text-[11px] text-outline mt-0.5">
-                        {item.quantity} × ₺{item.product.price}
-                      </p>
-                    )}
-                  </div>
+                  </a>
 
                   {/* Stepper & Remove */}
                   <div className="flex flex-col items-end justify-between h-full gap-2">

@@ -8,7 +8,7 @@ import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const KEY = '11b92a56bf582414420a4ab1735edb24';
-const SITE = 'tarhanaterapi.netlify.app';
+const SITE = 'tarhanaterapi.com';
 const HOST = `https://${SITE}`;
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');

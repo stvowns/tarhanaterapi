@@ -26,61 +26,12 @@ export const EbookModal: React.FC<EbookModalProps> = ({
       onCollectEmail(emailInput);
     }
 
-    const textContent = `================================================================================
-           TARHANATERAPİ: KADİM ÇORBA RİTÜELLERİ VE ŞİFALI TARİFLER E-KİTABI
-================================================================================
-Yayınlayan: TarhanaTerapi Gastronomi & Sağlık Araştırma Ekibi
-Telif & Lisans: © 2025 TarhanaTerapi. Tüm hakları saklıdır.
-Alıcı: ${emailInput || userEmail || 'Değerli Misafirimiz'}
-
-GİRİŞ: BİR KASEDE SAKLI ŞİFA
---------------------------------------------------------------------------------
-Tarhana, Anadolu'nun kurutulmuş en kadim fermente süper gıdasıdır. Canlı probiyotik
-bakteriler, toprak küp fermantasyonu ve yerli ata tohumu koçbaşı nohut ile
-bir araya geldiğinde sindirim florasını onaran bir gastronomi terapisine dönüşür.
-
-BÖLÜM 1: 21 GÜNLÜK FERMANTASYON SIRRI
---------------------------------------------------------------------------------
-1. Gün 1-7: Uyanış. Köy süzme yoğurdu, ata buğday unu, domates ve köz kapya hamuru.
-2. Gün 8-14: Laktik Asit Çağıltısı. Fitik asidin parçalanması, minerallerin serbest kalması.
-3. Gün 15-21: Güneş Kurutması. Doğal yayla havasında keten bez üzerinde kurutma ve kalbur.
-
-BÖLÜM 2: DÖRT MEVSİM ŞİFALI REÇETELER
---------------------------------------------------------------------------------
-${RECIPES_EBOOK.map(
-  (r, i) => `
-[REÇETE ${i + 1}]: ${r.title.toUpperCase()}
-Alt Başlık: ${r.subtitle}
-Hazırlık Süresi: ${r.prepTime} | Porsiyon: ${r.servings} | Seviye: ${r.difficulty}
-
-Gerekli Malzemeler:
-${r.ingredients.map((ing) => `  * ${ing}`).join('\n')}
-
-Pişirme Adımları:
-${r.steps.map((st, idx) => `  ${idx + 1}. ${st}`).join('\n')}
-
-Aşçının Sırrı:
-  ${r.chefNote}
-`
-).join('\n--------------------------------------------------------------------------------\n')}
-
-BÖLÜM 3: KİLERDE TAZELİĞİ KORUMA REHBERİ
---------------------------------------------------------------------------------
-- Pamuk torbada veya kapalı saklama kabında, direkt ışıktan uzak ve 18-22°C oda sıcaklığında saklayınız.
-- Saklama kabının içine 1 adet kurutulmuş defne yaprağı koymak nem ve güvelenmeyi tamamen engeller.
-- Asla ıslak veya metal kaşıkla saklama kabına girmeyiniz; kuru tahta kaşık tercih ediniz.
-
-Şifa ve afiyet dolu sofralar dileriz!
-İletişim & Destek: sifa@tarhanaterapi.com | www.tarhanaterapi.com
-================================================================================`;
-
-    const blob = new Blob([textContent], { type: 'text/plain;charset=utf-8' });
-    const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
-    link.href = url;
-    link.download = 'TarhanaTerapi_Sifali_Tarifler_E_Kitap.txt';
+    link.href = '/kadim-corba-rituelleri-ve-sifali-tarifler.pdf';
+    link.download = 'TarhanaTerapi_Kadim_Corba_Rituelleri_ve_Sifali_Tarifler.pdf';
+    document.body.appendChild(link);
     link.click();
-    URL.revokeObjectURL(url);
+    link.remove();
 
     setDownloadSuccess(true);
     setTimeout(() => {
@@ -109,7 +60,7 @@ BÖLÜM 3: KİLERDE TAZELİĞİ KORUMA REHBERİ
                 Kadim Çorba Ritüelleri ve Şifalı Tarifler
               </h3>
               <p className="text-xs text-on-surface-variant">
-                TarhanaTerapi Özel Dijital E-Kitabı (4 Bölüm Tam Metin)
+                8 Tarif + 21 Günlük Fermantasyon Rehberi
               </p>
             </div>
           </div>
@@ -225,6 +176,20 @@ BÖLÜM 3: KİLERDE TAZELİĞİ KORUMA REHBERİ
               </p>
             </div>
           </div>
+
+          {activeRecipe.servingIdea && (
+            <div className="mt-3 p-3.5 bg-secondary-fixed/20 border border-secondary-fixed/40 rounded-xl text-xs text-on-surface flex items-start gap-2.5">
+              <span className="material-symbols-outlined text-secondary text-[20px] shrink-0 mt-0.5">
+                restaurant
+              </span>
+              <div>
+                <strong className="text-secondary block font-semibold">Sunum Önerisi:</strong>
+                <p className="mt-0.5 text-on-surface-variant leading-relaxed">
+                  {activeRecipe.servingIdea}
+                </p>
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Footer with email verification & download */}
@@ -244,7 +209,7 @@ BÖLÜM 3: KİLERDE TAZELİĞİ KORUMA REHBERİ
             className="w-full sm:w-auto px-5 py-2.5 bg-primary-container hover:bg-primary text-on-primary-container rounded-lg text-xs font-semibold flex items-center justify-center gap-1.5 transition-colors cursor-pointer shadow-xs active:scale-95 whitespace-nowrap"
           >
             <span className="material-symbols-outlined text-[18px]">download</span>
-            <span>E-Kitabı Tam Metin İndir (.TXT)</span>
+            <span>E-Kitabı PDF İndir</span>
           </button>
         </div>
       </div>

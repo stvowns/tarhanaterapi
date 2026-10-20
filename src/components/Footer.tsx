@@ -1,19 +1,21 @@
 import React, { useState } from 'react';
 import { ActiveTab } from '../types';
 import { ASSETS } from '../data/mockData';
-import { GIZLILIK_POLITIKASI, MESAFELI_SATIS, KVKK_AYDINLATMA } from '../data/legal';
+import { GIZLILIK_POLITIKASI, MESAFELI_SATIS } from '../data/legal';
 import { CONTENT_UPDATED_LABEL, routePaths } from '../lib/site';
 
 interface FooterProps {
   setActiveTab: (tab: ActiveTab) => void;
   onShowToast: (msg: string) => void;
   onOpenLegalModal: (title: string, text: string) => void;
+  onSubscribe: (email: string) => void;
 }
 
 export const Footer: React.FC<FooterProps> = ({
   setActiveTab,
   onShowToast,
   onOpenLegalModal,
+  onSubscribe,
 }) => {
   const [bulletinEmail, setBulletinEmail] = useState('');
 
@@ -23,6 +25,7 @@ export const Footer: React.FC<FooterProps> = ({
       onShowToast('Lütfen geçerli bir e-posta adresi giriniz.');
       return;
     }
+    onSubscribe(bulletinEmail.trim());
     onShowToast('Şifa bültenimize başarıyla kaydoldunuz! Teşekkürler.');
     setBulletinEmail('');
   };
@@ -77,7 +80,7 @@ export const Footer: React.FC<FooterProps> = ({
               </a>
               <a
                 className="w-9 h-9 rounded-full bg-surface-container flex items-center justify-center text-on-surface-variant hover:bg-primary hover:text-on-primary transition-colors cursor-pointer"
-                href="mailto:sifa@tarhanaterapi.com"
+                href="mailto:satis@tarhanaterapi.com"
                 title="E-posta Gönder"
               >
                 <span className="material-symbols-outlined text-[18px]">mail</span>
@@ -260,17 +263,12 @@ export const Footer: React.FC<FooterProps> = ({
             >
               Mesafeli Satış
             </button>
-            <button
-              onClick={() =>
-                onOpenLegalModal(
-                  'KVKK Aydınlatma Metni',
-                  KVKK_AYDINLATMA
-                )
-              }
-              className="font-body-sm text-on-surface-variant hover:text-on-surface cursor-pointer"
+            <a
+              href="/kvkk"
+              className="font-body-sm text-on-surface-variant hover:text-on-surface"
             >
               KVKK
-            </button>
+            </a>
           </div>
         </div>
       </div>

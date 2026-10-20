@@ -37,6 +37,7 @@ import { IngredientsPage } from './pages/IngredientsPage';
 import { StoryPage } from './pages/StoryPage';
 import { ReviewsPage } from './pages/ReviewsPage';
 import { ContactPage } from './pages/ContactPage';
+import { KvkkPage } from './pages/KvkkPage';
 import { ProductPage } from './pages/ProductPage';
 import { GuidesPage } from './pages/GuidesPage';
 import { GuidePage } from './pages/GuidePage';
@@ -100,6 +101,7 @@ const pathToTab: Record<string, ActiveTab> = {
   '/yorumlar': 'reviews',
   '/iletisim': 'contact',
   '/sss': 'contact',
+  '/kvkk': 'legal',
 };
 
 const tabToPath: Record<ActiveTab, string> = {
@@ -109,6 +111,7 @@ const tabToPath: Record<ActiveTab, string> = {
   story: '/hikaye',
   reviews: '/yorumlar',
   contact: '/iletisim',
+  legal: '/kvkk',
 };
 
 const normalizedPath = location.pathname.replace(/\/+$/, '') || '/';
@@ -157,16 +160,7 @@ const setActiveTab = useCallback(
   const [subscribers, setSubscribers] = useState<SubscriberLead[]>(() => {
     try {
       const saved = localStorage.getItem('tt_subscribers');
-      return saved
-        ? JSON.parse(saved)
-        : [
-            {
-              id: 'sub-1',
-              email: 'misafir.lezzet@gmail.com',
-              source: 'ebook',
-              createdAt: '10.02.2025',
-            },
-          ];
+      return saved ? JSON.parse(saved) : [];
     } catch {
       return [];
     }
@@ -213,6 +207,38 @@ const setActiveTab = useCallback(
       // Ignore
     }
   }, [subscribers]);
+
+  useEffect(() => {
+    const isAdmin = Boolean(
+      currentUser?.isAdmin ||
+        currentUser?.email === 'layeredstudio78@gmail.com' ||
+        currentUser?.email === 'admin@tarhanaterapi.com'
+    );
+    if (!isAdmin) return;
+
+    let active = true;
+    (async () => {
+      try {
+        const { data } = await supabase.auth.getSession();
+        const token = data.session?.access_token;
+        if (!token) return;
+        const res = await fetch('/api/list-subscribers', {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        if (!res.ok) return;
+        const payload = await res.json();
+        if (active && Array.isArray(payload.subscribers)) {
+          setSubscribers(payload.subscribers);
+        }
+      } catch {
+        // Yerel önbellek yeterli.
+      }
+    })();
+
+    return () => {
+      active = false;
+    };
+  }, [currentUser?.email, currentUser?.isAdmin]);
 
   const showToast = (msg: string) => {
     setToastMessage(msg);
@@ -348,7 +374,7 @@ const setActiveTab = useCallback(
     try {
       const { data: sessionData } = await supabase.auth.getSession();
       const token = sessionData.session?.access_token;
-      await fetch('/.netlify/functions/update-order-status', {
+      await fetch('/api/update-order-status', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -410,17 +436,27 @@ const setActiveTab = useCallback(
   // Email collection handler for lead generation
   const handleCollectEmail = (email: string, source: 'ebook' | 'newsletter' = 'ebook') => {
     if (!email || !email.includes('@')) return;
+    const cleanEmail = email.trim().toLowerCase();
+
     setSubscribers((prev) => {
-      if (prev.some((s) => s.email.toLowerCase() === email.toLowerCase())) return prev;
+      if (prev.some((s) => s.email.toLowerCase() === cleanEmail)) return prev;
       return [
         {
           id: `sub-${Date.now()}`,
-          email,
+          email: cleanEmail,
           source,
           createdAt: new Date().toLocaleDateString('tr-TR'),
         },
         ...prev,
       ];
+    });
+
+    fetch('/api/subscribe', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: cleanEmail, source }),
+    }).catch(() => {
+      // Yerel kayıt korunur; sunucu hatası kullanıcı akışını bozmaz.
     });
   };
 
@@ -432,16 +468,74 @@ const setActiveTab = useCallback(
     showToast('Reçete e-kitabınız hazırlandı! E-posta listenize kaydedildi.');
   };
 
-  // Add review
-  const handleAddReview = (newReview: Omit<Review, 'id' | 'date'>) => {
-    const fullReview: Review = {
-      ...newReview,
-      id: `rev-${Date.now()}`,
-      date: 'Az önce',
-    };
-    setReviewsList((prev) => [fullReview, ...prev]);
-    showToast('Değerli yorumunuz yayınlandı. Teşekkür ederiz!');
+  // Add review — yönetici onayına gönderilir, doğrudan yayınlanmaz.
+  const handleAddReview = async (newReview: Omit<Review, 'id' | 'date'>) => {
+    try {
+      const res = await fetch('/api/submit-review', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          author: newReview.author,
+          location: newReview.location,
+          rating: newReview.rating,
+          content: newReview.content,
+          productName: newReview.productName,
+        }),
+      });
+
+      if (!res.ok) {
+        showToast('Yorumunuz gönderilemedi. Lütfen tekrar deneyin.');
+        return;
+      }
+
+      showToast('Yorumunuz onay için alındı. Yönetici onayından sonra yayınlanacak.');
+    } catch {
+      showToast('Yorumunuz gönderilemedi. Lütfen tekrar deneyin.');
+    }
   };
+
+  useEffect(() => {
+    let active = true;
+
+    fetch('/api/list-reviews?status=approved')
+      .then((res) => (res.ok ? res.json() : null))
+      .then((payload) => {
+        if (!active || !Array.isArray(payload?.reviews)) return;
+        const colors: Review['avatarColor'][] = ['primary', 'secondary', 'tertiary'];
+        const mapped: Review[] = payload.reviews.map((row: any, index: number) => ({
+          id: String(row.id),
+          author: row.author,
+          initials:
+            String(row.author || '')
+              .split(' ')
+              .map((part: string) => part[0])
+              .join('')
+              .toUpperCase()
+              .slice(0, 2) || 'TT',
+          location: row.location || 'Türkiye',
+          rating: Number(row.rating) || 5,
+          date: row.createdAt
+            ? new Date(row.createdAt).toLocaleDateString('tr-TR')
+            : 'Az önce',
+          content: row.content,
+          verified: true,
+          productName: row.productName || 'TarhanaTerapi',
+          avatarColor: colors[index % colors.length],
+        }));
+
+        setReviewsList((prev) => {
+          const existing = new Set(prev.map((item) => item.id));
+          return [...mapped.filter((item) => !existing.has(item.id)), ...prev];
+        });
+      })
+      .catch(() => {
+        // Statik yorumlar yeterli.
+      });
+
+    return () => {
+      active = false;
+    };
+  }, []);
 
   useEffect(() => {
     let active = true;
@@ -489,7 +583,7 @@ const setActiveTab = useCallback(
     supabase.auth.getSession().then(({ data: sessionData }) => {
       if (!active) return;
       const token = sessionData.session?.access_token;
-      fetch('/.netlify/functions/list-orders', {
+      fetch('/api/list-orders', {
         headers: token ? { Authorization: `Bearer ${token}` } : {},
       })
         .then((res) => (res.ok ? res.json() : null))
@@ -718,6 +812,8 @@ const setActiveTab = useCallback(
         )}
 
         {activeTab === 'contact' && <ContactPage onShowToast={showToast} />}
+
+        {activeTab === 'legal' && <KvkkPage />}
         </div>
       </main>
 
@@ -730,6 +826,7 @@ const setActiveTab = useCallback(
         onOpenLegalModal={(title, content) =>
           setLegalModal({ isOpen: true, title, content })
         }
+        onSubscribe={(email) => handleCollectEmail(email, 'newsletter')}
       />
 
       {/* 4. Interactive Modals & Drawers */}

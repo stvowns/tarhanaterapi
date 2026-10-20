@@ -143,7 +143,7 @@ export const ReviewsPage: React.FC<ReviewsPageProps> = ({ reviews, onAddReview }
             {formSuccess && (
               <div className="p-3 bg-emerald-100 text-emerald-800 text-xs rounded-lg font-medium flex items-center gap-2">
                 <span className="material-symbols-outlined text-[18px]">check_circle</span>
-                Yorumunuz için teşekkür ederiz! Şifa dolu deneyiminiz onaylanıp listelendi.
+                Yorumunuz için teşekkür ederiz! Yönetici onayından sonra yayınlanacak.
               </div>
             )}
 

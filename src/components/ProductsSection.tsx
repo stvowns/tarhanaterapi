@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Product } from '../types';
 import { PRODUCTS } from '../data/mockData';
 import { productPath } from '../lib/site';
+import { FlyToCartLayer, makeFlyer, type Flyer } from './FlyToCart';
 
 interface ProductsSectionProps {
   onAddToCart: (product: Product) => void;
@@ -13,12 +14,21 @@ export const ProductsSection: React.FC<ProductsSectionProps> = ({
   onSelectProduct,
 }) => {
   const [addingId, setAddingId] = useState<string | null>(null);
+  const [flyers, setFlyers] = useState<Flyer[]>([]);
 
   // Take the 4 primary featured products matching the screenshot
   const featuredProducts = PRODUCTS.slice(0, 4);
 
   const handleAdd = (e: React.MouseEvent, product: Product) => {
     e.stopPropagation();
+    const card = (e.currentTarget as HTMLElement).closest('[data-product-card]');
+    const image = card?.querySelector('img') as HTMLImageElement | null;
+    const flyer = makeFlyer(product.image, image);
+    setFlyers((prev) => [...prev, flyer]);
+    window.setTimeout(() => {
+      setFlyers((prev) => prev.filter((item) => item.id !== flyer.id));
+    }, 900);
+
     setAddingId(product.id);
     onAddToCart(product);
     setTimeout(() => {
@@ -51,6 +61,7 @@ export const ProductsSection: React.FC<ProductsSectionProps> = ({
             return (
               <div
                 key={product.id}
+                data-product-card
                 onClick={() => onSelectProduct(product)}
                 className={`flex flex-col rounded-2xl p-5 transition-all duration-300 transform hover:-translate-y-1 cursor-pointer group ${
                   product.id === 'tarhana-starter-set'
@@ -140,7 +151,7 @@ export const ProductsSection: React.FC<ProductsSectionProps> = ({
                   <button
                     onClick={(e) => handleAdd(e, product)}
                     disabled={isAdding}
-                    className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-lg bg-primary-container text-on-primary-container font-title-md hover:bg-primary transition-colors cursor-pointer shadow-xs active:scale-95 text-sm"
+                    className="inline-flex shrink-0 items-center gap-1.5 whitespace-nowrap px-4 py-2.5 rounded-lg bg-primary-container text-on-primary-container font-title-md hover:bg-primary transition-colors cursor-pointer shadow-xs active:scale-95 text-sm"
                   >
                     {isAdding ? (
                       <>
@@ -162,6 +173,7 @@ export const ProductsSection: React.FC<ProductsSectionProps> = ({
           })}
         </div>
       </div>
+      <FlyToCartLayer flyers={flyers} />
     </section>
   );
 };

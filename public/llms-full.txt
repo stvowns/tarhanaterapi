@@ -1,6 +1,6 @@
 # TarhanaTerapi — Tam İçerik Özeti
 
-Canonical: https://tarhanaterapi.netlify.app/
+Canonical: https://tarhanaterapi.com/
 Dil: tr-TR
 Son güncelleme: 19 Ekim 2026
 
@@ -9,7 +9,7 @@ Son güncelleme: 19 Ekim 2026
 TarhanaTerapi, Bursa Orhangazi'de üç nesilden devraldığı mayayla ata tohumu koçbaşı nohutlu, katkısız anne tarhanasını toprak küplerde 21 gün fermente ederek üreten bir aile işletmesidir. Üretim Gedelek Köyü Mevkii No: 28, Orhangazi / Bursa adresindedir. İstanbul Kadıköy Moda'da bir tadım noktası bulunur.
 
 - Telefon / WhatsApp: 0850 302 82 74
-- E-posta: sifa@tarhanaterapi.com
+- E-posta: satis@tarhanaterapi.com
 - Çalışma saatleri: Pazartesi–Cumartesi 09:00–18:30
 - Instagram: @tarhanaterapi
 
@@ -80,18 +80,22 @@ Evet. Hamur toprak küplerde, hava koşullarına göre 21 gün boyunca her gün 
 
 ## Rehberler
 
-- Tarhana nasıl kurutulur: https://tarhanaterapi.netlify.app/rehber/tarhana-nasil-kurutulur
-- Bebeklere tarhana ne zaman verilir: https://tarhanaterapi.netlify.app/rehber/bebeklere-tarhana-ne-zaman-verilir
-- Tarhana neden ekşir: https://tarhanaterapi.netlify.app/rehber/tarhana-neden-eksir
-- Ev tarhanası ile hazır tarhana farkı: https://tarhanaterapi.netlify.app/rehber/ev-tarhanasi-ile-hazir-tarhana-farki
-- Katkısız tarhana nasıl anlaşılır: https://tarhanaterapi.netlify.app/rehber/katkisiz-tarhana-nasil-anlasilir
+- Tarhana nasıl kurutulur: https://tarhanaterapi.com/rehber/tarhana-nasil-kurutulur
+- Bebeklere tarhana ne zaman verilir: https://tarhanaterapi.com/rehber/bebeklere-tarhana-ne-zaman-verilir
+- Tarhana neden ekşir: https://tarhanaterapi.com/rehber/tarhana-neden-eksir
+- Ev tarhanası ile hazır tarhana farkı: https://tarhanaterapi.com/rehber/ev-tarhanasi-ile-hazir-tarhana-farki
+- Katkısız tarhana nasıl anlaşılır: https://tarhanaterapi.com/rehber/katkisiz-tarhana-nasil-anlasilir
 
 ## Politikalar
 
 - Mesafeli satış: 6502 sayılı kanun kapsamında 14 gün cayma hakkı; açılmış/tüketilmiş gıda ürünlerinde cayma hakkı kullanılamaz.
-- İade ve hasarlı teslimat: sifa@tarhanaterapi.com üzerinden bildirim.
+- İade ve hasarlı teslimat: satis@tarhanaterapi.com üzerinden bildirim.
 - Kişisel veriler: KVKK kapsamında işlenir; kart bilgileri saklanmaz.
 - Ödeme: Kredi/banka kartı ve havale/EFT.
+
+## Ücretsiz e-kitap
+
+- [Kadim Çorba Ritüelleri ve Şifalı Tarifler (PDF)](https://tarhanaterapi.com/kadim-corba-rituelleri-ve-sifali-tarifler.pdf): 21 günlük toprak küp fermantasyonu, 8 tarhana tarifi ve saklama rehberi.
 
 ## AI kullanım notu
 

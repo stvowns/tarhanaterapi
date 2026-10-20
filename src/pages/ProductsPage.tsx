@@ -2,6 +2,7 @@ import React, { useState, useMemo } from 'react';
 import { PRODUCTS } from '../data/mockData';
 import { productPath } from '../lib/site';
 import { Product } from '../types';
+import { FlyToCartLayer, makeFlyer, type Flyer } from '../components/FlyToCart';
 
 interface ProductsPageProps {
   onAddToCart: (product: Product) => void;
@@ -15,6 +16,7 @@ export const ProductsPage: React.FC<ProductsPageProps> = ({
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [sortBy, setSortBy] = useState<'popular' | 'price-asc' | 'price-desc' | 'rating'>('popular');
+  const [flyers, setFlyers] = useState<Flyer[]>([]);
 
   const categories = [
     { id: 'all', label: 'Tüm Şifalı Çorbalar' },
@@ -53,6 +55,18 @@ export const ProductsPage: React.FC<ProductsPageProps> = ({
 
     return result;
   }, [selectedCategory, searchQuery, sortBy]);
+
+  const handleAdd = (e: React.MouseEvent, product: Product) => {
+    e.stopPropagation();
+    const card = (e.currentTarget as HTMLElement).closest('[data-product-card]');
+    const image = card?.querySelector('img') as HTMLImageElement | null;
+    const flyer = makeFlyer(product.image, image);
+    setFlyers((prev) => [...prev, flyer]);
+    window.setTimeout(() => {
+      setFlyers((prev) => prev.filter((item) => item.id !== flyer.id));
+    }, 900);
+    onAddToCart(product);
+  };
 
   return (
     <div className="py-12 bg-surface min-h-screen">
@@ -138,6 +152,7 @@ export const ProductsPage: React.FC<ProductsPageProps> = ({
             {filteredProducts.map((product) => (
               <div
                 key={product.id}
+                data-product-card
                 onClick={() => onSelectProduct(product)}
                 className="flex flex-col bg-surface-container-lowest rounded-2xl p-5 shadow-[0_4px_16px_-2px_rgba(45,36,36,0.06)] hover:shadow-[0_12px_28px_-4px_rgba(45,36,36,0.12)] transition-all duration-300 transform hover:-translate-y-1 cursor-pointer border border-outline-variant/20 group"
               >
@@ -199,11 +214,8 @@ export const ProductsPage: React.FC<ProductsPageProps> = ({
                     <span className="text-[11px] text-outline">{product.weight}</span>
                   </div>
                   <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      onAddToCart(product);
-                    }}
-                    className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-lg bg-primary-container text-on-primary-container font-title-md hover:bg-primary transition-colors cursor-pointer text-xs font-semibold active:scale-95 shadow-xs"
+                    onClick={(e) => handleAdd(e, product)}
+                    className="inline-flex shrink-0 items-center gap-1.5 whitespace-nowrap px-4 py-2.5 rounded-lg bg-primary-container text-on-primary-container font-title-md hover:bg-primary transition-colors cursor-pointer text-xs font-semibold active:scale-95 shadow-xs"
                   >
                     <span className="material-symbols-outlined text-[16px]">shopping_bag</span>
                     <span>Sepete Ekle</span>
@@ -214,6 +226,7 @@ export const ProductsPage: React.FC<ProductsPageProps> = ({
           </div>
         )}
       </div>
+      <FlyToCartLayer flyers={flyers} />
     </div>
   );
 };

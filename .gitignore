@@ -11,6 +11,10 @@ coverage/
 # Local Netlify folder
 .netlify
 
+# Wrangler / Cloudflare lokal
+.wrangler/
+.dev.vars
+
 # Playwright MCP artifacts
 .playwright-mcp/
 

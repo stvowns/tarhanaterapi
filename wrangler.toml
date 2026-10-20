@@ -1,0 +1,10 @@
+# Cloudflare Pages proje tanımı
+# Build: npm run build -> dist
+# Functions: functions/ (file-based routing, /api/*)
+name = "tarhanaterapi"
+pages_build_output_dir = "dist"
+compatibility_date = "2026-10-20"
+
+# Not: SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, RESEND_API_KEY, TELEGRAM_* gibi
+# gizli değerler burada tutulmaz. Cloudflare panelinde
+# Settings > Variables and Secrets altında tanımlanır.

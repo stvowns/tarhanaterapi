@@ -113,7 +113,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
     };
 
     try {
-      const response = await fetch('/.netlify/functions/create-order', {
+      const response = await fetch('/api/create-order', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
@@ -361,7 +361,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
                 Kapıda Ödeme seçili. Siparişiniz özel korumalı kutuda kapınıza kadar gelir; kurye teslimi sırasında nakit veya temassız ödeme alabilir.
               </div>
 
-              <label className="flex items-start gap-2 text-xs text-on-surface mt-1">
+              <div className="flex items-start gap-2 text-xs text-on-surface mt-1">
                 <input
                   id="kvkk-consent"
                   type="checkbox"
@@ -375,10 +375,19 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
                   aria-describedby={formError ? 'kvkk-consent-error' : undefined}
                   required
                 />
-                <span>
-                  KVKK Aydınlatma Metni'ni okudum, kişisel verilerimin işlenmesine açık rıza veriyorum.
-                </span>
-              </label>
+                <label htmlFor="kvkk-consent" className="leading-relaxed">
+                  <a
+                    href="/kvkk"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-primary font-semibold underline underline-offset-2 hover:text-primary-container"
+                  >
+                    KVKK Aydınlatma Metni
+                  </a>
+                  'ni okudum; siparişimin oluşturulması, teslimi ve yasal yükümlülükler için
+                  kişisel verilerimin işlenmesine onay veriyorum.
+                </label>
+              </div>
               {formError && (
                 <p id="kvkk-consent-error" role="alert" className="text-xs text-error font-medium">
                   {formError}

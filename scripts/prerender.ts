@@ -31,6 +31,7 @@ import {
   routeSeo,
   type SiteRoute,
 } from '../src/lib/site';
+import { KVKK_AYDINLATMA } from '../src/data/legal';
 import type { Product } from '../src/types';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
@@ -62,6 +63,7 @@ const footer = `
     <p>
       <a href="/urunler">Ürünler</a> ·
       <a href="/iletisim">İletişim</a> ·
+      <a href="/kvkk">KVKK</a> ·
       <a href="/llms.txt">llms.txt</a> ·
       <a href="/llms-full.txt">llms-full.txt</a>
     </p>
@@ -475,6 +477,64 @@ function renderPage(options: {
 }
 
 const targets: Array<{ file: string; html: string; path: string; priority: string }> = [];
+const legalContent = () => {
+  const parts: string[] = [];
+  let inList = false;
+
+  for (const raw of KVKK_AYDINLATMA.split('\n')) {
+    const line = raw.trim();
+
+    if (!line || line === 'KVKK AYDINLATMA METNİ') {
+      if (inList) {
+        parts.push('</ul>');
+        inList = false;
+      }
+      continue;
+    }
+
+    if (/^\d+\.\s/.test(line)) {
+      if (inList) {
+        parts.push('</ul>');
+        inList = false;
+      }
+      parts.push(`<h2>${esc(line)}</h2>`);
+      continue;
+    }
+
+    if (line.startsWith('- ')) {
+      if (!inList) {
+        parts.push('<ul>');
+        inList = true;
+      }
+      parts.push(`<li>${esc(line.slice(2))}</li>`);
+      continue;
+    }
+
+    if (inList) {
+      parts.push('</ul>');
+      inList = false;
+    }
+
+    if (line.startsWith('Son güncelleme')) {
+      parts.push(`<p><em>${esc(line)}</em></p>`);
+    } else {
+      parts.push(`<p>${esc(line)}</p>`);
+    }
+  }
+
+  if (inList) parts.push('</ul>');
+
+  return `
+  <main>
+    <h1>KVKK Aydınlatma Metni</h1>
+    <p class="static-definition">
+      6698 sayılı Kişisel Verilerin Korunması Kanunu kapsamında kişisel verilerinizin nasıl
+      işlendiğini, kimlere aktarıldığını ve haklarınızı bu sayfada açıklıyoruz.
+    </p>
+    ${parts.join('\n    ')}
+  </main>`;
+};
+
 const routeContent: Record<SiteRoute, () => string> = {
   home: homeContent,
   products: productsContent,
@@ -482,6 +542,7 @@ const routeContent: Record<SiteRoute, () => string> = {
   story: storyContent,
   reviews: reviewsContent,
   contact: contactContent,
+  legal: legalContent,
 };
 
 (Object.keys(routePaths) as SiteRoute[]).forEach((route) => {
@@ -531,7 +592,7 @@ targets.push({
   html: renderPage({
     route: GUIDE_INDEX_PATH,
     canonical: `${SITE_URL}${GUIDE_INDEX_PATH}`,
-    title: 'Tarhana Rehberi: Kurutma, Saklama ve Bebek Beslenmesi | TarhanaTerapi',
+    title: 'Tarhana Rehberi: Kurutma, Saklama ve Bebek | TarhanaTerapi',
     description:
       'Tarhana nasıl kurutulur, neden ekşir, bebeklere ne zaman verilir ve katkısız tarhana nasıl anlaşılır? Uygulamalı tarhana rehberleri.',
     jsonLd: jsonLdForGuideIndex(),

@@ -57,5 +57,5 @@ Allow: /
 User-agent: CCBot
 Allow: /
 
-Sitemap: https://tarhanaterapi.netlify.app/sitemap.xml
-# llms.txt: https://tarhanaterapi.netlify.app/llms.txt
+Sitemap: https://tarhanaterapi.com/sitemap.xml
+# llms.txt: https://tarhanaterapi.com/llms.txt

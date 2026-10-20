@@ -159,7 +159,7 @@ export const ProductPage: React.FC<ProductPageProps> = ({ product, onAddToCart }
                 1-3 iş günüdür. 2000 TL ve üzeri siparişlerde kargo ücretsizdir; 2000 TL altı siparişlerde 45 TL'dir. Ürün, kapalı
                 pamuk torbasında güneş görmeyen serin ve kuru bir yerde 1 yıla kadar saklanır.
                 Açılmış ürünlerde mesafeli satış mevzuatı gereği cayma hakkı uygulanmaz;
-                hasarlı teslimat için sifa@tarhanaterapi.com adresine yazabilirsiniz.
+                hasarlı teslimat için satis@tarhanaterapi.com adresine yazabilirsiniz.
               </p>
             </div>
           </section>
@@ -173,8 +173,8 @@ export const ProductPage: React.FC<ProductPageProps> = ({ product, onAddToCart }
                 Telefon / WhatsApp: <a className="text-primary" href="tel:+908503028274">0850 302 82 74</a>
                 <br />
                 E-posta:{' '}
-                <a className="text-primary" href="mailto:sifa@tarhanaterapi.com">
-                  sifa@tarhanaterapi.com
+                <a className="text-primary" href="mailto:satis@tarhanaterapi.com">
+                  satis@tarhanaterapi.com
                 </a>
                 <br />
                 Üretim: Gedelek Köyü Mevkii No: 28, Orhangazi / Bursa

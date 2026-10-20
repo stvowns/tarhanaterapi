@@ -122,6 +122,7 @@ export interface Recipe {
   ingredients: string[];
   steps: string[];
   chefNote: string;
+  servingIdea?: string;
 }
 
-export type ActiveTab = 'home' | 'products' | 'ingredients' | 'story' | 'reviews' | 'contact';
+export type ActiveTab = 'home' | 'products' | 'ingredients' | 'story' | 'reviews' | 'contact' | 'legal';

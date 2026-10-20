@@ -20,7 +20,7 @@ export const ContactPage: React.FC<ContactPageProps> = ({ onShowToast }) => {
     e.preventDefault();
     if (!formData.name || !formData.message) return;
     try {
-      await fetch('/.netlify/functions/contact-message', {
+      await fetch('/api/contact-message', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData),
@@ -93,10 +93,10 @@ export const ContactPage: React.FC<ContactPageProps> = ({ onShowToast }) => {
                   E-Posta İletişim
                 </span>
                 <a
-                  href="mailto:sifa@tarhanaterapi.com"
+                  href="mailto:satis@tarhanaterapi.com"
                   className="font-title-md text-base font-bold text-on-surface block hover:underline mt-0.5"
                 >
-                  sifa@tarhanaterapi.com
+                  satis@tarhanaterapi.com
                 </a>
                 <p className="text-xs text-on-surface-variant mt-1">
                   Ortalama 2 saat içinde yanıtlanmaktadır.

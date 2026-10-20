@@ -275,7 +275,7 @@ export const GUIDES: Guide[] = [
   },
   {
     slug: 'katkisiz-tarhana-nasil-anlasilir',
-    title: 'Katkısız Tarhana Nasıl Anlaşılır? Etiket Okuma Rehberi',
+    title: 'Katkısız Tarhana Nasıl Anlaşılır? Etiket Okuma',
     h1: 'Katkısız Tarhana Nasıl Anlaşılır?',
     description:
       'Katkısız tarhana etiketinden, renginden ve kokusundan nasıl anlaşılır? İçindekiler listesi, tuz oranı, saklama ve yanıltıcı ifadeler hakkında pratik rehber.',

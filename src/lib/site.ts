@@ -16,7 +16,7 @@ const envUrl = (() => {
   }
 })() || (typeof process !== 'undefined' ? process.env?.VITE_SITE_URL : undefined);
 
-export const SITE_URL = (envUrl || 'https://tarhanaterapi.netlify.app').replace(/\/+$/, '');
+export const SITE_URL = (envUrl || 'https://tarhanaterapi.com').replace(/\/+$/, '');
 export const SITE_NAME = 'TarhanaTerapi';
 export const SITE_LANG = 'tr-TR';
 export const CONTENT_UPDATED = '2026-10-19';
@@ -27,7 +27,7 @@ export const LOGO_URL = `${SITE_URL}/logo.svg`;
 export const CONTACT = {
   phone: '+90 850 302 82 74',
   phoneHref: '+908503028274',
-  email: 'sifa@tarhanaterapi.com',
+  email: 'satis@tarhanaterapi.com',
   address: {
     street: 'Gedelek Köyü Mevkii No: 28',
     locality: 'Orhangazi',
@@ -53,6 +53,7 @@ export const routePaths = {
   story: '/hikaye',
   reviews: '/yorumlar',
   contact: '/iletisim',
+  legal: '/kvkk',
 } as const;
 
 export type SiteRoute = keyof typeof routePaths;
@@ -86,12 +87,23 @@ export const routeSeo: Record<SiteRoute, { title: string; description: string }>
   contact: {
     title: 'İletişim, Adres, Kargo ve SSS | TarhanaTerapi',
     description:
-      'TarhanaTerapi iletişim: 0850 302 82 74, sifa@tarhanaterapi.com. Orhangazi atölyesi, İstanbul tadım noktası, kargo süresi ve sık sorulan sorular.',
+      'TarhanaTerapi iletişim: 0850 302 82 74, satis@tarhanaterapi.com. Orhangazi atölyesi, İstanbul tadım noktası, kargo süresi ve sık sorulan sorular.',
+  },
+  legal: {
+    title: 'KVKK Aydınlatma Metni | TarhanaTerapi',
+    description:
+      'TarhanaTerapi kişisel verilerin işlenmesi, aktarımı, saklama süreleri ve KVKK kapsamındaki haklarınıza ilişkin aydınlatma metni.',
   },
 };
 
-export const productSeoDescription = (product: Product) =>
-  `${product.name} ${product.price} TL. ${product.description} Katkısız, 21 gün toprak küpte fermente; 2000 TL üzeri kargo ücretsiz.`;
+export const productSeoDescription = (product: Product) => {
+  const conciseDescription =
+    product.id === 'tarhana-starter-set'
+      ? 'El yapımı kase, şimşir kaşık, 1 kg tarhana ve nohut.'
+      : product.description.replace(/^1 kg [^.]+\.\s*/, '');
+
+  return `${product.name} ${product.price} TL. ${conciseDescription} 2000 TL üzeri kargo ücretsiz.`;
+};
 
 export const GUIDE_INDEX_PATH = '/rehber';
 export const guideUrl = (guide: Pick<Guide, 'slug'>) => `${SITE_URL}${guidePath(guide)}`;
@@ -394,6 +406,18 @@ export function jsonLdForRoute(route: SiteRoute, product?: Product): Record<stri
         breadcrumb([
           { name: 'Ana Sayfa', path: '/' },
           { name: 'İletişim', path: routePaths.contact },
+        ])
+      );
+      break;
+    case 'legal':
+      graph.push(
+        {
+          ...webPage('legal', seo.title, seo.description),
+          '@type': 'WebPage',
+        },
+        breadcrumb([
+          { name: 'Ana Sayfa', path: '/' },
+          { name: 'KVKK Aydınlatma Metni', path: routePaths.legal },
         ])
       );
       break;

@@ -1,4 +1,4 @@
-export const GIZLILIK_POLITIKASI = `TarhanaTerapi olarak kişisel verilerinizin gizliliğine ve güvenliğine en üst seviyede önem veriyoruz. Bu Gizlilik Politikası, web sitemizi (tarhanaterapi.netlify.app) ziyaret ettiğinizde veya sipariş verdiğinizde toplanan bilgilerin nasıl kullanıldığını ve korunduğunu açıklar.
+export const GIZLILIK_POLITIKASI = `TarhanaTerapi olarak kişisel verilerinizin gizliliğine ve güvenliğine en üst seviyede önem veriyoruz. Bu Gizlilik Politikası, web sitemizi (tarhanaterapi.com) ziyaret ettiğinizde veya sipariş verdiğinizde toplanan bilgilerin nasıl kullanıldığını ve korunduğunu açıklar.
 
 1. Toplanan Bilgiler
 - Kimlik ve iletişim bilgileri: ad, soyad, e-posta, telefon, teslimat adresi.
@@ -29,14 +29,14 @@ Sipariş ve fatura kayıtları, Türk vergi mevzuatı gereği yasal süre boyunc
 KVKK kapsamında; verilerinize erişme, düzeltilmesini isteme, silinmesini talep etme, işlemeye itiraz etme ve veri taşınabilirliği haklarına sahipsiniz.
 
 8. İletişim
-Gizlilik ile ilgili sorularınız için: sifa@tarhanaterapi.com
+Gizlilik ile ilgili sorularınız için: satis@tarhanaterapi.com
 
 Son güncelleme: 12 Ekim 2026`;
 
 export const MESAFELI_SATIS = `MESAFELİ SATIŞ SÖZLEŞMESİ
 
 Madde 1 – Taraflar
-Satıcı: TarhanaTerapi (Bursa Orhangazi), iletişim: sifa@tarhanaterapi.com
+Satıcı: TarhanaTerapi (Bursa Orhangazi), iletişim: satis@tarhanaterapi.com
 Alıcı: Sipariş veren müşteri (sipariş formunda belirtilen bilgiler).
 
 Madde 2 – Konu
@@ -67,39 +67,83 @@ Son güncelleme: 12 Ekim 2026`;
 
 export const KVKK_AYDINLATMA = `KVKK AYDINLATMA METNİ
 
-6698 sayılı Kişisel Verilerin Korunması Kanunu ("KVKK") uyarınca, veri sorumlusu sıfatıyla TarhanaTerapi olarak kişisel verilerinizin işlenmesine ilişkin aydınlatma bilgilerini aşağıda sunmaktayız.
+6698 sayılı Kişisel Verilerin Korunması Kanunu ("KVKK") uyarınca, veri sorumlusu sıfatıyla TarhanaTerapi olarak kişisel verilerinizin hangi amaçla, hangi hukuki sebebe dayanarak işlendiği, kimlere aktarıldığı ve haklarınız konusunda sizi bilgilendirmek isteriz.
 
-1. Veri Sorumlusu
-TarhanaTerapi – Bursa Orhangazi. İletişim: sifa@tarhanaterapi.com
+1. Veri Sorumlusunun Kimliği
+Veri sorumlusu: TarhanaTerapi
+Adres: Gedelek Köyü Mevkii No: 28, Orhangazi / Bursa
+E-posta: satis@tarhanaterapi.com
+Telefon: 0850 302 82 74
+Web sitesi: https://tarhanaterapi.com
 
 2. İşlenen Kişisel Veriler
-- Kimlik verisi: ad, soyad
-- İletişim verisi: e-posta, telefon, teslimat adresi
-- Hesap verisi: kullanıcı kimliği, oturum bilgileri
-- İşlem verisi: sipariş geçmişi, ürün tercihleri, ödeme tutarı (kart bilgisi tarafımızca saklanmaz)
-- Teknik veri: IP adresi, tarayıcı/cihaz bilgisi, çerez verileri
+Sipariş ve iletişim süreçlerine göre aşağıdaki veriler işlenebilir:
+- Kimlik verileri: ad, soyad.
+- İletişim verileri: e-posta adresi, telefon numarası, teslimat adresi, il/ilçe.
+- Müşteri işlem verileri: sipariş numarası, sipariş tarihi, ürün ve adet bilgisi, tutar, ödeme yöntemi, sipariş notu.
+- İşlem güvenliği verileri: IP adresi, tarayıcı ve cihaz bilgisi, hata/erişim kayıtları.
+- Pazarlama verileri: yalnızca açık rızanız varsa bülten/e-posta izni ve tercihleriniz.
+- Çerez verileri: site tercihleri ve zorunlu oturum bilgileri.
+Kredi kartı numarası, CVV ve kart şifresi tarafımızca işlenmez ve saklanmaz. Kapıda ödeme seçildiğinde ödeme kurye tarafından tahsil edilir.
 
-3. İşleme Amaçları
-- Sipariş ve teslimat süreçlerinin yürütülmesi
-- Ödeme ve faturalandırma işlemlerinin gerçekleştirilmesi
-- Müşteri hizmetleri ve şikayet yönetimi
-- Yasal ve düzenleyici yükümlülüklerin yerine getirilmesi
-- Ürün ve hizmet kalitesinin artırılması, istatistiksel analiz
-- Açık rıza verilmesi halinde kampanya ve bülten gönderimi
+3. Kişisel Verilerin İşlenme Amaçları
+- Siparişin oluşturulması, hazırlanması, kargoya verilmesi ve teslim edilmesi.
+- Sipariş ve teslimat hakkında sizinle iletişim kurulması, bilgilendirme e-postası gönderilmesi.
+- Fatura, muhasebe ve vergi yükümlülüklerinin yerine getirilmesi.
+- Müşteri hizmetleri, iade, değişim ve şikayet süreçlerinin yürütülmesi.
+- Yetkisiz erişim ve kötüye kullanımın önlenmesi, site güvenliğinin sağlanması.
+- Açık rızanız bulunması halinde kampanya, bülten ve ürün duyurularının gönderilmesi.
+- Anonim hale getirilmiş istatistiklerle hizmet kalitesinin ölçülmesi ve iyileştirilmesi.
 
-4. İşleme Hukuki Sebepleri
-Kişisel verileriniz; sözleşmenin kurulması ve ifası (KVKK m.5/2-c), yasal yükümlülüklerin yerine getirilmesi (m.5/2-ç), meşru menfaat (m.5/2-f) ve açık rıza (m.5/1) hukuki sebeplerine dayanılarak işlenmektedir.
+4. İşlemenin Hukuki Sebepleri
+Kişisel verileriniz, KVKK'nın 5. maddesi kapsamında:
+- Bir sözleşmenin kurulması veya ifasıyla doğrudan ilgili olması (m.5/2-c),
+- Hukuki yükümlülüklerimizin yerine getirilmesi (m.5/2-ç),
+- Temel hak ve özgürlüklerinize zarar vermemek kaydıyla meşru menfaatimiz (m.5/2-f),
+- Açık rızanızın bulunması (m.5/1)
+hukuki sebeplerine dayanılarak işlenir. Pazarlama amaçlı elektronik ileti gönderimi ve çerezlerin bir kısmı açık rızanıza bağlıdır; rızanızı her zaman geri çekebilirsiniz.
 
-5. Verilerin Aktarılması
-Verileriniz, siparişin yerine getirilmesi amacıyla yalnızca gerekli ölçüde; kargo firmalarına, ödeme altyapısı sağlayıcılarına ve yetkili kamu kurum/kuruluşlarına aktarılabilir.
+5. Kişisel Verilerin Toplanma Yöntemi
+Verileriniz; web sitesindeki sipariş ve iletişim formları, e-posta, telefon, kargo ve ödeme süreçleri ile çerezler aracılığıyla elektronik ortamda toplanır.
 
-6. Veri Saklama Süresi
-Verileriniz, işleme amacının gerektirdiği süre ile yasal saklama süreleri boyunca saklanır; sürenin sonunda silinir, yok edilir veya anonim hale getirilir.
+6. Kişisel Verilerin Aktarılması
+Verileriniz, yalnızca yukarıdaki amaçlarla sınırlı olarak ve ilgili mevzuata uygun şekilde:
+- Siparişin teslimi için kargo/lojistik firmalarına,
+- Fatura ve muhasebe süreçleri için mali müşavirimize,
+- E-posta gönderimi için e-posta altyapı sağlayıcısına (Resend),
+- Site barındırma ve güvenlik hizmetleri için bulut altyapı sağlayıcılarına (Cloudflare),
+- Veritabanı hizmeti için Supabase'e,
+- Yetkili kamu kurum ve kuruluşlarına, talepleri halinde
+aktarılabilir. Bu hizmet sağlayıcılarının bir kısmı yurt dışında yerleşik olup verileriniz yurt dışına aktarılabilir. Yurt dışına aktarım, KVKK'nın 9. maddesi kapsamında açık rızanız veya Kanun'da öngörülen diğer aktarım şartlarına dayanılarak yapılır. Verileriniz hiçbir koşulda satılmaz veya reklam amacıyla üçüncü kişilerle paylaşılmaz.
 
-7. Veri Sahibi Hakları (KVKK m.11)
-KVKK'nın 11. maddesi uyarınca; kişisel verilerinizin işlenip işlenmediğini öğrenme, işlenmişse buna ilişkin bilgi talep etme, işlenme amacını ve amacına uygun kullanılıp kullanılmadığını öğrenme, yurt içi/yurt dışı aktarılıp aktarılmadığını öğrenme, eksik veya yanlış işlenmişse düzeltilmesini isteme, silinmesini veya yok edilmesini isteme, işleme itiraz etme ve zararın giderilmesini talep etme haklarına sahipsiniz.
+7. Saklama Süreleri
+- Sipariş, fatura ve muhasebe kayıtları: 6102 sayılı TTK ve 213 sayılı VUK gereği 10 yıl.
+- İletişim ve destek talepleri: talebin sonuçlanmasından itibaren 1 yıl.
+- Site erişim ve güvenlik kayıtları: en fazla 1 yıl.
+- Pazarlama izinleri: açık rızanızı geri alana kadar.
+Sürelerin sonunda veriler silinir, yok edilir veya anonim hale getirilir.
 
-8. Başvuru
-Haklarınızı kullanmak için sifa@tarhanaterapi.com adresine yazılı başvuruda bulunabilirsiniz. Başvurunuz en geç 30 gün içinde yanıtlanacaktır.
+8. Veri Güvenliği Tedbirleri
+Verilerinizin hukuka aykırı işlenmesini ve erişilmesini önlemek için teknik ve idari tedbirler uygulanır: SSL/TLS ile şifreli iletişim, erişim yetkilerinin sınırlandırılması, güçlü kimlik doğrulama, düzenli yedekleme ve hizmet sağlayıcılarının güvenlik taahhütleri. Veri ihlali halinde yasal süreler içinde ilgili kişilere ve Kişisel Verileri Koruma Kurulu'na bildirim yapılır.
 
-Son güncelleme: 12 Ekim 2026`;
+9. Çerezler
+Sitemiz, oturumun sürdürülmesi ve temel işlevlerin çalışması için zorunlu çerezler kullanır. Cloudflare Web Analytics çerez kullanmadan, kişisel verileri kimliklendirmeden ziyaret istatistikleri üretir. Çerez tercihlerinizi tarayıcınızdan yönetebilirsiniz; zorunlu çerezlerin devre dışı bırakılması site işlevlerini etkileyebilir.
+
+10. Veri Sahibi Olarak Haklarınız (KVKK m.11)
+- Kişisel verilerinizin işlenip işlenmediğini öğrenme,
+- İşlenmişse buna ilişkin bilgi talep etme,
+- İşlenme amacını ve amacına uygun kullanılıp kullanılmadığını öğrenme,
+- Yurt içinde veya yurt dışında aktarıldığı üçüncü kişileri öğrenme,
+- Eksik veya yanlış işlenmiş verilerin düzeltilmesini isteme,
+- KVKK'da öngörülen şartlar çerçevesinde silinmesini veya yok edilmesini isteme,
+- Düzeltme ve silme işlemlerinin verilerin aktarıldığı üçüncü kişilere bildirilmesini isteme,
+- İşlenen verilerin münhasıran otomatik sistemlerle analiz edilmesi sonucu aleyhinize bir sonucun ortaya çıkmasına itiraz etme,
+- Kanuna aykırı işleme nedeniyle zarara uğramanız halinde zararın giderilmesini talep etme.
+
+11. Başvuru Yolu
+Haklarınıza ilişkin taleplerinizi satis@tarhanaterapi.com adresine e-posta göndererek veya yazılı olarak Gedelek Köyü Mevkii No: 28, Orhangazi / Bursa adresine ileterek kullanabilirsiniz. Başvurunuz en geç 30 gün içinde ücretsiz olarak yanıtlanır. Talebin reddedilmesi halinde gerekçesi bildirilir; Kişisel Verileri Koruma Kurulu'na şikâyet hakkınız saklıdır.
+
+12. Güncelleme
+Bu metin, mevzuat veya süreçlerdeki değişikliklere göre güncellenebilir. Güncel sürüm bu sayfada yayımlanır.
+
+Son güncelleme: 20 Ekim 2026`;

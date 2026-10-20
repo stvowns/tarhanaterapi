@@ -417,7 +417,8 @@ export const RECIPES_EBOOK: Recipe[] = [
       'Ayrı tavada tereyağını eritin, nohutları atıp 2 dakika hafifçe kavurun, nane ve biberi ekleyip ocaktan alın.',
       'Çorbayı kaselere paylaştırıp tereyağlı nohutlu sosu köpürterek üzerine gezdirin.'
     ],
-    chefNote: 'Tarhana kaynamadan önce asla tencerenin başından ayrılmayın ve tahta kaşık kullanın.'
+    chefNote: 'Tarhana kaynamadan önce asla tencerenin başından ayrılmayın ve tahta kaşık kullanın.',
+    servingIdea: 'Yanında bir dilim köy ekmeği ve bir kaşık süzme yoğurtla servis edin.'
   },
   {
     id: 'recipe-2',
@@ -440,7 +441,8 @@ export const RECIPES_EBOOK: Recipe[] = [
       'Kısık ateşte 10 dakika pişirin.',
       'Sade yağda kekiği ve nohutları cızırdatıp çorbanın üzerine dökün.'
     ],
-    chefNote: 'Fırınlanmış sarımsak çiğ kokmaz, karamelize tatlımsı bir şifa tabakası bırakır.'
+    chefNote: 'Fırınlanmış sarımsak çiğ kokmaz, karamelize tatlımsı bir şifa tabakası bırakır.',
+    servingIdea: 'Üzerine bir tutam taze kekik ve karabiber; yanında ekşi mayalı ekmek.'
   },
   {
     id: 'recipe-3',
@@ -461,7 +463,139 @@ export const RECIPES_EBOOK: Recipe[] = [
       'Ocaktan aldıktan sonra sızma zeytinyağı ve püre yapılmış nohut tanelerini ekleyin.',
       'Ilık sıcaklığa gelince bebeğinize servis edin.'
     ],
-    chefNote: 'İlave tuz ve baharat eklenmez. Zeytinyağı pişirme bittikten sonra çiğ konmalıdır.'
+    chefNote: 'İlave tuz ve baharat eklenmez. Zeytinyağı pişirme bittikten sonra çiğ konmalıdır.',
+    servingIdea: 'Ilık servis edin; yanında buharda pişmiş havuç veya kabak püresiyle deneyebilirsiniz.'
+  },
+  {
+    id: 'recipe-4',
+    title: 'Acılı Kapya Biberli Gurme Tarhana',
+    subtitle: 'Közlenmiş biberin dumanıyla ısınan gurme kase',
+    prepTime: '20 Dakika',
+    servings: '4 Kişilik',
+    difficulty: 'Kolay',
+    ingredients: [
+      '4 yemek kaşığı TarhanaTerapi Acılı Gurme Tarhanası',
+      '5 su bardağı sıcak su veya ilikli kemik suyu',
+      '1 adet közlenmiş kapya biber (ince doğranmış)',
+      '1 yemek kaşığı tereyağı',
+      '1 çay bardağı haşlanmış nohut',
+      '1 çay kaşığı pul biber, yarım çay kaşığı kimyon',
+      '1 diş sarımsak (isteğe bağlı)'
+    ],
+    steps: [
+      'Tarhanayı 1 bardak soğuk suyla açıp topaksız hale getirin.',
+      'Sıcak su veya kemik suyunu ekleyip orta ateşte sürekli karıştırarak kaynatın.',
+      'Közlenmiş biberi ve nohutun yarısını ekleyip kısık ateşte 8-10 dakika pişirin.',
+      'Tereyağını ayrı tavada eritin; pul biber, kimyon ve sarımsağı 30 saniye kokusu çıkana kadar çevirin.',
+      'Çorbayı kaselere alın, kalan nohut ve biberli tereyağını üzerine gezdirin.'
+    ],
+    chefNote: 'Acılı tarhana zaten biberli; pul biberi en son ekleyerek acılığı damak zevkine göre ayarlayın.',
+    servingIdea: 'Yanında bir dilim köy ekmeği ve bir kaşık süzme yoğurtla servis edin.'
+  },
+  {
+    id: 'recipe-5',
+    title: 'Mantarlı Kremalı Tarhana',
+    subtitle: 'Sonbahar akşamlarına ipeksi bir dokunuş',
+    prepTime: '25 Dakika',
+    servings: '4 Kişilik',
+    difficulty: 'Orta',
+    ingredients: [
+      '4 yemek kaşığı TarhanaTerapi Anne Tarhanası',
+      '4 su bardağı sıcak su veya ilikli kemik suyu',
+      '250 gram mantar (ince dilimlenmiş)',
+      '1 yemek kaşığı tereyağı + 1 yemek kaşığı zeytinyağı',
+      '1 küçük soğan (ince doğranmış)',
+      'Yarım su bardağı süt veya krema',
+      'Yarım çay kaşığı tuz, karabiber ve taze kekik'
+    ],
+    steps: [
+      'Tereyağı ve zeytinyağında soğanı 2 dakika kavurun.',
+      'Mantarları ekleyip suyunu çekene kadar orta ateşte pişirin.',
+      'Ayrı kapta açtığınız tarhanayı ve sıcak suyu ekleyip sürekli karıştırarak kaynatın.',
+      'Kısık ateşte 10 dakika pişirin; arzu ederseniz el blenderından geçirin.',
+      'Süt veya kremayı ekleyip karıştırın, kaynatmadan ocaktan alın; tuz ve karabiberle tatlandırın.'
+    ],
+    chefNote: 'Krema eklendikten sonra kaynatmayın; sadece ısıtın, aksi halde çorba ayrışabilir.',
+    servingIdea: 'Üzerine taze kekik ve karabiber; yanında ekşi mayalı ekmek.'
+  },
+  {
+    id: 'recipe-6',
+    title: 'Tavuklu Sebzeli Tarhana',
+    subtitle: 'Tek tencerede doyurucu akşam yemeği',
+    prepTime: '30 Dakika',
+    servings: '4 Kişilik',
+    difficulty: 'Kolay',
+    ingredients: [
+      '3 yemek kaşığı TarhanaTerapi Anne Tarhanası',
+      '5 su bardağı tavuk suyu',
+      '1 su bardağı haşlanmış tavuk eti (didiklenmiş)',
+      '1 adet havuç (küp doğranmış)',
+      '1 adet patates (küp doğranmış)',
+      'Yarım su bardağı bezelye',
+      '1 yemek kaşığı tereyağı, tuz ve karabiber',
+      'Servis için limon'
+    ],
+    steps: [
+      'Tereyağını tencerede eritip havuç ve patatesi 3-4 dakika kavurun.',
+      'Tavuk suyunu ekleyip sebzeler yumuşayana kadar 8-10 dakika kaynatın.',
+      'Soğuk suyla açtığınız tarhanayı ekleyin ve sürekli karıştırarak 10 dakika pişirin.',
+      'Haşlanmış tavuk etini ve bezelyeyi ekleyip 5 dakika daha pişirin.',
+      'Tuz ve karabiberle tatlandırın; servis sırasında limon sıkın.'
+    ],
+    chefNote: 'Tavuk önceden pişmiş olmalı. Çiğ tavuk kullanırsanız çorbayı 15 dakika daha kaynatın.',
+    servingIdea: 'Limon ve pul biberle; yanında yoğurtlu semizotu salatası.'
+  },
+  {
+    id: 'recipe-7',
+    title: 'Fırında Tarhana Cipsi',
+    subtitle: 'Çay saatine şifalı çıtırlık',
+    prepTime: '20 Dakika',
+    servings: '4 Kişilik',
+    difficulty: 'Kolay',
+    ingredients: [
+      '3 yemek kaşığı TarhanaTerapi Anne Tarhanası',
+      'Yarım su bardağı ılık su',
+      '1 yemek kaşığı zeytinyağı',
+      'Yarım çay kaşığı tatlı kırmızı biber',
+      'Yarım çay kaşığı kuru nane',
+      '1 tatlı kaşığı susam',
+      'Bir tutam tuz'
+    ],
+    steps: [
+      'Tarhana, ılık su ve tuzu koyu bir macun kıvamına gelene kadar karıştırın; 10 dakika dinlendirin.',
+      'Fırını 170 °C’ye ısıtın. Hamuru yağlı kağıt üzerinde 2-3 mm kalınlığında yayın.',
+      'Bıçakla üçgen dilimler çizin; üzerine zeytinyağı sürüp baharat ve susam serpin.',
+      '12-15 dakika, kenarları altın rengi olana kadar pişirin.',
+      'Fırından alıp tamamen soğutun; kapalı kapta 3 gün saklayabilirsiniz.'
+    ],
+    chefNote: 'Hamur ne kadar ince olursa o kadar çıtır olur; son 3 dakika fırının başında kalın.',
+    servingIdea: 'Yoğurtlu dip, zeytinyağlı ezme veya yanında taze nane çayı ile.'
+  },
+  {
+    id: 'recipe-8',
+    title: 'Yoğurtlu Soğuk Tarhana Çorbası',
+    subtitle: 'Sıcak yaz günlerine serin şifa',
+    prepTime: '15 Dakika + Dinlendirme',
+    servings: '4 Kişilik',
+    difficulty: 'Kolay',
+    ingredients: [
+      '3 yemek kaşığı TarhanaTerapi Anne Tarhanası',
+      '2 su bardağı su',
+      '1,5 su bardağı soğuk süzme yoğurt',
+      '1 adet salatalık (rendelenmiş)',
+      'Yarım su bardağı haşlanmış nohut',
+      '1 yemek kaşığı zeytinyağı',
+      '1 tatlı kaşığı kuru nane, tuz ve buz'
+    ],
+    steps: [
+      'Tarhanayı suyla açıp kısık ateşte 8-10 dakika pişirin.',
+      'Çorbayı ocaktan alıp tamamen soğumaya bırakın.',
+      'Ayrı kapta yoğurdu çırpın; rendelenmiş salatalık ve nohutu ekleyin.',
+      'Soğuyan tarhanayı yoğurtlu karışıma yavaşça ekleyip karıştırın; tuzla tatlandırın.',
+      'En az 1 saat buzdolabında dinlendirin; servis kâselerine buz, zeytinyağı ve nane ile paylaştırın.'
+    ],
+    chefNote: 'Yoğurdu sıcak çorbaya doğrudan eklemeyin; önce çorbayı tamamen soğutun.',
+    servingIdea: 'Buz gibi, üzerine nane yağı ve bir tutam pul biber.'
   }
 ];
 

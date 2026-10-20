@@ -1,0 +1,7 @@
+# Cloudflare Pages yönlendirmeleri
+# Not: Pages, /urunler isteğini urunler.html dosyasından otomatik servis eder
+# (iç içe yollar dâhil). Bu yüzden .html'e ayrı rewrite kuralı GEREKMEZ;
+# eklenirse 308 döngüsü oluşur.
+# Bilinmeyen yollar için SPA fallback KULLANILMAZ.
+# Cloudflare Pages, public/404.html dosyasını gerçek 404 durum koduyla servis eder.
+# Bu, arama motorlarında soft-404 oluşmasını engeller.

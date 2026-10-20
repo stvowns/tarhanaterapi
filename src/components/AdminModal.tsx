@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { supabase } from '../lib/supabase';
 import { Order, SubscriberLead, User } from '../types';
 import { PRODUCTS } from '../data/mockData';
 
@@ -23,10 +24,64 @@ export const AdminModal: React.FC<AdminModalProps> = ({
   onSimulateIncomingOrder,
   onClearNewOrderAlert,
 }) => {
-  const [activeTab, setActiveTab] = useState<'orders' | 'subscribers' | 'database'>('orders');
+  const [activeTab, setActiveTab] = useState<'orders' | 'reviews' | 'subscribers' | 'database'>('orders');
+  const [pendingReviews, setPendingReviews] = useState<
+    Array<{
+      id: string;
+      author: string;
+      location: string;
+      rating: number;
+      content: string;
+      productName?: string;
+      createdAt: string;
+    }>
+  >([]);
+  const [reviewBusy, setReviewBusy] = useState<string | null>(null);
   const [copiedSql, setCopiedSql] = useState(false);
   const [dateFrom, setDateFrom] = useState('');
   const [dateTo, setDateTo] = useState('');
+
+  const loadPendingReviews = async () => {
+    try {
+      const { data } = await supabase.auth.getSession();
+      const token = data.session?.access_token;
+      if (!token) return;
+      const res = await fetch('/api/list-reviews?status=pending', {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (!res.ok) return;
+      const payload = await res.json();
+      if (Array.isArray(payload.reviews)) setPendingReviews(payload.reviews);
+    } catch {
+      // Sessiz geç: yönetici panelinin ana işlevlerini etkilemesin.
+    }
+  };
+
+  useEffect(() => {
+    if (isOpen) loadPendingReviews();
+  }, [isOpen]);
+
+  const handleReviewAction = async (id: string, action: 'approve' | 'delete') => {
+    setReviewBusy(id);
+    try {
+      const { data } = await supabase.auth.getSession();
+      const token = data.session?.access_token;
+      if (!token) return;
+      const res = await fetch('/api/moderate-review', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ id, action }),
+      });
+      if (res.ok) {
+        setPendingReviews((prev) => prev.filter((review) => review.id !== id));
+      }
+    } finally {
+      setReviewBusy(null);
+    }
+  };
 
   const parseOrderDate = (value: string) => {
     const match = value?.match(/(\\d{2})\\.(\\d{2})\\.(\\d{4})/);
@@ -268,6 +323,18 @@ CREATE TABLE subscribers (
             </button>
 
             <button
+              onClick={() => setActiveTab('reviews')}
+              className={`py-3 px-4 text-xs font-semibold border-b-2 transition-all cursor-pointer flex items-center gap-2 whitespace-nowrap ${
+                activeTab === 'reviews'
+                  ? 'border-primary text-primary font-bold'
+                  : 'border-transparent text-outline hover:text-on-surface'
+              }`}
+            >
+              <span className="material-symbols-outlined text-[18px]">rate_review</span>
+              <span>Yorum Onayı ({pendingReviews.length})</span>
+            </button>
+
+            <button
               onClick={() => setActiveTab('subscribers')}
               className={`py-3 px-4 text-xs font-semibold border-b-2 transition-all cursor-pointer flex items-center gap-2 whitespace-nowrap ${
                 activeTab === 'subscribers'
@@ -417,6 +484,81 @@ CREATE TABLE subscribers (
                         </span>
                       </div>
                     </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Tab: Pending Review Moderation */}
+        {activeTab === 'reviews' && (
+          <div className="p-6 overflow-y-auto grow">
+            <div className="flex items-center justify-between mb-4">
+              <div>
+                <h4 className="font-title-md text-sm font-bold text-on-surface">
+                  Onay Bekleyen Yorumlar
+                </h4>
+                <p className="text-xs text-outline">
+                  Müşteri yorumları onaylanmadan sitede yayınlanmaz.
+                </p>
+              </div>
+              <button
+                onClick={loadPendingReviews}
+                className="px-3.5 py-1.5 bg-surface-container-high text-on-surface text-xs font-semibold rounded-lg hover:bg-surface-container-highest transition-colors flex items-center gap-1 cursor-pointer"
+              >
+                <span className="material-symbols-outlined text-[16px]">refresh</span>
+                <span>Yenile</span>
+              </button>
+            </div>
+
+            {pendingReviews.length === 0 ? (
+              <div className="text-center py-12 text-xs text-outline">
+                Onay bekleyen yorum yok.
+              </div>
+            ) : (
+              <div className="flex flex-col gap-3">
+                {pendingReviews.map((review) => (
+                  <div
+                    key={review.id}
+                    className="p-4 rounded-xl border border-outline-variant/30 bg-surface-container-lowest flex flex-col gap-3"
+                  >
+                    <div className="flex items-start justify-between gap-4">
+                      <div>
+                        <div className="flex items-center gap-2">
+                          <strong className="text-sm text-on-surface">{review.author}</strong>
+                          <span className="text-xs text-outline">{review.location}</span>
+                          <span className="text-xs font-bold text-secondary">
+                            {review.rating}/5
+                          </span>
+                        </div>
+                        <p className="text-[11px] text-outline mt-0.5">
+                          {review.productName || 'Ürün belirtilmedi'} ·{' '}
+                          {review.createdAt
+                            ? new Date(review.createdAt).toLocaleDateString('tr-TR')
+                            : ''}
+                        </p>
+                      </div>
+                      <div className="flex gap-2 shrink-0">
+                        <button
+                          onClick={() => handleReviewAction(review.id, 'approve')}
+                          disabled={reviewBusy === review.id}
+                          className="px-3 py-1.5 rounded-lg bg-emerald-100 text-emerald-800 text-[11px] font-bold hover:bg-emerald-200 transition-colors disabled:opacity-50 cursor-pointer"
+                        >
+                          Onayla
+                        </button>
+                        <button
+                          onClick={() => handleReviewAction(review.id, 'delete')}
+                          disabled={reviewBusy === review.id}
+                          className="px-3 py-1.5 rounded-lg bg-error-container text-on-error-container text-[11px] font-bold hover:bg-error/20 transition-colors disabled:opacity-50 cursor-pointer"
+                        >
+                          Sil
+                        </button>
+                      </div>
+                    </div>
+                    <p className="text-xs text-on-surface-variant leading-relaxed">
+                      {review.content}
+                    </p>
                   </div>
                 ))}
               </div>
@@ -583,7 +725,7 @@ CREATE TABLE subscribers (
               </div>
 
               <p className="text-[11px] text-outline leading-relaxed">
-                <strong>Nasıl Saklanıyor?</strong> Veriler tarayıcı seviyesinde kalıcı <code className="bg-surface-container px-1 py-0.5 rounded text-[10px]">localStorage</code> anahtarları (<code className="bg-surface-container px-1 py-0.5 rounded text-[10px]">tt_orders</code>, <code className="bg-surface-container px-1 py-0.5 rounded text-[10px]">tt_subscribers</code>, <code className="bg-surface-container px-1 py-0.5 rounded text-[10px]">tt_users</code>) üzerinde saklanır. Sayfa yenilense de silinmez. Dilediğiniz zaman yukarıdaki butonlarla export edip harici SQL veya Excel ortamına aktarabilirsiniz.
+                <strong>Nasıl Saklanıyor?</strong> Siparişler ve bülten/e-kitap e-postaları <strong>Supabase</strong> veritabanında kalıcı olarak saklanır; bülten kayıtları ayrıca Resend audience'a eklenir. Yönetici panelindeki CSV dışa aktarma ile Excel'e alabilirsiniz. Üyelere ait yerel oturum bilgileri tarayıcıda (<code className="bg-surface-container px-1 py-0.5 rounded text-[10px]">localStorage</code>) tutulur.
               </p>
             </div>
 
