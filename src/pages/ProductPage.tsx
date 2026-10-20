@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useRef, useState } from 'react';
 import { PRODUCTS } from '../data/mockData';
 import { CONTENT_UPDATED_LABEL, productPath } from '../lib/site';
 import { Product } from '../types';
+import { FlyToCartLayer, makeFlyer, type Flyer } from '../components/FlyToCart';
 
 interface ProductPageProps {
   product: Product;
@@ -11,7 +12,7 @@ interface ProductPageProps {
 const productFaqs = [
   {
     q: 'Kargo kaç günde gelir?',
-    a: 'Siparişler aynı veya ertesi iş günü kargoya verilir. Türkiye geneli teslimat 1-3 iş günüdür; 2000 TL üzeri siparişlerde kargo ücretsizdir; 2000 TL altı siparişlerde 45 TL\'dir.',
+    a: 'Siparişler aynı veya ertesi iş günü kargoya verilir. Türkiye geneli teslimat 1-3 iş günüdür; 2000 TL üzeri siparişlerde kargo ücretsizdir; 2000 TL altı siparişlerde 150 TL\'dir.',
   },
   {
     q: 'Ürün nasıl saklanır, ne kadar dayanır?',
@@ -24,6 +25,8 @@ const productFaqs = [
 ];
 
 export const ProductPage: React.FC<ProductPageProps> = ({ product, onAddToCart }) => {
+  const imageRef = useRef<HTMLImageElement | null>(null);
+  const [flyers, setFlyers] = useState<Flyer[]>([]);
   const related = PRODUCTS.filter((item) => item.id !== product.id).slice(0, 3);
   const nutrition = [
     { label: 'Kalori', value: `${product.nutrition.calories} kcal` },
@@ -32,6 +35,21 @@ export const ProductPage: React.FC<ProductPageProps> = ({ product, onAddToCart }
     { label: 'Karbonhidrat', value: product.nutrition.carbs },
     { label: 'Yağ', value: product.nutrition.fat },
   ];
+
+  const handleAddToCart = (event: React.MouseEvent<HTMLButtonElement>) => {
+    const imageRect = imageRef.current?.getBoundingClientRect();
+    const imageIsVisible = imageRect
+      ? imageRect.bottom > 48 && imageRect.top < window.innerHeight - 48
+      : false;
+    // Görsel ekran dışına kaydıysa animasyonu görünen butondan başlat.
+    const source = imageIsVisible ? imageRef.current : event.currentTarget;
+    const flyer = makeFlyer(product.image, source);
+    setFlyers((previous) => [...previous, flyer]);
+    window.setTimeout(() => {
+      setFlyers((previous) => previous.filter((item) => item.id !== flyer.id));
+    }, 900);
+    onAddToCart(product);
+  };
 
   return (
     <div className="py-10 bg-surface min-h-screen">
@@ -47,6 +65,7 @@ export const ProductPage: React.FC<ProductPageProps> = ({ product, onAddToCart }
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-start">
           <div className="rounded-2xl overflow-hidden bg-surface-container-low border border-outline-variant/30">
             <img
+              ref={imageRef}
               src={product.image}
               alt={`${product.name} — ${product.weight}`}
               width={512}
@@ -90,7 +109,7 @@ export const ProductPage: React.FC<ProductPageProps> = ({ product, onAddToCart }
             </div>
 
             <button
-              onClick={() => onAddToCart(product)}
+              onClick={handleAddToCart}
               className="mt-2 inline-flex items-center justify-center gap-2 bg-primary-container text-on-primary-container font-title-md px-7 py-3.5 rounded-lg hover:bg-primary transition-colors cursor-pointer"
             >
               <span className="material-symbols-outlined text-[20px]">shopping_bag</span>
@@ -156,7 +175,7 @@ export const ProductPage: React.FC<ProductPageProps> = ({ product, onAddToCart }
               </h2>
               <p className="font-body-md text-on-surface-variant leading-relaxed">
                 Siparişler aynı veya ertesi iş günü kargoya verilir; Türkiye geneli teslimat
-                1-3 iş günüdür. 2000 TL ve üzeri siparişlerde kargo ücretsizdir; 2000 TL altı siparişlerde 45 TL'dir. Ürün, kapalı
+                1-3 iş günüdür. 2000 TL ve üzeri siparişlerde kargo ücretsizdir; 2000 TL altı siparişlerde 150 TL'dir. Ürün, kapalı
                 pamuk torbasında güneş görmeyen serin ve kuru bir yerde 1 yıla kadar saklanır.
                 Açılmış ürünlerde mesafeli satış mevzuatı gereği cayma hakkı uygulanmaz;
                 hasarlı teslimat için satis@tarhanaterapi.com adresine yazabilirsiniz.
@@ -231,6 +250,7 @@ export const ProductPage: React.FC<ProductPageProps> = ({ product, onAddToCart }
           </div>
         </section>
       </div>
+      <FlyToCartLayer flyers={flyers} />
     </div>
   );
 };

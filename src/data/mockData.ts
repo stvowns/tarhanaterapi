@@ -119,8 +119,8 @@ export const PRODUCTS: Product[] = [
     tagColor: 'primary-container',
     rating: 4.9,
     reviewsCount: 180,
-    description: 'Toprak El Yapımı Kase + Şimşir Ağacı Kaşık + 1 kg Anne Tarhanası + Haşlanmış Koçbaşı Nohut.',
-    details: 'Avanos ustaları tarafından çömlek çarkında elde şekillendirilip pişirilen terracotta kase, Karadeniz şimşir ağacından oyulmuş kaşık, 1 kg klasik pamuk torba tarhana ve vakumlu haşlanmış çıtır nohut paketi ile eksiksiz bir Anadolu ritüeli hediyesi.',
+    description: 'Toprak El Yapımı Kase + Şimşir Ağacı Kaşık + 1 kg Anne Tarhanası.',
+    details: 'Avanos ustaları tarafından çömlek çarkında elde şekillendirilip pişirilen terracotta kase, Karadeniz şimşir ağacından oyulmuş kaşık ve 1 kg klasik pamuk torba tarhana ile eksiksiz bir Anadolu ritüeli hediyesi.',
     price: 850,
     originalPrice: 990,
     weight: 'Özel Hediye Kutusu (1 kg Tarhana + Set)',
@@ -128,10 +128,8 @@ export const PRODUCTS: Product[] = [
     category: 'sets',
     ingredients: [
       '1 kg Geleneksel Nohutlu Anne Tarhanası',
-      '250g Vakumlu Haşlanmış Organik Koçbaşı Nohut',
       'Elde Şekillendirilmiş Terracotta Toprak Kase',
-      'Doğal Şimşir Kaşık',
-      'Özel Şifa Kitapçığı'
+      'Doğal Şimşir Kaşık'
     ],
     nutrition: {
       calories: 342,
@@ -606,11 +604,11 @@ export const FAQS = [
   },
   {
     q: 'Tarhana fiyatları ne kadar?',
-    a: "Ekim 2026 itibarıyla 1 kg klasik pamuk torba 450 TL, 1 kg acılı gurme 500 TL, 1 kg tuzsuz bebek tarhanası 500 TL, 1 kg pamuk çuvallı aile paketi 450 TL, 2 x 1 kg ikili gurme paketi 900 TL ve 1 kg tarhana içeren başlangıç seti 850 TL'dir. 2000 TL üzeri siparişlerde kargo ücretsizdir; 2000 TL altı siparişlerde 45 TL'dir."
+    a: "Ekim 2026 itibarıyla 1 kg klasik pamuk torba 450 TL, 1 kg acılı gurme 500 TL, 1 kg tuzsuz bebek tarhanası 500 TL, 1 kg pamuk çuvallı aile paketi 450 TL, 2 x 1 kg ikili gurme paketi 900 TL ve 1 kg tarhana içeren başlangıç seti 850 TL'dir. 2000 TL üzeri siparişlerde kargo ücretsizdir; 2000 TL altı siparişlerde 150 TL'dir."
   },
   {
     q: 'Kargo ücreti ne kadar, kaç günde teslim edilir?',
-    a: "Siparişler aynı veya ertesi iş günü kargoya verilir; Türkiye geneli teslimat 1-3 iş günüdür. 2000 TL ve üzeri siparişlerde kargo ücretsizdir; 2000 TL altı siparişlerde kargo 45 TL'dir. Pamuk torbalar hava yastıklı koruyucu ambalajla gönderilir."
+    a: "Siparişler aynı veya ertesi iş günü kargoya verilir; Türkiye geneli teslimat 1-3 iş günüdür. 2000 TL ve üzeri siparişlerde kargo ücretsizdir; 2000 TL altı siparişlerde kargo 150 TL'dir. Pamuk torbalar hava yastıklı koruyucu ambalajla gönderilir."
   },
   {
     q: 'Tarhana glutensiz mi, çölyak hastaları kullanabilir mi?',
@@ -638,7 +636,7 @@ export const FAQS = [
   },
   {
     q: 'Kargo kaç günde teslim edilir ve nasıl paketlenir?',
-    a: 'Siparişleriniz aynı gün veya ertesi gün kargoya verilir. Ürünlerimiz nemden ve darbelerden korunacak şekilde hava yastıklı özel koruyucularla sarılır. Türkiye geneli teslimat süresi 1-3 iş günüdür. ₺2000 üzeri alışverişlerde kargo tamamen ücretsizdir; ₺2000 altı siparişlerde kargo 45 TL\'dir.'
+    a: 'Siparişleriniz aynı gün veya ertesi gün kargoya verilir. Ürünlerimiz nemden ve darbelerden korunacak şekilde hava yastıklı özel koruyucularla sarılır. Türkiye geneli teslimat süresi 1-3 iş günüdür. ₺2000 üzeri alışverişlerde kargo tamamen ücretsizdir; ₺2000 altı siparişlerde kargo 150 TL\'dir.'
   },
   {
     q: 'Açıldıktan sonra nasıl saklanmalıdır?',

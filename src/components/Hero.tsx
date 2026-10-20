@@ -20,7 +20,7 @@ export const Hero: React.FC<HeroProps> = ({
           {/* Text Column */}
           <div className="lg:col-span-7 flex flex-col gap-6 z-10">
             {/* Badges */}
-            <div className="flex flex-wrap items-center gap-2">
+            <div className="flex flex-wrap items-center justify-center gap-2 lg:justify-start">
               <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-surface-container-highest text-on-surface-variant font-label-sm tracking-wide uppercase shadow-2xs">
                 <span className="material-symbols-outlined text-[16px] text-tertiary">
                   eco

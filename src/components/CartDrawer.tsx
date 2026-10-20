@@ -66,16 +66,16 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
         onClick={onClose}
       />
 
-      <div className="fixed inset-y-0 right-0 max-w-full flex pl-10">
-        <div className="w-screen max-w-md bg-surface shadow-2xl flex flex-col justify-between border-l border-surface-container-high">
+      <div className="fixed inset-y-0 right-0 flex w-full max-w-md">
+        <div className="flex h-full w-full flex-col justify-between border-l border-surface-container-high bg-surface shadow-2xl">
           {/* Header */}
-          <div className="p-6 bg-surface-container-low border-b border-surface-container-high flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <span className="material-symbols-outlined text-primary text-[24px]">
+          <div className="flex items-center justify-between gap-3 border-b border-surface-container-high bg-surface-container-low p-4 sm:p-6">
+            <div className="flex min-w-0 items-center gap-2">
+              <span className="material-symbols-outlined shrink-0 text-primary text-[24px]">
                 shopping_bag
               </span>
-              <h2 className="font-headline-sm text-on-surface text-xl">Şifa Sepetiniz</h2>
-              <span className="text-xs bg-primary-fixed text-primary px-2 py-0.5 rounded-full font-bold">
+              <h2 className="truncate font-headline-sm text-on-surface text-lg sm:text-xl">Şifa Sepetiniz</h2>
+              <span className="shrink-0 text-xs bg-primary-fixed text-primary px-2 py-0.5 rounded-full font-bold">
                 {cartItems.reduce((acc, item) => acc + item.quantity, 0)} Ürün
               </span>
             </div>
@@ -117,7 +117,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
           </div>
 
           {/* Cart Item List */}
-          <div className="flex-1 overflow-y-auto p-6 flex flex-col gap-4">
+          <div className="flex min-h-0 flex-1 flex-col gap-4 overflow-y-auto p-4 sm:p-6">
             {cartItems.length === 0 ? (
               <div className="my-auto text-center flex flex-col items-center py-12">
                 <div className="w-16 h-16 rounded-full bg-surface-container-high flex items-center justify-center text-on-surface-variant mb-4">

@@ -41,7 +41,7 @@ Teknik GEO altyapısı ve hosting taşıması tamam. Şu an eksik olan üç şey
 ### İçerik / satış
 - [x] 1 kg pamuk torba katalog düzeni, 6 ürüne 6 WebP görsel
 - [x] Fiyatlar: klasik 450 · acılı 500 · bebek 500 · set 850 · aile 450 · ikili 900 TL
-- [x] Kargo: 2000 TL üzeri ücretsiz, altı 45 TL (frontend + backend + şema)
+- [x] Kargo: 2000 TL üzeri ücretsiz, altı 150 TL (frontend + backend + şema)
 - [x] KVKK sipariş hatası düzeltildi
 - [x] Netlify rozeti kaldırıldı
 
@@ -55,7 +55,7 @@ Teknik GEO altyapısı ve hosting taşıması tamam. Şu an eksik olan üç şey
 - [x] E-kitap gerçek PDF olarak hazırlandı; **8 tarif + 11 sayfa**: `public/kadim-corba-rituelleri-ve-sifali-tarifler.pdf`.
 - [x] E-kitap üretici script eklendi: `npm run ebook` → `scripts/generate-ebook.ts`.
 - [x] `llms.txt` / `llms-full.txt` e-kitap PDF bağlantısı ve “8 tarif” bilgisi eklendi.
-- [x] Kargo 45 TL bilgisi tüm site/şema/llms kaynaklarında teyit edildi; sitede “150 TL” metni yok.
+- [x] Kargo 150 TL bilgisi tüm site/şema/llms kaynaklarında teyit edildi; sitede “150 TL” metni yok.
 - [x] **Soft-404 düzeltildi:** bilinmeyen yollar artık `public/404.html` ile gerçek HTTP 404 döner; `_redirects` SPA fallback kaldırıldı.
 - [x] Rehber sayfa başlıkları 65 karakter altına çekildi.
 - [x] GEO/SEO denetimi yapıldı: 19/19 URL 200, canonical + tek H1 + JSON-LD doğru, robots/llms/PDF erişilebilir. Rapor: `docs/geo-seo-denetim-2026-10-20.md`.

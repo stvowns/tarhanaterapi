@@ -21,7 +21,7 @@ npx wrangler pages deploy dist --project-name tarhanaterapi --branch main --comm
 - GitHub deposu: `https://github.com/stvowns/tarhanaterapi`
 - Cloudflare Pages projesinde **Git Provider: No** → GitHub bağlı değil.
 - Yani `git push` yapmak siteyi **otomatik yayınlamaz**. Canlıya çıkmak için yukarıdaki `wrangler` komutu gerekir.
-- Depoda son commit `858c339`; 20 Ekim değişiklikleri henüz commit edilmedi.
+- 20 Ekim akşamı kargo, yorum, bülten ve animasyon değişiklikleri tamamlandı; canlı yayın `wrangler pages deploy` ile yapılır.
 
 ### GitHub'a bağlayıp otomatik deploy istersen
 
@@ -44,7 +44,7 @@ Bağlandıktan sonra `main` dalına push otomatik deploy tetikler. Alternatif ol
    - Zorunlu alanları ve KVKK onayını kontrol eder.
    - IP bazlı hız sınırı uygular.
    - Ürün fiyatlarını **sunucuda yeniden hesaplar** (client'tan gelen toplamı kullanmaz).
-   - Kargo: 2000 TL üzeri ücretsiz, altı 45 TL.
+   - Kargo: 2000 TL üzeri ücretsiz, altı 150 TL.
    - `TT-XXXXXX` sipariş numarası üretir.
 3. **Supabase PostgreSQL** (`orders` tablosu)
    - Sipariş, service-role anahtarıyla kalıcı olarak yazılır.
@@ -110,18 +110,24 @@ Bu limitler içinde kalındığı sürece **ücret yansımaz**. Sipariş onaylar
 
 > Ücret yansımaması için Resend panelinde **Billing → pay-as-you-go/overage kapalı** olmalı. Free plan kredi kartı gerektirmez; limit aşılırsa gönderim durur, otomatik ücret çıkmaz.
 
-## 4. Bülten kayıtları ve toplu gönderim
+## 4. Bülten kayıtları ve yönetici panelinden gönderim
 
 - Kayıtlar: Supabase `subscribers` tablosu.
-- Otomatik kopya: Resend **“TarhanaTerapi Bülten”** audience'ı.
+- Her yeni abone, Resend global kontaktlarına ve `decff556-906f-4dd1-93c1-3009796ab097` segmentine eklenir.
 - Yönetici paneli → **E-Posta Listesi** → CSV indirme.
-- Toplu gönderim: Resend → **Broadcasts** → New Broadcast → audience seç → gönder.
+- Yönetici paneli → **Bülten Gönder**:
+  - Resend kontaktları listelenir; abonelikten çıkanlar işaretlenemez.
+  - Alıcılar tek tek seçilebilir; tek gönderimde en fazla **25 alıcı** desteklenir.
+  - Konu, ön yazı, başlık, gövde, öne çıkanlar, buton ve alt not alanları düzenlenebilir.
+  - Önizleme iframe içinde gösterilir; gönderim `POST /api/send-newsletter` üzerinden yapılır.
+  - E-postalar Resend `/emails` ile ayrı ayrı gönderilir; `List-Unsubscribe` mailto başlığı eklenir.
+- Daha büyük toplu gönderimler için Resend → **Broadcasts** → New Broadcast → segment seç → gönder akışı kullanılabilir.
 - 1.000 kişiye kadar ücretsiz; üzerinde Resend marketing planı gerekir.
 - Alternatif: CSV'yi Brevo'ya aktarıp ücretsiz 300/gün limitiyle göndermek.
 
 ## 5. Yorum ve KVKK akışı
 
 - Yorum → `/api/submit-review` → Supabase `reviews` (`verified=false`) + Telegram.
-- Yönetici paneli → **Yorum Onayı** → Onayla/Sil.
+- Yönetici paneli → **Yorumlar** → onay bekleyenleri onayla, yayındaki yorumları sil.
 - Onaylı yorumlar `/api/list-reviews?status=approved` üzerinden siteye gelir.
 - KVKK metni `/kvkk`, ödeme ekranındaki onay kutusu bu sayfaya bağlıdır.

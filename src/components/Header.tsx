@@ -48,9 +48,10 @@ export const Header: React.FC<HeaderProps> = ({
     <header className="fixed top-0 left-0 right-0 z-50 bg-surface/95 backdrop-blur-xl shadow-[0_1px_8px_rgba(45,36,36,0.05)] border-b border-surface-container-high/70 h-20">
       <div className="h-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-10 flex items-center justify-between gap-4">
         {/* Brand Zone - Clean spacing so it never collides with navigation */}
-        <div className="flex items-center shrink-0 pr-4">
+        <div className="flex items-center shrink-0 pr-2 sm:pr-4">
           <a
             href="/"
+            aria-label="TarhanaTerapi ana sayfa"
             onClick={(e) => {
               e.preventDefault();
               handleNavClick('home');
@@ -62,7 +63,7 @@ export const Header: React.FC<HeaderProps> = ({
               className="h-8 w-auto object-contain shrink-0 transition-transform duration-300 group-hover:scale-105"
               src={ASSETS.logo}
             />
-            <span className="font-headline-sm text-primary tracking-tight font-bold whitespace-nowrap text-lg sm:text-xl">
+            <span className="hidden sm:inline font-headline-sm text-primary tracking-tight font-bold whitespace-nowrap text-lg sm:text-xl">
               TarhanaTerapi
             </span>
           </a>
@@ -131,7 +132,7 @@ export const Header: React.FC<HeaderProps> = ({
               <span className="hidden md:inline max-w-[90px] truncate">
                 {currentUser.fullName.split(' ')[0]}
               </span>
-              <span className="material-symbols-outlined text-[16px] text-outline">
+              <span className="hidden sm:inline material-symbols-outlined text-[16px] text-outline">
                 arrow_drop_down
               </span>
             </button>
@@ -149,6 +150,8 @@ export const Header: React.FC<HeaderProps> = ({
 
           {/* Cart / Sipariş Ver Button */}
           <button
+            id="header-cart-button"
+            data-fly-target="cart"
             onClick={onOpenCart}
             className="relative inline-flex items-center gap-1.5 bg-primary-container text-on-primary-container px-3.5 sm:px-4 py-2 sm:py-2.5 rounded-lg font-title-md text-xs sm:text-sm shadow-xs hover:bg-primary transition-all duration-200 cursor-pointer active:scale-95 shrink-0"
             aria-label="Sepeti aç"

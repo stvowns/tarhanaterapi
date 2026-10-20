@@ -14,7 +14,7 @@ const PRODUCT_PRICES = {
   'tarhana-gourmet-duo': 900,
 };
 const FREE_SHIPPING_THRESHOLD = 2000;
-const STANDARD_SHIPPING_FEE = 45;
+const STANDARD_SHIPPING_FEE = 150;
 const SITE_URL = 'https://tarhanaterapi.com';
 
 const esc = (value) =>

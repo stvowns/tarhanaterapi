@@ -41,7 +41,7 @@ export const BRAND_DEFINITION =
   "TarhanaTerapi, Bursa Orhangazi'de üç nesilden devraldığı mayayla ata tohumu koçbaşı nohutlu, katkısız anne tarhanasını toprak küplerde 21 gün fermente ederek üreten bir aile işletmesidir.";
 
 export const SHORT_ANSWER =
-  "TarhanaTerapi tarhanası; taş değirmen buğday unu, köy yoğurdu, tarla domatesi, közlenmiş kapya biber, koçbaşı nohut ve kaya tuzuyla yapılır. Hamur toprak küpte 21 gün fermente edilir; koruyucu, renklendirici ve aroma verici kullanılmaz. 1 kg klasik pamuk torba 450 TL, 1 kg pamuk çuvallı aile paketi 450 TL'dir. Türkiye geneli kargo 1-3 iş günü sürer, 2000 TL üzeri siparişlerde ücretsizdir; 2000 TL altı siparişlerde 45 TL'dir.";
+  "TarhanaTerapi tarhanası; taş değirmen buğday unu, köy yoğurdu, tarla domatesi, közlenmiş kapya biber, koçbaşı nohut ve kaya tuzuyla yapılır. Hamur toprak küpte 21 gün fermente edilir; koruyucu, renklendirici ve aroma verici kullanılmaz. 1 kg klasik pamuk torba 450 TL, 1 kg pamuk çuvallı aile paketi 450 TL'dir. Türkiye geneli kargo 1-3 iş günü sürer, 2000 TL üzeri siparişlerde ücretsizdir; 2000 TL altı siparişlerde 150 TL'dir.";
 
 export const productPath = (product: Pick<Product, 'id'>) => `/urunler/${product.id}`;
 export const productUrl = (product: Pick<Product, 'id'>) => `${SITE_URL}${productPath(product)}`;

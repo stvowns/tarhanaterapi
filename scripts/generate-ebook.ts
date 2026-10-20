@@ -169,7 +169,8 @@ const html = `<!DOCTYPE html>
       Tarhana, Anadolu'nun en eski fermente gıdalarından biridir. Un, yoğurt, domates, biber ve nohutun
       güneşle buluştuğu bu kadim karışım; sadece bir çorba değil, nesiller boyu aktarılan bir sağlık
       ritüelidir. TarhanaTerapi'de bu ritüeli üç nesilden devraldığımız mayayla, toprak küplerde 21 gün
-      fermente ederek sürdürüyoruz.
+      fermente ederek sürdürüyoruz. Bu kitap; mevsimlik malzemelerle hazırlanan sekiz tarif, 21 günlük
+      fermantasyon rehberi ve bağırsak dostu fermente beslenme notlarından oluşur.
     </p>
     <div class="quote">
       "İyi tarhana acele edilmez. Zaman, bakterilerin işini yapmasına izin verdiğinizde lezzete dönüşür."

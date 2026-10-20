@@ -18,7 +18,7 @@
 - `http://` → HTTPS: **200**, `www` → apex: **200**
 - HSTS: **var**
 - OG görseli: **HTTP 200** (110017 bayt)
-- Ürün schema: fiyat **450.00 TL**, kargo **45.00 TL**
+- Ürün schema: fiyat **450.00 TL**, kargo **150.00 TL**
 
 ## Sayfa sayfa
 

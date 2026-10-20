@@ -58,7 +58,7 @@ Bu raporda listelenen değişikliklerle:
 
 5. **Fiyat ve gramaj yapısı (19 Ekim 2026'da güncellendi).**
    Eski veride 500 g klasik tarhana **450 TL**, 1000 g aile paketi **330 TL** görünüyordu; 1000 g ürün 500 g'dan ucuzdu. Ayrıca 500 g seçeneği minimum sepeti düşürüyordu.
-   **Yeni yapı (minimum 1 kg):** 1 kg klasik **450 TL**, 1 kg acılı **500 TL**, 1 kg bebek **500 TL**, 1 kg pamuk çuvallı aile paketi **450 TL**, 2×1 kg ikili gurme paketi **900 TL**, 1 kg tarhana içeren başlangıç seti **850 TL**. 500 g seçeneği tamamen kaldırıldı. **2000 TL** üzeri siparişlerde kargo ücretsiz; altında standart kargo **45 TL**. Tüm ürün sayfaları, schema, `llms.txt`, `llms-full.txt`, ana sayfa tablosu ve SSS bu yapıyla güncellendi.
+   **Yeni yapı (minimum 1 kg):** 1 kg klasik **450 TL**, 1 kg acılı **500 TL**, 1 kg bebek **500 TL**, 1 kg pamuk çuvallı aile paketi **450 TL**, 2×1 kg ikili gurme paketi **900 TL**, 1 kg tarhana içeren başlangıç seti **850 TL**. 500 g seçeneği tamamen kaldırıldı. **2000 TL** üzeri siparişlerde kargo ücretsiz; altında standart kargo **150 TL**. Tüm ürün sayfaları, schema, `llms.txt`, `llms-full.txt`, ana sayfa tablosu ve SSS bu yapıyla güncellendi.
 
 ### Orta (AI görünürlüğünü sınırlayan)
 

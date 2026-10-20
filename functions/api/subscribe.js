@@ -1,6 +1,6 @@
 /**
  * Cloudflare Pages Function — POST /api/subscribe
- * Bülten / e-kitap e-postalarını Supabase'e kaydeder ve Resend audience'a ekler.
+ * Bülten / e-kitap e-postalarını Supabase'e kaydeder ve Resend contacts + segmente ekler.
  */
 
 const RATE_LIMIT = new Map();
@@ -85,9 +85,9 @@ export async function onRequestPost({ request, env }) {
       }
     }
 
-    const audienceId = env.RESEND_AUDIENCE_ID || 'decff556-906f-4dd1-93c1-3009796ab097';
-    if (env.RESEND_API_KEY && audienceId) {
-      const contact = await fetch(`https://api.resend.com/audiences/${audienceId}/contacts`, {
+    const segmentId = env.RESEND_AUDIENCE_ID || 'decff556-906f-4dd1-93c1-3009796ab097';
+    if (env.RESEND_API_KEY && segmentId) {
+      const contact = await fetch('https://api.resend.com/contacts', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -98,10 +98,26 @@ export async function onRequestPost({ request, env }) {
 
       if (!contact.ok) {
         const detail = await contact.text();
-        // Kişi zaten audience'ta olabilir; bu durumu hata olarak saymıyoruz.
-        if (!detail.toLowerCase().includes('already')) {
-          console.error('resend audience error', contact.status, detail);
+        // Kişi zaten Resend'de olabilir; segment ekleme adımına devam ediyoruz.
+        if (contact.status !== 409 && !detail.toLowerCase().includes('already')) {
+          console.error('resend contact error', contact.status, detail);
         }
+      }
+
+      const segment = await fetch(
+        `https://api.resend.com/contacts/${encodeURIComponent(email)}/segments/${segmentId}`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${env.RESEND_API_KEY}`,
+          },
+        }
+      );
+
+      if (!segment.ok) {
+        const detail = await segment.text();
+        console.error('resend segment error', segment.status, detail);
       }
     }
 

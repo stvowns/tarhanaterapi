@@ -1,7 +1,32 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { supabase } from '../lib/supabase';
 import { Order, SubscriberLead, User } from '../types';
 import { PRODUCTS } from '../data/mockData';
+import {
+  buildNewsletterHtml,
+  DEFAULT_NEWSLETTER,
+  type NewsletterFields,
+} from '../lib/newsletterTemplate';
+
+type AdminReview = {
+  id: string;
+  author: string;
+  location: string;
+  rating: number;
+  content: string;
+  productName?: string;
+  createdAt: string;
+  verified: boolean;
+};
+
+type NewsletterContact = {
+  id: string;
+  email: string;
+  firstName?: string;
+  lastName?: string;
+  unsubscribed: boolean;
+  createdAt?: string;
+};
 
 interface AdminModalProps {
   isOpen: boolean;
@@ -24,49 +49,79 @@ export const AdminModal: React.FC<AdminModalProps> = ({
   onSimulateIncomingOrder,
   onClearNewOrderAlert,
 }) => {
-  const [activeTab, setActiveTab] = useState<'orders' | 'reviews' | 'subscribers' | 'database'>('orders');
-  const [pendingReviews, setPendingReviews] = useState<
-    Array<{
-      id: string;
-      author: string;
-      location: string;
-      rating: number;
-      content: string;
-      productName?: string;
-      createdAt: string;
-    }>
-  >([]);
+  const [activeTab, setActiveTab] = useState<
+    'orders' | 'reviews' | 'subscribers' | 'newsletter' | 'database'
+  >('orders');
+  const [pendingReviews, setPendingReviews] = useState<AdminReview[]>([]);
+  const [approvedReviews, setApprovedReviews] = useState<AdminReview[]>([]);
   const [reviewBusy, setReviewBusy] = useState<string | null>(null);
+  const [reviewError, setReviewError] = useState('');
   const [copiedSql, setCopiedSql] = useState(false);
   const [dateFrom, setDateFrom] = useState('');
   const [dateTo, setDateTo] = useState('');
+  const [newsletterContacts, setNewsletterContacts] = useState<NewsletterContact[]>([]);
+  const [newsletterSelected, setNewsletterSelected] = useState<string[]>([]);
+  const [newsletterContactsBusy, setNewsletterContactsBusy] = useState(false);
+  const [newsletterContactsError, setNewsletterContactsError] = useState('');
+  const [newsletterHasMore, setNewsletterHasMore] = useState(false);
+  const [newsletterFields, setNewsletterFields] = useState<NewsletterFields>({
+    ...DEFAULT_NEWSLETTER,
+  });
+  const [newsletterBusy, setNewsletterBusy] = useState(false);
+  const [newsletterResult, setNewsletterResult] = useState('');
+  const [newsletterError, setNewsletterError] = useState('');
 
-  const loadPendingReviews = async () => {
+  const loadReviews = async () => {
+    setReviewError('');
     try {
       const { data } = await supabase.auth.getSession();
       const token = data.session?.access_token;
-      if (!token) return;
-      const res = await fetch('/api/list-reviews?status=pending', {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      if (!res.ok) return;
-      const payload = await res.json();
-      if (Array.isArray(payload.reviews)) setPendingReviews(payload.reviews);
+      const [pendingRes, approvedRes] = await Promise.all([
+        token
+          ? fetch('/api/list-reviews?status=pending', {
+              headers: { Authorization: `Bearer ${token}` },
+              cache: 'no-store',
+            })
+          : Promise.resolve(null),
+        fetch('/api/list-reviews?status=approved', { cache: 'no-store' }),
+      ]);
+
+      if (pendingRes?.ok) {
+        const payload = await pendingRes.json();
+        if (Array.isArray(payload.reviews)) {
+          setPendingReviews(
+            payload.reviews.map((review: AdminReview) => ({ ...review, verified: false }))
+          );
+        }
+      }
+
+      if (approvedRes.ok) {
+        const payload = await approvedRes.json();
+        if (Array.isArray(payload.reviews)) {
+          setApprovedReviews(
+            payload.reviews.map((review: AdminReview) => ({ ...review, verified: true }))
+          );
+        }
+      }
     } catch {
-      // Sessiz geç: yönetici panelinin ana işlevlerini etkilemesin.
+      setReviewError('Yorumlar yüklenemedi. Lütfen tekrar deneyin.');
     }
   };
 
   useEffect(() => {
-    if (isOpen) loadPendingReviews();
+    if (isOpen) loadReviews();
   }, [isOpen]);
 
   const handleReviewAction = async (id: string, action: 'approve' | 'delete') => {
     setReviewBusy(id);
+    setReviewError('');
     try {
       const { data } = await supabase.auth.getSession();
       const token = data.session?.access_token;
-      if (!token) return;
+      if (!token) {
+        setReviewError('Yönetici oturumu bulunamadı. Lütfen tekrar giriş yapın.');
+        return;
+      }
       const res = await fetch('/api/moderate-review', {
         method: 'POST',
         headers: {
@@ -75,11 +130,135 @@ export const AdminModal: React.FC<AdminModalProps> = ({
         },
         body: JSON.stringify({ id, action }),
       });
-      if (res.ok) {
-        setPendingReviews((prev) => prev.filter((review) => review.id !== id));
+      if (!res.ok) {
+        const payload = await res.json().catch(() => ({}));
+        setReviewError(payload.error || 'İşlem tamamlanamadı. Lütfen tekrar deneyin.');
+        return;
       }
+      await loadReviews();
     } finally {
       setReviewBusy(null);
+    }
+  };
+
+  const newsletterHtml = useMemo(
+    () => buildNewsletterHtml(newsletterFields),
+    [newsletterFields]
+  );
+
+  const loadNewsletterContacts = async () => {
+    setNewsletterContactsBusy(true);
+    setNewsletterContactsError('');
+    try {
+      const { data } = await supabase.auth.getSession();
+      const token = data.session?.access_token;
+      if (!token) throw new Error('Yönetici oturumu bulunamadı.');
+
+      const res = await fetch('/api/list-newsletter-contacts', {
+        headers: { Authorization: `Bearer ${token}` },
+        cache: 'no-store',
+      });
+      const payload = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(payload.error || 'Alıcı listesi alınamadı.');
+
+      const contacts: NewsletterContact[] = Array.isArray(payload.contacts)
+        ? payload.contacts
+        : [];
+      setNewsletterContacts(contacts);
+      setNewsletterHasMore(Boolean(payload.hasMore));
+      setNewsletterSelected((previous) =>
+        previous.filter((email) =>
+          contacts.some((contact) => contact.email === email && !contact.unsubscribed)
+        )
+      );
+    } catch (error) {
+      setNewsletterContactsError(
+        error instanceof Error ? error.message : 'Alıcı listesi alınamadı.'
+      );
+    } finally {
+      setNewsletterContactsBusy(false);
+    }
+  };
+
+  useEffect(() => {
+    if (isOpen && activeTab === 'newsletter') loadNewsletterContacts();
+  }, [isOpen, activeTab]);
+
+  const updateNewsletterField = (field: keyof NewsletterFields, value: string) => {
+    setNewsletterFields((previous) => ({ ...previous, [field]: value }));
+  };
+
+  const toggleNewsletterContact = (email: string) => {
+    setNewsletterSelected((previous) => {
+      if (previous.includes(email)) return previous.filter((item) => item !== email);
+      if (previous.length >= 25) return previous;
+      return [...previous, email];
+    });
+  };
+
+  const selectAllNewsletterContacts = () => {
+    const eligible = newsletterContacts
+      .filter((contact) => !contact.unsubscribed)
+      .map((contact) => contact.email);
+    setNewsletterSelected((previous) =>
+      previous.length === eligible.length ? [] : eligible.slice(0, 25)
+    );
+  };
+
+  const handleSendNewsletter = async () => {
+    setNewsletterError('');
+    setNewsletterResult('');
+
+    if (!newsletterFields.subject.trim()) {
+      setNewsletterError('Bülten konusu boş olamaz.');
+      return;
+    }
+    if (newsletterSelected.length === 0) {
+      setNewsletterError('Göndermek için en az bir alıcı seçin.');
+      return;
+    }
+    if (newsletterSelected.length > 25) {
+      setNewsletterError('Tek seferde en fazla 25 alıcıya gönderilebilir.');
+      return;
+    }
+
+    const confirmed = window.confirm(
+      `${newsletterSelected.length} kişiye “${newsletterFields.subject}” konulu bülten gönderilsin mi?`
+    );
+    if (!confirmed) return;
+
+    setNewsletterBusy(true);
+    try {
+      const { data } = await supabase.auth.getSession();
+      const token = data.session?.access_token;
+      if (!token) throw new Error('Yönetici oturumu bulunamadı.');
+
+      const res = await fetch('/api/send-newsletter', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          subject: newsletterFields.subject.trim(),
+          html: newsletterHtml,
+          recipients: newsletterSelected,
+        }),
+      });
+      const payload = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(payload.error || 'Bülten gönderilemedi.');
+
+      setNewsletterResult(
+        `${payload.sent || 0} kişiye gönderildi${
+          payload.failed ? `, ${payload.failed} kişide hata oluştu.` : '.'
+        }`
+      );
+    } catch (error) {
+      setNewsletterError(
+        error instanceof Error ? error.message : 'Bülten gönderilemedi.'
+      );
+    } finally {
+      setNewsletterBusy(false);
     }
   };
 
@@ -289,7 +468,7 @@ CREATE TABLE subscribers (
                 TarhanaTerapi Yönetici Paneli
               </h3>
               <p className="text-xs text-on-surface-variant">
-                Canlı Sipariş Takibi, E-Posta Listesi &amp; Veritabanı Yönetimi
+                Canlı Sipariş Takibi, E-Posta Listesi, Bülten &amp; Veritabanı Yönetimi
               </p>
             </div>
           </div>
@@ -312,50 +491,62 @@ CREATE TABLE subscribers (
                 setActiveTab('orders');
                 onClearNewOrderAlert();
               }}
-              className={`py-3 px-4 text-xs font-semibold border-b-2 transition-all cursor-pointer flex items-center gap-2 whitespace-nowrap ${
+              className={`py-3 px-3 text-xs font-semibold border-b-2 transition-all cursor-pointer flex items-center gap-2 whitespace-nowrap ${
                 activeTab === 'orders'
                   ? 'border-primary text-primary font-bold'
                   : 'border-transparent text-outline hover:text-on-surface'
               }`}
             >
               <span className="material-symbols-outlined text-[18px]">shopping_cart</span>
-              <span>Gelen Siparişler ({orders.length})</span>
+              <span>Siparişler ({orders.length})</span>
             </button>
 
             <button
               onClick={() => setActiveTab('reviews')}
-              className={`py-3 px-4 text-xs font-semibold border-b-2 transition-all cursor-pointer flex items-center gap-2 whitespace-nowrap ${
+              className={`py-3 px-3 text-xs font-semibold border-b-2 transition-all cursor-pointer flex items-center gap-2 whitespace-nowrap ${
                 activeTab === 'reviews'
                   ? 'border-primary text-primary font-bold'
                   : 'border-transparent text-outline hover:text-on-surface'
               }`}
             >
               <span className="material-symbols-outlined text-[18px]">rate_review</span>
-              <span>Yorum Onayı ({pendingReviews.length})</span>
+              <span>Yorumlar ({pendingReviews.length + approvedReviews.length})</span>
             </button>
 
             <button
               onClick={() => setActiveTab('subscribers')}
-              className={`py-3 px-4 text-xs font-semibold border-b-2 transition-all cursor-pointer flex items-center gap-2 whitespace-nowrap ${
+              className={`py-3 px-3 text-xs font-semibold border-b-2 transition-all cursor-pointer flex items-center gap-2 whitespace-nowrap ${
                 activeTab === 'subscribers'
                   ? 'border-primary text-primary font-bold'
                   : 'border-transparent text-outline hover:text-on-surface'
               }`}
             >
               <span className="material-symbols-outlined text-[18px]">mail</span>
-              <span>E-Posta Listesi ({subscribers.length})</span>
+              <span>E-Posta ({subscribers.length})</span>
+            </button>
+
+            <button
+              onClick={() => setActiveTab('newsletter')}
+              className={`py-3 px-3 text-xs font-semibold border-b-2 transition-all cursor-pointer flex items-center gap-2 whitespace-nowrap ${
+                activeTab === 'newsletter'
+                  ? 'border-primary text-primary font-bold'
+                  : 'border-transparent text-outline hover:text-on-surface'
+              }`}
+            >
+              <span className="material-symbols-outlined text-[18px]">campaign</span>
+              <span>Bülten Gönder</span>
             </button>
 
             <button
               onClick={() => setActiveTab('database')}
-              className={`py-3 px-4 text-xs font-semibold border-b-2 transition-all cursor-pointer flex items-center gap-2 whitespace-nowrap ${
+              className={`py-3 px-3 text-xs font-semibold border-b-2 transition-all cursor-pointer flex items-center gap-2 whitespace-nowrap ${
                 activeTab === 'database'
                   ? 'border-primary text-primary font-bold'
                   : 'border-transparent text-outline hover:text-on-surface'
               }`}
             >
               <span className="material-symbols-outlined text-[18px]">database</span>
-              <span>Veritabanı &amp; Dışa Aktarma</span>
+              <span>Veritabanı</span>
             </button>
           </div>
 
@@ -491,20 +682,20 @@ CREATE TABLE subscribers (
           </div>
         )}
 
-        {/* Tab: Pending Review Moderation */}
+        {/* Tab: Review Moderation */}
         {activeTab === 'reviews' && (
           <div className="p-6 overflow-y-auto grow">
             <div className="flex items-center justify-between mb-4">
               <div>
                 <h4 className="font-title-md text-sm font-bold text-on-surface">
-                  Onay Bekleyen Yorumlar
+                  Yorum Yönetimi
                 </h4>
                 <p className="text-xs text-outline">
-                  Müşteri yorumları onaylanmadan sitede yayınlanmaz.
+                  Onay bekleyenleri onaylayın; yayındaki yorumları silebilirsiniz.
                 </p>
               </div>
               <button
-                onClick={loadPendingReviews}
+                onClick={loadReviews}
                 className="px-3.5 py-1.5 bg-surface-container-high text-on-surface text-xs font-semibold rounded-lg hover:bg-surface-container-highest transition-colors flex items-center gap-1 cursor-pointer"
               >
                 <span className="material-symbols-outlined text-[16px]">refresh</span>
@@ -512,55 +703,117 @@ CREATE TABLE subscribers (
               </button>
             </div>
 
-            {pendingReviews.length === 0 ? (
+            {reviewError && (
+              <div className="mb-4 rounded-lg border border-error/30 bg-error-container px-3 py-2 text-xs text-on-error-container">
+                {reviewError}
+              </div>
+            )}
+
+            {pendingReviews.length === 0 && approvedReviews.length === 0 ? (
               <div className="text-center py-12 text-xs text-outline">
-                Onay bekleyen yorum yok.
+                Henüz yorum yok.
               </div>
             ) : (
-              <div className="flex flex-col gap-3">
-                {pendingReviews.map((review) => (
-                  <div
-                    key={review.id}
-                    className="p-4 rounded-xl border border-outline-variant/30 bg-surface-container-lowest flex flex-col gap-3"
-                  >
-                    <div className="flex items-start justify-between gap-4">
-                      <div>
-                        <div className="flex items-center gap-2">
-                          <strong className="text-sm text-on-surface">{review.author}</strong>
-                          <span className="text-xs text-outline">{review.location}</span>
-                          <span className="text-xs font-bold text-secondary">
-                            {review.rating}/5
-                          </span>
+              <div className="flex flex-col gap-6">
+                {pendingReviews.length > 0 && (
+                  <section>
+                    <h5 className="mb-3 text-xs font-bold uppercase tracking-wide text-outline">
+                      Onay Bekleyenler ({pendingReviews.length})
+                    </h5>
+                    <div className="flex flex-col gap-3">
+                      {pendingReviews.map((review) => (
+                        <div
+                          key={review.id}
+                          className="p-4 rounded-xl border border-outline-variant/30 bg-surface-container-lowest flex flex-col gap-3"
+                        >
+                          <div className="flex items-start justify-between gap-4">
+                            <div>
+                              <div className="flex items-center gap-2">
+                                <strong className="text-sm text-on-surface">{review.author}</strong>
+                                <span className="text-xs text-outline">{review.location}</span>
+                                <span className="text-xs font-bold text-secondary">
+                                  {review.rating}/5
+                                </span>
+                              </div>
+                              <p className="text-[11px] text-outline mt-0.5">
+                                {review.productName || 'Ürün belirtilmedi'} ·{' '}
+                                {review.createdAt
+                                  ? new Date(review.createdAt).toLocaleDateString('tr-TR')
+                                  : ''}
+                              </p>
+                            </div>
+                            <div className="flex gap-2 shrink-0">
+                              <button
+                                onClick={() => handleReviewAction(review.id, 'approve')}
+                                disabled={reviewBusy === review.id}
+                                className="px-3 py-1.5 rounded-lg bg-emerald-100 text-emerald-800 text-[11px] font-bold hover:bg-emerald-200 transition-colors disabled:opacity-50 cursor-pointer"
+                              >
+                                Onayla
+                              </button>
+                              <button
+                                onClick={() => handleReviewAction(review.id, 'delete')}
+                                disabled={reviewBusy === review.id}
+                                className="px-3 py-1.5 rounded-lg bg-error-container text-on-error-container text-[11px] font-bold hover:bg-error/20 transition-colors disabled:opacity-50 cursor-pointer"
+                              >
+                                Sil
+                              </button>
+                            </div>
+                          </div>
+                          <p className="text-xs text-on-surface-variant leading-relaxed">
+                            {review.content}
+                          </p>
                         </div>
-                        <p className="text-[11px] text-outline mt-0.5">
-                          {review.productName || 'Ürün belirtilmedi'} ·{' '}
-                          {review.createdAt
-                            ? new Date(review.createdAt).toLocaleDateString('tr-TR')
-                            : ''}
-                        </p>
-                      </div>
-                      <div className="flex gap-2 shrink-0">
-                        <button
-                          onClick={() => handleReviewAction(review.id, 'approve')}
-                          disabled={reviewBusy === review.id}
-                          className="px-3 py-1.5 rounded-lg bg-emerald-100 text-emerald-800 text-[11px] font-bold hover:bg-emerald-200 transition-colors disabled:opacity-50 cursor-pointer"
-                        >
-                          Onayla
-                        </button>
-                        <button
-                          onClick={() => handleReviewAction(review.id, 'delete')}
-                          disabled={reviewBusy === review.id}
-                          className="px-3 py-1.5 rounded-lg bg-error-container text-on-error-container text-[11px] font-bold hover:bg-error/20 transition-colors disabled:opacity-50 cursor-pointer"
-                        >
-                          Sil
-                        </button>
-                      </div>
+                      ))}
                     </div>
-                    <p className="text-xs text-on-surface-variant leading-relaxed">
-                      {review.content}
-                    </p>
-                  </div>
-                ))}
+                  </section>
+                )}
+
+                {approvedReviews.length > 0 && (
+                  <section>
+                    <h5 className="mb-3 text-xs font-bold uppercase tracking-wide text-outline">
+                      Yayındaki Yorumlar ({approvedReviews.length})
+                    </h5>
+                    <div className="flex flex-col gap-3">
+                      {approvedReviews.map((review) => (
+                        <div
+                          key={review.id}
+                          className="p-4 rounded-xl border border-emerald-200/70 bg-surface-container-lowest flex flex-col gap-3"
+                        >
+                          <div className="flex items-start justify-between gap-4">
+                            <div>
+                              <div className="flex flex-wrap items-center gap-2">
+                                <strong className="text-sm text-on-surface">{review.author}</strong>
+                                <span className="text-xs text-outline">{review.location}</span>
+                                <span className="text-xs font-bold text-secondary">
+                                  {review.rating}/5
+                                </span>
+                                <span className="rounded-full bg-emerald-100 px-2 py-0.5 text-[10px] font-bold text-emerald-800">
+                                  Yayında
+                                </span>
+                              </div>
+                              <p className="text-[11px] text-outline mt-0.5">
+                                {review.productName || 'Ürün belirtilmedi'} ·{' '}
+                                {review.createdAt
+                                  ? new Date(review.createdAt).toLocaleDateString('tr-TR')
+                                  : ''}
+                              </p>
+                            </div>
+                            <button
+                              onClick={() => handleReviewAction(review.id, 'delete')}
+                              disabled={reviewBusy === review.id}
+                              className="px-3 py-1.5 rounded-lg bg-error-container text-on-error-container text-[11px] font-bold hover:bg-error/20 transition-colors disabled:opacity-50 cursor-pointer shrink-0"
+                            >
+                              Sil
+                            </button>
+                          </div>
+                          <p className="text-xs text-on-surface-variant leading-relaxed">
+                            {review.content}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                  </section>
+                )}
               </div>
             )}
           </div>
@@ -628,6 +881,269 @@ CREATE TABLE subscribers (
                 </table>
               </div>
             )}
+          </div>
+        )}
+
+        {/* Tab: Newsletter Composer */}
+        {activeTab === 'newsletter' && (
+          <div className="p-6 overflow-y-auto grow">
+            <div className="flex flex-wrap items-start justify-between gap-3 mb-4">
+              <div>
+                <h4 className="font-title-md text-sm font-bold text-on-surface">
+                  Şifa Bülteni Gönderimi
+                </h4>
+                <p className="text-xs text-outline">
+                  Resend kontaktlarını seçin, taslağı düzenleyin ve gönderin.
+                </p>
+              </div>
+              <button
+                onClick={loadNewsletterContacts}
+                disabled={newsletterContactsBusy}
+                className="px-3.5 py-1.5 bg-surface-container-high text-on-surface text-xs font-semibold rounded-lg hover:bg-surface-container-highest transition-colors flex items-center gap-1 cursor-pointer disabled:opacity-50"
+              >
+                <span className="material-symbols-outlined text-[16px]">refresh</span>
+                <span>{newsletterContactsBusy ? 'Yükleniyor…' : 'Alıcıları Yenile'}</span>
+              </button>
+            </div>
+
+            <div className="grid grid-cols-1 gap-5 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]">
+              {/* Recipients */}
+              <section className="rounded-xl border border-outline-variant/30 bg-surface-container-lowest p-4">
+                <div className="mb-3 flex items-center justify-between gap-2">
+                  <div>
+                    <h5 className="text-xs font-bold uppercase tracking-wide text-outline">
+                      Alıcılar
+                    </h5>
+                    <p className="mt-0.5 text-[11px] text-outline">
+                      {newsletterContacts.length} Resend kontaktı
+                    </p>
+                  </div>
+                  <button
+                    onClick={selectAllNewsletterContacts}
+                    disabled={newsletterContacts.length === 0}
+                    className="rounded-lg bg-primary-fixed px-2.5 py-1 text-[11px] font-bold text-primary transition-colors hover:bg-primary-container disabled:opacity-50 cursor-pointer"
+                  >
+                    {newsletterContacts.filter((contact) => !contact.unsubscribed).length > 25
+                      ? 'İlk 25’i seç'
+                      : 'Tümünü seç'}
+                  </button>
+                </div>
+
+                {newsletterContactsError && (
+                  <div className="mb-3 rounded-lg border border-error/30 bg-error-container px-3 py-2 text-[11px] text-on-error-container">
+                    {newsletterContactsError}
+                  </div>
+                )}
+
+                {newsletterContactsBusy ? (
+                  <div className="py-10 text-center text-xs text-outline">Alıcılar yükleniyor…</div>
+                ) : newsletterContacts.length === 0 ? (
+                  <div className="py-10 text-center text-xs text-outline">
+                    Resend kontaktı bulunamadı. Yeni aboneler kaydedildikçe burada görünür.
+                  </div>
+                ) : (
+                  <div className="max-h-[330px] divide-y divide-outline-variant/20 overflow-y-auto rounded-lg border border-outline-variant/20">
+                    {newsletterContacts.map((contact) => (
+                      <label
+                        key={contact.id}
+                        className={`flex items-start gap-2.5 p-2.5 ${
+                          contact.unsubscribed
+                            ? 'cursor-not-allowed opacity-55'
+                            : 'cursor-pointer hover:bg-surface-container-low/60'
+                        }`}
+                      >
+                        <input
+                          type="checkbox"
+                          checked={newsletterSelected.includes(contact.email)}
+                          disabled={contact.unsubscribed}
+                          onChange={() => toggleNewsletterContact(contact.email)}
+                          className="mt-0.5 h-4 w-4 accent-primary"
+                        />
+                        <span className="min-w-0 flex-1">
+                          <span className="block truncate text-xs font-semibold text-on-surface">
+                            {contact.email}
+                          </span>
+                          <span className="mt-0.5 block text-[10px] text-outline">
+                            {[contact.firstName, contact.lastName].filter(Boolean).join(' ') ||
+                              'İsimsiz'}
+                            {contact.createdAt
+                              ? ` · ${new Date(contact.createdAt).toLocaleDateString('tr-TR')}`
+                              : ''}
+                          </span>
+                        </span>
+                        {contact.unsubscribed && (
+                          <span className="shrink-0 rounded bg-surface-container-high px-1.5 py-0.5 text-[9px] font-bold text-outline">
+                            çıkmış
+                          </span>
+                        )}
+                      </label>
+                    ))}
+                  </div>
+                )}
+
+                <div className="mt-3 flex items-center justify-between gap-2 text-[11px]">
+                  <span className="font-semibold text-primary">
+                    {newsletterSelected.length} kişi seçili
+                  </span>
+                  {newsletterContacts.length > 0 && newsletterSelected.length > 0 && (
+                    <button
+                      onClick={() => setNewsletterSelected([])}
+                      className="text-outline underline underline-offset-2 hover:text-on-surface cursor-pointer"
+                    >
+                      Seçimi temizle
+                    </button>
+                  )}
+                </div>
+                {newsletterHasMore && (
+                  <p className="mt-2 text-[10px] leading-relaxed text-outline">
+                    Resend’de 100’den fazla kontakt var; bu ekranda ilk 100 gösteriliyor.
+                  </p>
+                )}
+              </section>
+
+              {/* Composer */}
+              <section className="rounded-xl border border-outline-variant/30 bg-surface-container-lowest p-4">
+                <div className="mb-3 flex items-center justify-between gap-2">
+                  <h5 className="text-xs font-bold uppercase tracking-wide text-outline">
+                    Bülten Taslağı
+                  </h5>
+                  <button
+                    onClick={() => setNewsletterFields({ ...DEFAULT_NEWSLETTER })}
+                    className="text-[11px] font-semibold text-primary underline underline-offset-2 hover:text-on-surface cursor-pointer"
+                  >
+                    Varsayılanı yükle
+                  </button>
+                </div>
+
+                <div className="flex flex-col gap-3">
+                  <label className="flex flex-col gap-1">
+                    <span className="text-[11px] font-semibold text-on-surface-variant">Konu</span>
+                    <input
+                      value={newsletterFields.subject}
+                      onChange={(event) => updateNewsletterField('subject', event.target.value)}
+                      className="w-full rounded-lg border border-outline-variant/40 bg-surface px-3 py-2 text-xs text-on-surface outline-none focus:border-primary"
+                    />
+                  </label>
+
+                  <label className="flex flex-col gap-1">
+                    <span className="text-[11px] font-semibold text-on-surface-variant">
+                      Ön yazı (preheader)
+                    </span>
+                    <input
+                      value={newsletterFields.preheader}
+                      onChange={(event) => updateNewsletterField('preheader', event.target.value)}
+                      className="w-full rounded-lg border border-outline-variant/40 bg-surface px-3 py-2 text-xs text-on-surface outline-none focus:border-primary"
+                    />
+                  </label>
+
+                  <label className="flex flex-col gap-1">
+                    <span className="text-[11px] font-semibold text-on-surface-variant">Başlık</span>
+                    <input
+                      value={newsletterFields.heading}
+                      onChange={(event) => updateNewsletterField('heading', event.target.value)}
+                      className="w-full rounded-lg border border-outline-variant/40 bg-surface px-3 py-2 text-xs text-on-surface outline-none focus:border-primary"
+                    />
+                  </label>
+
+                  <label className="flex flex-col gap-1">
+                    <span className="text-[11px] font-semibold text-on-surface-variant">Gövde</span>
+                    <textarea
+                      rows={6}
+                      value={newsletterFields.body}
+                      onChange={(event) => updateNewsletterField('body', event.target.value)}
+                      className="w-full resize-y rounded-lg border border-outline-variant/40 bg-surface px-3 py-2 text-xs leading-relaxed text-on-surface outline-none focus:border-primary"
+                    />
+                  </label>
+
+                  <label className="flex flex-col gap-1">
+                    <span className="text-[11px] font-semibold text-on-surface-variant">
+                      Öne çıkanlar (her satır bir madde)
+                    </span>
+                    <textarea
+                      rows={3}
+                      value={newsletterFields.highlights}
+                      onChange={(event) => updateNewsletterField('highlights', event.target.value)}
+                      className="w-full resize-y rounded-lg border border-outline-variant/40 bg-surface px-3 py-2 text-xs leading-relaxed text-on-surface outline-none focus:border-primary"
+                    />
+                  </label>
+
+                  <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                    <label className="flex flex-col gap-1">
+                      <span className="text-[11px] font-semibold text-on-surface-variant">
+                        Buton yazısı
+                      </span>
+                      <input
+                        value={newsletterFields.ctaLabel}
+                        onChange={(event) => updateNewsletterField('ctaLabel', event.target.value)}
+                        className="w-full rounded-lg border border-outline-variant/40 bg-surface px-3 py-2 text-xs text-on-surface outline-none focus:border-primary"
+                      />
+                    </label>
+                    <label className="flex flex-col gap-1">
+                      <span className="text-[11px] font-semibold text-on-surface-variant">
+                        Buton linki
+                      </span>
+                      <input
+                        value={newsletterFields.ctaUrl}
+                        onChange={(event) => updateNewsletterField('ctaUrl', event.target.value)}
+                        className="w-full rounded-lg border border-outline-variant/40 bg-surface px-3 py-2 text-xs text-on-surface outline-none focus:border-primary"
+                      />
+                    </label>
+                  </div>
+
+                  <label className="flex flex-col gap-1">
+                    <span className="text-[11px] font-semibold text-on-surface-variant">Alt not</span>
+                    <textarea
+                      rows={2}
+                      value={newsletterFields.footerNote}
+                      onChange={(event) => updateNewsletterField('footerNote', event.target.value)}
+                      className="w-full resize-y rounded-lg border border-outline-variant/40 bg-surface px-3 py-2 text-xs leading-relaxed text-on-surface outline-none focus:border-primary"
+                    />
+                  </label>
+
+                  <details className="rounded-lg border border-outline-variant/30 bg-surface-container-low/40">
+                    <summary className="cursor-pointer px-3 py-2 text-[11px] font-semibold text-on-surface-variant">
+                      E-posta önizlemesini aç
+                    </summary>
+                    <div className="p-2 pt-0">
+                      <iframe
+                        title="Bülten e-posta önizlemesi"
+                        srcDoc={newsletterHtml}
+                        sandbox=""
+                        className="h-[320px] w-full rounded-md border border-outline-variant/30 bg-white"
+                      />
+                    </div>
+                  </details>
+
+                  {newsletterError && (
+                    <div className="rounded-lg border border-error/30 bg-error-container px-3 py-2 text-[11px] text-on-error-container">
+                      {newsletterError}
+                    </div>
+                  )}
+                  {newsletterResult && (
+                    <div className="rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-2 text-[11px] text-emerald-800">
+                      {newsletterResult}
+                    </div>
+                  )}
+
+                  <button
+                    onClick={handleSendNewsletter}
+                    disabled={newsletterBusy || newsletterSelected.length === 0}
+                    className="inline-flex items-center justify-center gap-2 rounded-lg bg-primary px-4 py-2.5 text-xs font-bold text-on-primary transition-colors hover:bg-primary-container hover:text-on-primary-container disabled:cursor-not-allowed disabled:opacity-50 cursor-pointer"
+                  >
+                    <span className="material-symbols-outlined text-[18px]">send</span>
+                    <span>
+                      {newsletterBusy
+                        ? 'Gönderiliyor…'
+                        : `Seçilen ${newsletterSelected.length} kişiye gönder`}
+                    </span>
+                  </button>
+                  <p className="text-[10px] leading-relaxed text-outline">
+                    Mesajlar Resend üzerinden ayrı ayrı gönderilir. Tek seferde en fazla 25
+                    alıcı seçilebilir; abonelikten çıkan kontaktlara gönderim yapılamaz.
+                  </p>
+                </div>
+              </section>
+            </div>
           </div>
         )}
 

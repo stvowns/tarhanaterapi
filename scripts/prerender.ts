@@ -94,7 +94,7 @@ const productTable = () => `
       ).join('\n')}
     </tbody>
   </table>
-  <p>2000 TL ve üzeri siparişlerde kargo ücretsizdir; 2000 TL altı siparişlerde 45 TL'dir. Teslimat Türkiye genelinde 1-3 iş günüdür.</p>`;
+  <p>2000 TL ve üzeri siparişlerde kargo ücretsizdir; 2000 TL altı siparişlerde 150 TL'dir. Teslimat Türkiye genelinde 1-3 iş günüdür.</p>`;
 
 const faqBlock = (limit = FAQS.length) => `
   <h2>Sık sorulan sorular</h2>
@@ -107,7 +107,7 @@ const faqBlock = (limit = FAQS.length) => `
 const productFaqs = [
   {
     q: 'Kargo kaç günde gelir?',
-    a: 'Siparişler aynı veya ertesi iş günü kargoya verilir. Türkiye geneli teslimat 1-3 iş günüdür; 2000 TL üzeri siparişlerde kargo ücretsizdir; 2000 TL altı siparişlerde 45 TL\'dir.',
+    a: 'Siparişler aynı veya ertesi iş günü kargoya verilir. Türkiye geneli teslimat 1-3 iş günüdür; 2000 TL üzeri siparişlerde kargo ücretsizdir; 2000 TL altı siparişlerde 150 TL\'dir.',
   },
   {
     q: 'Ürün nasıl saklanır?',
@@ -151,7 +151,7 @@ const productContent = (product: Product) => `
     <h2>Kargo, saklama ve iade</h2>
     <p>
       Siparişler aynı veya ertesi iş günü kargoya verilir; Türkiye geneli teslimat 1-3 iş
-      günüdür. 2000 TL ve üzeri siparişlerde kargo ücretsizdir; 2000 TL altı siparişlerde 45 TL'dir. Ürün kapalı pamuk torbasında,
+      günüdür. 2000 TL ve üzeri siparişlerde kargo ücretsizdir; 2000 TL altı siparişlerde 150 TL'dir. Ürün kapalı pamuk torbasında,
       güneş görmeyen serin ve kuru bir yerde 1 yıla kadar saklanır. Açılmış gıda ürünlerinde
       mesafeli satış mevzuatı gereği cayma hakkı uygulanmaz.
     </p>
@@ -202,7 +202,7 @@ const productsContent = () => `
     <p class="static-definition">
       TarhanaTerapi'nin tüm ürünleri Bursa Orhangazi'deki aile atölyesinde, toprak küpte 21 gün
       fermente edilerek üretilir. Aşağıdaki fiyatlar ${CONTENT_UPDATED_LABEL} tarihinde
-      doğrulanmıştır; 2000 TL üzeri siparişlerde kargo ücretsizdir; 2000 TL altı siparişlerde 45 TL'dir.
+      doğrulanmıştır; 2000 TL üzeri siparişlerde kargo ücretsizdir; 2000 TL altı siparişlerde 150 TL'dir.
     </p>
     ${productTable()}
     <h2>Hangi tarhana kime uygun?</h2>
@@ -303,7 +303,7 @@ const contactContent = () => `
     <h2>Kargo ve teslimat</h2>
     <p>
       Siparişler aynı veya ertesi iş günü kargoya verilir. Türkiye geneli teslimat 1-3 iş
-      günüdür. 2000 TL ve üzeri siparişlerde kargo ücretsizdir; 2000 TL altı siparişlerde 45 TL'dir. Pamuk torbalar hava yastıklı
+      günüdür. 2000 TL ve üzeri siparişlerde kargo ücretsizdir; 2000 TL altı siparişlerde 150 TL'dir. Pamuk torbalar hava yastıklı
       koruyucu ambalajla gönderilir.
     </p>
     ${faqBlock()}
