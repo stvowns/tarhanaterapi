@@ -8,7 +8,7 @@ export const STANDARD_SHIPPING_FEE = 150;
  * Havale/EFT, yeni checkout'ta tek aktif ödeme yöntemidir.
  * Kapıda ödeme kartı görünür ancak "Yakında!" etiketiyle devre dışıdır.
  * Bilgiler tanımlıysa sipariş onay ekranında gösterilir; tanımlı değilse
- * banka bilgileri sipariş e-postasıyla iletilir.
+ * "yakında eklenecek" olarak işaretlenir.
  */
 const viteEnv = (() => {
   try {
@@ -18,10 +18,22 @@ const viteEnv = (() => {
   }
 })();
 
+// ⬇️ IBAN / BANKA BİLGİLERİ: Bilgiler gelince buraya yazılacak.
+// VITE_BANK_TRANSFER_* tanımlıysa öncelik ondadır; yoksa aşağıdaki değerler kullanılır.
+const CONFIGURED_BANK_TRANSFER = {
+  bankName: '',
+  accountName: '',
+  iban: '',
+};
+
 export const BANK_TRANSFER_DETAILS = {
-  bankName: (viteEnv.VITE_BANK_TRANSFER_BANK || '').trim(),
-  accountName: (viteEnv.VITE_BANK_TRANSFER_ACCOUNT_NAME || '').trim(),
-  iban: (viteEnv.VITE_BANK_TRANSFER_IBAN || '').trim(),
+  bankName: (viteEnv.VITE_BANK_TRANSFER_BANK || CONFIGURED_BANK_TRANSFER.bankName || '').trim(),
+  accountName: (
+    viteEnv.VITE_BANK_TRANSFER_ACCOUNT_NAME ||
+    CONFIGURED_BANK_TRANSFER.accountName ||
+    ''
+  ).trim(),
+  iban: (viteEnv.VITE_BANK_TRANSFER_IBAN || CONFIGURED_BANK_TRANSFER.iban || '').trim(),
 };
 
 export const HAS_BANK_TRANSFER_DETAILS = Boolean(

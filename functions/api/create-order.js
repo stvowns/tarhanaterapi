@@ -71,12 +71,27 @@ const nextOrderNumber = async (env) => {
   return `TT-${max + 1}`;
 };
 
+// ⬇️ IBAN / BANKA BİLGİLERİ: Bilgiler gelince buraya yazılacak.
+// Cloudflare'de BANK_TRANSFER_* tanımlıysa öncelik ondadır; yoksa aşağıdaki değerler kullanılır.
+const CONFIGURED_BANK_TRANSFER = {
+  bankName: '',
+  accountName: '',
+  iban: '',
+};
+
 const bankTransferDetails = (env) => ({
-  bankName: String(env.BANK_TRANSFER_BANK || env.VITE_BANK_TRANSFER_BANK || '').trim(),
-  accountName: String(
-    env.BANK_TRANSFER_ACCOUNT_NAME || env.VITE_BANK_TRANSFER_ACCOUNT_NAME || ''
+  bankName: String(
+    env.BANK_TRANSFER_BANK || env.VITE_BANK_TRANSFER_BANK || CONFIGURED_BANK_TRANSFER.bankName || ''
   ).trim(),
-  iban: String(env.BANK_TRANSFER_IBAN || env.VITE_BANK_TRANSFER_IBAN || '').trim(),
+  accountName: String(
+    env.BANK_TRANSFER_ACCOUNT_NAME ||
+      env.VITE_BANK_TRANSFER_ACCOUNT_NAME ||
+      CONFIGURED_BANK_TRANSFER.accountName ||
+      ''
+  ).trim(),
+  iban: String(
+    env.BANK_TRANSFER_IBAN || env.VITE_BANK_TRANSFER_IBAN || CONFIGURED_BANK_TRANSFER.iban || ''
+  ).trim(),
 });
 
 const customerOrderHtml = (order, orderNumber, bankTransfer = {}) => {
@@ -131,7 +146,7 @@ const customerOrderHtml = (order, orderNumber, bankTransfer = {}) => {
                 <h1 style="margin:0 0 10px 0;font-size:22px;line-height:1.3;color:#31523c;">Siparişiniz alındı, teşekkür ederiz!</h1>
                 <p style="margin:0;font-size:14px;line-height:1.6;color:#4a4a4a;">
                   Merhaba <strong>${esc(order.customer_name)}</strong>,<br />
-                  Siparişiniz bize ulaştı. Tarhananız özenle hazırlanıp en kısa sürede kargoya verilecek.
+                  Siparişiniz bize ulaştı. En kısa sürede özenle hazırlanıp kargoya verilecek.
                 </p>
               </td>
             </tr>
@@ -194,10 +209,11 @@ const customerOrderHtml = (order, orderNumber, bankTransfer = {}) => {
                   ${esc(paymentLabel)}
                   ${order.payment_method === 'cod' ? '<br /><span style="font-size:12px;color:#7a746b;">Tutarı teslimat sırasında kuryeye nakit veya temassız olarak ödeyebilirsiniz.</span>' : ''}
                   ${order.payment_method === 'bank_transfer' ? `
-                    ${bankTransfer.iban
-                      ? `<br /><strong>Banka:</strong> ${esc(bankTransfer.bankName)}<br /><strong>Hesap Sahibi:</strong> ${esc(bankTransfer.accountName)}<br /><strong>IBAN:</strong> ${esc(bankTransfer.iban)}`
-                      : '<br /><span style="font-size:12px;color:#7a746b;">Banka bilgileri için bu e-postayı yanıtlayın veya satis@tarhanaterapi.com adresine yazın.</span>'}
+                    <br /><strong>Banka:</strong> ${bankTransfer.bankName ? esc(bankTransfer.bankName) : '<span style="color:#7a746b;">Bilgi yakında eklenecek</span>'}
+                    <br /><strong>Hesap Sahibi:</strong> ${bankTransfer.accountName ? esc(bankTransfer.accountName) : '<span style="color:#7a746b;">Bilgi yakında eklenecek</span>'}
+                    <br /><strong>IBAN:</strong> ${bankTransfer.iban ? esc(bankTransfer.iban) : '<span style="color:#7a746b;">Bilgi yakında eklenecek</span>'}
                     <br /><span style="font-size:12px;color:#7a746b;">Açıklama alanına <strong>${esc(orderNumber)}</strong> yazarak dekontu satis@tarhanaterapi.com adresine iletebilirsiniz. Biz görünce hemen işleme alırız :)</span>
+                    ${bankTransfer.iban ? '' : '<br /><span style="font-size:12px;color:#7a746b;">Banka bilgileri netleşene kadar bu e-postayı yanıtlayabilir veya satis@tarhanaterapi.com adresine yazabilirsiniz.</span>'}
                   ` : ''}
                 </p>
               </td>

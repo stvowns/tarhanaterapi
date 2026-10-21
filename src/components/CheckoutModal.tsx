@@ -422,8 +422,8 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
                       </span>
                     </span>
                     <span className="block text-xs text-on-surface-variant mt-1 leading-relaxed">
-                      Sipariş sonrası banka bilgileri e-posta ile gönderilir. Açıklamaya
-                      sipariş numaranızı yazıp dekontu bize iletebilirsiniz.
+                      Sipariş sonrası banka bilgileri onay ekranında ve e-postanızda paylaşılır.
+                      Açıklamaya sipariş numaranızı yazıp dekontu bize iletebilirsiniz.
                     </span>
                   </span>
                 </label>
@@ -496,7 +496,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
                 Siparişiniz Başarıyla Alındı!
               </h3>
               <p className="font-body-md text-on-surface-variant max-w-sm mt-1">
-                Şifalı anne tarhananız özenle paketlenip kargoya verilecektir.
+                Siparişiniz bize ulaştı. En kısa sürede özenle hazırlanıp kargoya verilecek.
               </p>
 
               <div className="my-6 p-4 rounded-xl bg-surface-container-low border border-outline-variant/30 text-left w-full max-w-md">
@@ -521,42 +521,49 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
               {formData.paymentMethod === 'bank_transfer' && (
                 <div className="mb-6 p-4 rounded-xl bg-secondary-fixed/30 border border-outline-variant/30 text-left w-full max-w-md text-xs text-on-surface leading-relaxed">
                   <p className="font-semibold mb-2">Havale / EFT Bilgileri</p>
-                  {HAS_BANK_TRANSFER_DETAILS ? (
-                    <>
-                      <p>
-                        <span className="text-outline">Banka:</span>{' '}
-                        {BANK_TRANSFER_DETAILS.bankName}
-                      </p>
-                      <p>
-                        <span className="text-outline">Hesap Sahibi:</span>{' '}
-                        {BANK_TRANSFER_DETAILS.accountName}
-                      </p>
-                      <p className="mt-1 break-all">
-                        <span className="text-outline">IBAN:</span>{' '}
-                        <strong>{BANK_TRANSFER_DETAILS.iban}</strong>
-                      </p>
-                      <button
-                        type="button"
-                        onClick={copyIban}
-                        className="mt-2 inline-flex items-center gap-1 text-primary font-semibold cursor-pointer"
-                      >
-                        <span className="material-symbols-outlined text-[15px]">
-                          {ibanCopied ? 'check' : 'content_copy'}
-                        </span>
-                        {ibanCopied ? 'Kopyalandı' : 'IBAN’ı Kopyala'}
-                      </button>
-                    </>
-                  ) : (
-                    <p>
-                      Banka bilgileri sipariş onay e-postanıza gönderilmiştir. E-posta ulaşmazsa
-                      satis@tarhanaterapi.com adresine sipariş numaranızla yazabilirsiniz.
-                    </p>
+                  <p>
+                    <span className="text-outline">Banka:</span>{' '}
+                    {BANK_TRANSFER_DETAILS.bankName || (
+                      <span className="text-on-surface-variant italic">yakında eklenecek</span>
+                    )}
+                  </p>
+                  <p>
+                    <span className="text-outline">Hesap Sahibi:</span>{' '}
+                    {BANK_TRANSFER_DETAILS.accountName || (
+                      <span className="text-on-surface-variant italic">yakında eklenecek</span>
+                    )}
+                  </p>
+                  <p className="mt-1 break-all">
+                    <span className="text-outline">IBAN:</span>{' '}
+                    {BANK_TRANSFER_DETAILS.iban ? (
+                      <strong>{BANK_TRANSFER_DETAILS.iban}</strong>
+                    ) : (
+                      <span className="text-on-surface-variant italic">yakında eklenecek</span>
+                    )}
+                  </p>
+                  {HAS_BANK_TRANSFER_DETAILS && (
+                    <button
+                      type="button"
+                      onClick={copyIban}
+                      className="mt-2 inline-flex items-center gap-1 text-primary font-semibold cursor-pointer"
+                    >
+                      <span className="material-symbols-outlined text-[15px]">
+                        {ibanCopied ? 'check' : 'content_copy'}
+                      </span>
+                      {ibanCopied ? 'Kopyalandı' : 'IBAN’ı Kopyala'}
+                    </button>
                   )}
                   <p className="mt-2 text-on-surface-variant">
                     Açıklama alanına <strong>{orderCode}</strong> yazarak dekontu
                     satis@tarhanaterapi.com adresine iletebilirsiniz. Biz görünce hemen işleme
                     alırız :)
                   </p>
+                  {!HAS_BANK_TRANSFER_DETAILS && (
+                    <p className="mt-1 text-on-surface-variant">
+                      Banka bilgileri netleşene kadar satis@tarhanaterapi.com adresine sipariş
+                      numaranızla yazabilirsiniz.
+                    </p>
+                  )}
                 </div>
               )}
 
