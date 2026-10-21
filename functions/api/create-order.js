@@ -42,6 +42,20 @@ const formatOrderDate = (date) => {
   }
 };
 
+const newOrderNumber = () => {
+  const date = new Intl.DateTimeFormat('en-CA', {
+    timeZone: 'Europe/Istanbul',
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+  })
+    .format(new Date())
+    .replace(/-/g, '')
+    .slice(2);
+  const suffix = Math.floor(10000 + Math.random() * 90000);
+  return `TT-${date}-${suffix}`;
+};
+
 const bankTransferDetails = (env) => ({
   bankName: String(env.BANK_TRANSFER_BANK || env.VITE_BANK_TRANSFER_BANK || '').trim(),
   accountName: String(
@@ -165,11 +179,10 @@ const customerOrderHtml = (order, orderNumber, bankTransfer = {}) => {
                   ${esc(paymentLabel)}
                   ${order.payment_method === 'cod' ? '<br /><span style="font-size:12px;color:#7a746b;">Tutarı teslimat sırasında kuryeye nakit veya temassız olarak ödeyebilirsiniz.</span>' : ''}
                   ${order.payment_method === 'bank_transfer' ? `
-                    <br /><span style="font-size:12px;color:#7a746b;">Açıklama alanına <strong>${esc(orderNumber)}</strong> yazın.</span>
                     ${bankTransfer.iban
                       ? `<br /><strong>Banka:</strong> ${esc(bankTransfer.bankName)}<br /><strong>Hesap Sahibi:</strong> ${esc(bankTransfer.accountName)}<br /><strong>IBAN:</strong> ${esc(bankTransfer.iban)}`
                       : '<br /><span style="font-size:12px;color:#7a746b;">Banka bilgileri için bu e-postayı yanıtlayın veya satis@tarhanaterapi.com adresine yazın.</span>'}
-                    <br /><span style="font-size:12px;color:#7a746b;">Dekontu satis@tarhanaterapi.com adresine iletin; ödemeniz kontrol edildikten sonra siparişiniz kargoya verilir.</span>
+                    <br /><span style="font-size:12px;color:#7a746b;">Açıklama alanına <strong>${esc(orderNumber)}</strong> yazarak dekontu satis@tarhanaterapi.com adresine iletebilirsiniz. Biz görünce hemen işleme alırız :)</span>
                   ` : ''}
                 </p>
               </td>
@@ -358,7 +371,7 @@ export async function onRequestPost({ request, env }) {
   const paymentMethod = ['cod', 'bank_transfer'].includes(payload.paymentMethod)
     ? payload.paymentMethod
     : 'bank_transfer';
-  const orderNumber = `TT-${Date.now().toString().slice(-6)}`;
+  const orderNumber = newOrderNumber();
   const order = {
     order_number: orderNumber,
     customer_name: payload.customerName,

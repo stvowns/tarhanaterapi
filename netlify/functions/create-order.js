@@ -5,6 +5,20 @@ const RESEND_API_KEY = process.env.RESEND_API_KEY;
 const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
 const TELEGRAM_ADMIN_CHAT_ID = process.env.TELEGRAM_ADMIN_CHAT_ID;
 
+function newOrderNumber() {
+  const date = new Intl.DateTimeFormat('en-CA', {
+    timeZone: 'Europe/Istanbul',
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+  })
+    .format(new Date())
+    .replace(/-/g, '')
+    .slice(2);
+  const suffix = Math.floor(10000 + Math.random() * 90000);
+  return `TT-${date}-${suffix}`;
+}
+
 async function insertOrder(order) {
   const res = await fetch(`${SUPABASE_URL}/rest/v1/orders`, {
     method: 'POST',
@@ -124,7 +138,7 @@ const required = ['customerName', 'customerEmail', 'customerPhone', 'customerCit
   const paymentMethod = ['cod', 'bank_transfer'].includes(payload.paymentMethod)
     ? payload.paymentMethod
     : 'bank_transfer';
-  const orderNumber = `TT-${Date.now().toString().slice(-6)}`;
+  const orderNumber = newOrderNumber();
   const order = {
     order_number: orderNumber,
     customer_name: payload.customerName,

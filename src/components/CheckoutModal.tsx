@@ -493,7 +493,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
                 Siparişiniz Başarıyla Alındı!
               </h3>
               <p className="font-body-md text-on-surface-variant max-w-sm mt-1">
-                Şifalı anne tarhananız özenle paketlenip 24 saat içinde kargoya verilecektir.
+                Şifalı anne tarhananız özenle paketlenip kargoya verilecektir.
               </p>
 
               <div className="my-6 p-4 rounded-xl bg-surface-container-low border border-outline-variant/30 text-left w-full max-w-md">
@@ -545,13 +545,14 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
                     </>
                   ) : (
                     <p>
-                      Banka bilgileri sipariş onay e-postanızda yer alır. E-posta ulaşmazsa
+                      Banka bilgileri sipariş onay e-postanıza gönderilmiştir. E-posta ulaşmazsa
                       satis@tarhanaterapi.com adresine sipariş numaranızla yazabilirsiniz.
                     </p>
                   )}
                   <p className="mt-2 text-on-surface-variant">
-                    Açıklama alanına <strong>{orderCode}</strong> yazın; dekontu
-                    satis@tarhanaterapi.com adresine iletin.
+                    Açıklama alanına <strong>{orderCode}</strong> yazarak dekontu
+                    satis@tarhanaterapi.com adresine iletebilirsiniz. Biz görünce hemen işleme
+                    alırız :)
                   </p>
                 </div>
               )}
