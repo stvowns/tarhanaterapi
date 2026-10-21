@@ -1,5 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { FREE_SHIPPING_THRESHOLD, STANDARD_SHIPPING_FEE } from '../lib/commerce';
+import {
+  BANK_TRANSFER_DETAILS,
+  BANK_TRANSFER_ENABLED,
+  FREE_SHIPPING_THRESHOLD,
+  HAS_BANK_TRANSFER_DETAILS,
+  STANDARD_SHIPPING_FEE,
+} from '../lib/commerce';
 import { CartItem, Order, User } from '../types';
 
 interface CheckoutModalProps {
@@ -21,6 +27,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formError, setFormError] = useState('');
   const [step, setStep] = useState<1 | 2 | 3>(1);
+  const [ibanCopied, setIbanCopied] = useState(false);
 
   // Form states
   const [formData, setFormData] = useState({
@@ -32,7 +39,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
     address: currentUser?.address || '',
     note: '',
     kvkkConsent: false,
-    paymentMethod: 'cod' as 'credit_card' | 'cod',
+    paymentMethod: 'cod' as 'cod' | 'bank_transfer',
   });
 
   useEffect(() => {
@@ -41,6 +48,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
     setOrderCode('');
     setIsSubmitting(false);
     setFormError('');
+    setIbanCopied(false);
     setFormData((prev) => ({
       ...prev,
       note: '',
@@ -73,6 +81,17 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
       ? 0
       : STANDARD_SHIPPING_FEE;
   const totalAmount = rawSubtotal + shippingFee;
+
+  const copyIban = async () => {
+    if (!BANK_TRANSFER_DETAILS.iban) return;
+    try {
+      await navigator.clipboard.writeText(BANK_TRANSFER_DETAILS.iban);
+      setIbanCopied(true);
+      window.setTimeout(() => setIbanCopied(false), 2500);
+    } catch {
+      setIbanCopied(false);
+    }
+  };
 
   const handleSubmitStep1 = (e: React.FormEvent) => {
     e.preventDefault();
@@ -353,13 +372,72 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
           {step === 2 && (
             <form onSubmit={handleCompleteOrder} className="flex flex-col gap-4">
               {/* Payment Methods */}
-              <div className="mb-2 rounded-xl border border-outline-variant/40 bg-surface-container-low p-3 text-xs text-on-surface-variant">
-                Kredi kartı ile çevrim içi ödeme yakında aktif olacak. Şimdilik seçeneğiniz Kapıda Ödeme.
+              <div className="flex flex-col gap-3">
+                <label
+                  className={`flex items-start gap-3 p-4 rounded-xl border cursor-pointer transition-colors ${
+                    formData.paymentMethod === 'cod'
+                      ? 'border-primary bg-primary-fixed/25'
+                      : 'border-outline-variant/40 bg-surface-container-low hover:border-primary/40'
+                  }`}
+                >
+                  <input
+                    type="radio"
+                    name="paymentMethod"
+                    value="cod"
+                    checked={formData.paymentMethod === 'cod'}
+                    onChange={() =>
+                      setFormData({ ...formData, paymentMethod: 'cod' })
+                    }
+                    className="mt-1 accent-primary"
+                  />
+                  <span>
+                    <span className="block text-sm font-semibold text-on-surface">
+                      Kapıda Ödeme
+                    </span>
+                    <span className="block text-xs text-on-surface-variant mt-1 leading-relaxed">
+                      Siparişiniz özel korumalı kutuda kapınıza gelir; kurye teslimi sırasında
+                      nakit veya temassız ödeyebilirsiniz.
+                    </span>
+                  </span>
+                </label>
+
+                {BANK_TRANSFER_ENABLED && (
+                  <label
+                    className={`flex items-start gap-3 p-4 rounded-xl border cursor-pointer transition-colors ${
+                      formData.paymentMethod === 'bank_transfer'
+                        ? 'border-primary bg-primary-fixed/25'
+                        : 'border-outline-variant/40 bg-surface-container-low hover:border-primary/40'
+                    }`}
+                  >
+                    <input
+                      type="radio"
+                      name="paymentMethod"
+                      value="bank_transfer"
+                      checked={formData.paymentMethod === 'bank_transfer'}
+                      onChange={() =>
+                        setFormData({ ...formData, paymentMethod: 'bank_transfer' })
+                      }
+                      className="mt-1 accent-primary"
+                    />
+                    <span>
+                      <span className="block text-sm font-semibold text-on-surface">
+                        Havale / EFT
+                      </span>
+                      <span className="block text-xs text-on-surface-variant mt-1 leading-relaxed">
+                        Sipariş sonrası banka bilgileri e-posta ile gönderilir. Açıklamaya
+                        sipariş numaranızı yazıp dekontu bize iletebilirsiniz.
+                      </span>
+                    </span>
+                  </label>
+                )}
               </div>
 
-              <div className="p-4 bg-secondary-fixed/30 rounded-xl text-xs text-on-surface leading-relaxed">
-                Kapıda Ödeme seçili. Siparişiniz özel korumalı kutuda kapınıza kadar gelir; kurye teslimi sırasında nakit veya temassız ödeme alabilir.
-              </div>
+              {formData.paymentMethod === 'bank_transfer' && (
+                <div className="p-4 bg-secondary-fixed/30 rounded-xl text-xs text-on-surface leading-relaxed">
+                  Havale/EFT seçtiniz. Siparişi onayladıktan sonra banka bilgileri e-posta ile
+                  gönderilecek. Ödemeniz kontrol edildikten sonra siparişiniz kargoya verilir.
+                </div>
+              )}
 
               <div className="flex items-start gap-2 text-xs text-on-surface mt-1">
                 <input
@@ -444,6 +522,47 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
                   <span className="font-bold text-emerald-700">1-2 İş Günü İçinde</span>
                 </div>
               </div>
+
+              {formData.paymentMethod === 'bank_transfer' && (
+                <div className="mb-6 p-4 rounded-xl bg-secondary-fixed/30 border border-outline-variant/30 text-left w-full max-w-md text-xs text-on-surface leading-relaxed">
+                  <p className="font-semibold mb-2">Havale / EFT Bilgileri</p>
+                  {HAS_BANK_TRANSFER_DETAILS ? (
+                    <>
+                      <p>
+                        <span className="text-outline">Banka:</span>{' '}
+                        {BANK_TRANSFER_DETAILS.bankName}
+                      </p>
+                      <p>
+                        <span className="text-outline">Hesap Sahibi:</span>{' '}
+                        {BANK_TRANSFER_DETAILS.accountName}
+                      </p>
+                      <p className="mt-1 break-all">
+                        <span className="text-outline">IBAN:</span>{' '}
+                        <strong>{BANK_TRANSFER_DETAILS.iban}</strong>
+                      </p>
+                      <button
+                        type="button"
+                        onClick={copyIban}
+                        className="mt-2 inline-flex items-center gap-1 text-primary font-semibold cursor-pointer"
+                      >
+                        <span className="material-symbols-outlined text-[15px]">
+                          {ibanCopied ? 'check' : 'content_copy'}
+                        </span>
+                        {ibanCopied ? 'Kopyalandı' : 'IBAN’ı Kopyala'}
+                      </button>
+                    </>
+                  ) : (
+                    <p>
+                      Banka bilgileri sipariş onay e-postanızda yer alır. E-posta ulaşmazsa
+                      satis@tarhanaterapi.com adresine sipariş numaranızla yazabilirsiniz.
+                    </p>
+                  )}
+                  <p className="mt-2 text-on-surface-variant">
+                    Açıklama alanına <strong>{orderCode}</strong> yazın; dekontu
+                    satis@tarhanaterapi.com adresine iletin.
+                  </p>
+                </div>
+              )}
 
               <button
                 onClick={onClose}

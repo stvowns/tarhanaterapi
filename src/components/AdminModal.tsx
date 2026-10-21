@@ -339,7 +339,12 @@ export const AdminModal: React.FC<AdminModalProps> = ({
         const itemsSummary = o.items
           .map((it) => `${it.quantity}x ${it.name} (${it.weight})`)
           .join('; ');
-        const payment = o.paymentMethod === 'credit_card' ? 'Kredi Karti' : 'Kapida Odeme';
+        const payment =
+          o.paymentMethod === 'bank_transfer'
+            ? 'Havale/EFT'
+            : o.paymentMethod === 'credit_card'
+              ? 'Kredi Karti'
+              : 'Kapida Odeme';
         const safe = (v: string) => (/^[=+\-@]/.test((v || '').trim()) ? "'" + v : String(v || '').replace(/"/g, '""'));
         return `"${safe(o.orderNumber)}","${safe(o.customerName)}","${safe(o.customerEmail)}","${safe(o.customerPhone)}","${safe(o.customerCity)}","${safe(o.customerDistrict)}","${safe(o.customerAddress)}","${safe(payment)}","${safe(itemsSummary)}",${o.total},"${safe(o.status)}","${safe(o.createdAt)}"`;
 
@@ -615,7 +620,11 @@ CREATE TABLE subscribers (
                         </span>
                         <span className="text-xs text-outline">({order.createdAt})</span>
                         <span className="text-xs px-2.5 py-0.5 rounded-full bg-surface-container font-semibold">
-                          {order.paymentMethod === 'credit_card' ? 'Kredi Kartı' : 'Kapıda Ödeme'}
+                          {order.paymentMethod === 'bank_transfer'
+                            ? 'Havale/EFT'
+                            : order.paymentMethod === 'credit_card'
+                              ? 'Kredi Kartı'
+                              : 'Kapıda Ödeme'}
                         </span>
                       </div>
 

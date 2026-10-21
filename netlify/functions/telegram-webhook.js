@@ -60,7 +60,7 @@ const formatOrder = (o) => {
     `E-posta: ${o.customerEmail}`,
     `Adres: ${o.customerAddress}, ${o.customerCity}/${o.customerDistrict}`,
     o.deliveryNote ? `Not: ${o.deliveryNote}` : '',
-    `Ödeme: ${o.paymentMethod === 'credit_card' ? 'Kredi Kartı' : 'Kapıda Ödeme'} (${o.paymentStatus})`,
+    `Ödeme: ${o.paymentMethod === 'bank_transfer' ? 'Havale/EFT' : o.paymentMethod === 'credit_card' ? 'Kredi Kartı' : 'Kapıda Ödeme'} (${o.paymentStatus})`,
     `Tutar: ${o.total} TL`,
     `Durum: ${o.status}`,
     `Tarih: ${o.createdAt}`,

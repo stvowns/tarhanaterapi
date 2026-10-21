@@ -86,7 +86,7 @@ Bursa Orhangazi'deki Gedelek Köyü Mevkii No: 28 adresindeki aile atölyesinde.
 - Mesafeli satış: 6502 sayılı kanun kapsamında 14 gün cayma hakkı; açılmış/tüketilmiş gıda ürünlerinde cayma hakkı kullanılamaz.
 - İade ve hasarlı teslimat: satis@tarhanaterapi.com üzerinden bildirim.
 - Kişisel veriler: KVKK kapsamında işlenir; kart bilgileri saklanmaz.
-- Ödeme: Mevcut durumda kapıda ödeme. Havale/EFT ve kart ile ödeme seçenekleri için sipariş öncesi iletişime geçilmelidir.
+- Ödeme: Kapıda ödeme veya havale/EFT. Havale/EFT seçilen siparişlerde banka bilgileri sipariş onay e-postasıyla gönderilir; ödeme kontrol edildikten sonra sipariş kargoya verilir.
 
 ## Ücretsiz e-kitap
 

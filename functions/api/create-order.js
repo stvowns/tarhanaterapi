@@ -42,13 +42,23 @@ const formatOrderDate = (date) => {
   }
 };
 
-const customerOrderHtml = (order, orderNumber) => {
+const bankTransferDetails = (env) => ({
+  bankName: String(env.BANK_TRANSFER_BANK || env.VITE_BANK_TRANSFER_BANK || '').trim(),
+  accountName: String(
+    env.BANK_TRANSFER_ACCOUNT_NAME || env.VITE_BANK_TRANSFER_ACCOUNT_NAME || ''
+  ).trim(),
+  iban: String(env.BANK_TRANSFER_IBAN || env.VITE_BANK_TRANSFER_IBAN || '').trim(),
+});
+
+const customerOrderHtml = (order, orderNumber, bankTransfer = {}) => {
   const paymentLabel =
     order.payment_method === 'cod'
       ? 'Kapıda Ödeme'
-      : order.payment_method === 'card'
-        ? 'Kredi / Banka Kartı'
-        : order.payment_method || 'Kapıda Ödeme';
+      : order.payment_method === 'bank_transfer'
+        ? 'Havale / EFT'
+        : order.payment_method === 'credit_card'
+          ? 'Kredi / Banka Kartı'
+          : order.payment_method || 'Kapıda Ödeme';
 
   const itemRows = order.items
     .map(
@@ -154,6 +164,13 @@ const customerOrderHtml = (order, orderNumber) => {
                 <p style="margin:0;font-size:14px;line-height:1.6;color:#4a4a4a;">
                   ${esc(paymentLabel)}
                   ${order.payment_method === 'cod' ? '<br /><span style="font-size:12px;color:#7a746b;">Tutarı teslimat sırasında kuryeye nakit veya temassız olarak ödeyebilirsiniz.</span>' : ''}
+                  ${order.payment_method === 'bank_transfer' ? `
+                    <br /><span style="font-size:12px;color:#7a746b;">Açıklama alanına <strong>${esc(orderNumber)}</strong> yazın.</span>
+                    ${bankTransfer.iban
+                      ? `<br /><strong>Banka:</strong> ${esc(bankTransfer.bankName)}<br /><strong>Hesap Sahibi:</strong> ${esc(bankTransfer.accountName)}<br /><strong>IBAN:</strong> ${esc(bankTransfer.iban)}`
+                      : '<br /><span style="font-size:12px;color:#7a746b;">Banka bilgileri için bu e-postayı yanıtlayın veya satis@tarhanaterapi.com adresine yazın.</span>'}
+                    <br /><span style="font-size:12px;color:#7a746b;">Dekontu satis@tarhanaterapi.com adresine iletin; ödemeniz kontrol edildikten sonra siparişiniz kargoya verilir.</span>
+                  ` : ''}
                 </p>
               </td>
             </tr>
@@ -336,6 +353,9 @@ export async function onRequestPost({ request, env }) {
   const discount = 0;
   const total = subtotal + shippingFee - discount;
 
+  const paymentMethod = ['cod', 'bank_transfer'].includes(payload.paymentMethod)
+    ? payload.paymentMethod
+    : 'cod';
   const orderNumber = `TT-${Date.now().toString().slice(-6)}`;
   const order = {
     order_number: orderNumber,
@@ -345,7 +365,7 @@ export async function onRequestPost({ request, env }) {
     customer_address: payload.customerAddress,
     customer_city: payload.customerCity,
     customer_district: payload.customerDistrict,
-    payment_method: payload.paymentMethod || 'cod',
+    payment_method: paymentMethod,
     delivery_note: payload.deliveryNote || payload.delivery_note || null,
     items: normalizedItems.map((it) => ({
       productId: it.productId,
@@ -364,7 +384,8 @@ export async function onRequestPost({ request, env }) {
 
   try {
     const created = await insertOrder(env, order);
-    const summary = `Yeni sipariş ${orderNumber}\n${payload.customerName} - ${payload.customerCity}\nToplam: ${total} TL`;
+    const paymentLabel = paymentMethod === 'bank_transfer' ? 'Havale/EFT' : 'Kapıda Ödeme';
+    const summary = `Yeni sipariş ${orderNumber}\n${payload.customerName} - ${payload.customerCity}\nÖdeme: ${paymentLabel}\nToplam: ${total} TL`;
 
     const notifications = await Promise.allSettled([
       notifyTelegram(env, summary),
@@ -372,7 +393,7 @@ export async function onRequestPost({ request, env }) {
         env,
         payload.customerEmail,
         `Siparişiniz alındı: ${orderNumber}`,
-        customerOrderHtml(order, orderNumber)
+        customerOrderHtml(order, orderNumber, bankTransferDetails(env))
       ),
     ]);
 

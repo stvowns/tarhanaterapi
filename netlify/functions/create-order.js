@@ -121,6 +121,9 @@ const required = ['customerName', 'customerEmail', 'customerPhone', 'customerCit
   const discount = 0;
   const total = subtotal + shippingFee - discount;
 
+  const paymentMethod = ['cod', 'bank_transfer'].includes(payload.paymentMethod)
+    ? payload.paymentMethod
+    : 'cod';
   const orderNumber = `TT-${Date.now().toString().slice(-6)}`;
   const order = {
     order_number: orderNumber,
@@ -130,7 +133,7 @@ const required = ['customerName', 'customerEmail', 'customerPhone', 'customerCit
     customer_address: payload.customerAddress,
     customer_city: payload.customerCity,
     customer_district: payload.customerDistrict,
-    payment_method: payload.paymentMethod || 'cod',
+    payment_method: paymentMethod,
     delivery_note: payload.deliveryNote || payload.delivery_note || null,
     items: normalizedItems.map((it) => ({ productId: it.productId, name: it.name, price: PRODUCT_PRICES[it.productId], quantity: it.quantity, weight: it.weight || '', image: it.image || '' })),
     subtotal,
@@ -142,11 +145,12 @@ const required = ['customerName', 'customerEmail', 'customerPhone', 'customerCit
 
   try {
     const created = await insertOrder(order);
-    const summary = `Yeni sipariş ${orderNumber}\n${payload.customerName} - ${payload.customerCity}\nToplam: ${total} TL`;
+    const paymentLabel = paymentMethod === 'bank_transfer' ? 'Havale/EFT' : 'Kapıda Ödeme';
+    const summary = `Yeni sipariş ${orderNumber}\n${payload.customerName} - ${payload.customerCity}\nÖdeme: ${paymentLabel}\nToplam: ${total} TL`;
 
     await Promise.allSettled([
       notifyTelegram(summary),
-      notifyEmail(payload.customerEmail, `Siparişiniz alındı: ${orderNumber}`, `<p>Sipariş numaranız: ${orderNumber}</p>`),
+      notifyEmail(payload.customerEmail, `Siparişiniz alındı: ${orderNumber}`, `<p>Sipariş numaranız: ${orderNumber}</p><p>Ödeme: ${paymentLabel}</p>`),
     ]);
 
     return {
