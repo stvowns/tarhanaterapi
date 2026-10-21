@@ -353,9 +353,11 @@ export async function onRequestPost({ request, env }) {
   const discount = 0;
   const total = subtotal + shippingFee - discount;
 
+  // Yeni checkout yalnızca bank_transfer gönderir. cod, eski/manuel siparişler için kabul edilir.
+  // Eksik veya geçersiz değerde yeni akışın varsayılanı olan bank_transfer kullanılır.
   const paymentMethod = ['cod', 'bank_transfer'].includes(payload.paymentMethod)
     ? payload.paymentMethod
-    : 'cod';
+    : 'bank_transfer';
   const orderNumber = `TT-${Date.now().toString().slice(-6)}`;
   const order = {
     order_number: orderNumber,

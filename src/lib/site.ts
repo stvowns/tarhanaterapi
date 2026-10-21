@@ -178,7 +178,7 @@ const localBusiness = () => ({
   email: CONTACT.email,
   priceRange: '₺₺',
   currenciesAccepted: 'TRY',
-  paymentAccepted: 'Kapıda ödeme, havale/EFT',
+  paymentAccepted: 'Havale/EFT',
   address,
   parentOrganization: { '@id': orgId },
   openingHoursSpecification: {

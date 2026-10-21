@@ -5,8 +5,8 @@ export const FREE_SHIPPING_THRESHOLD = 2000;
 export const STANDARD_SHIPPING_FEE = 150;
 
 /**
- * Havale/EFT, ticari hesap bilgileri hazır olduğunda kullanılır.
- * VITE_BANK_TRANSFER_ENABLED=false ile kod değişikliği yapmadan gizlenebilir.
+ * Havale/EFT, yeni checkout'ta tek aktif ödeme yöntemidir.
+ * Kapıda ödeme kartı görünür ancak "Yakında!" etiketiyle devre dışıdır.
  * Bilgiler tanımlıysa sipariş onay ekranında gösterilir; tanımlı değilse
  * banka bilgileri sipariş e-postasıyla iletilir.
  */
@@ -17,8 +17,6 @@ const viteEnv = (() => {
     return {};
   }
 })();
-
-export const BANK_TRANSFER_ENABLED = viteEnv.VITE_BANK_TRANSFER_ENABLED !== 'false';
 
 export const BANK_TRANSFER_DETAILS = {
   bankName: (viteEnv.VITE_BANK_TRANSFER_BANK || '').trim(),

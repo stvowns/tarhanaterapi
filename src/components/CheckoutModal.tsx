@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import {
   BANK_TRANSFER_DETAILS,
-  BANK_TRANSFER_ENABLED,
   FREE_SHIPPING_THRESHOLD,
   HAS_BANK_TRANSFER_DETAILS,
   STANDARD_SHIPPING_FEE,
@@ -39,7 +38,8 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
     address: currentUser?.address || '',
     note: '',
     kvkkConsent: false,
-    paymentMethod: 'cod' as 'cod' | 'bank_transfer',
+    // Yeni checkout'ta tek aktif yöntem Havale/EFT. COD yalnızca eski siparişlerde kalır.
+    paymentMethod: 'bank_transfer' as const,
   });
 
   useEffect(() => {
@@ -52,6 +52,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
     setFormData((prev) => ({
       ...prev,
       note: '',
+      paymentMethod: 'bank_transfer',
     }));
   }, [isOpen]);
 
@@ -115,7 +116,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
       customerDistrict: formData.district,
       customerAddress: formData.address,
       deliveryNote: formData.note,
-      paymentMethod: formData.paymentMethod,
+      paymentMethod: 'bank_transfer',
       items: cartItems.map((ci) => ({
         productId: ci.product.id,
         name: ci.product.name,
@@ -154,7 +155,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
         customerCity: formData.city,
         customerDistrict: formData.district,
         deliveryNote: formData.note,
-        paymentMethod: formData.paymentMethod,
+        paymentMethod: 'bank_transfer',
         items: cartItems.map((ci) => ({
           productId: ci.product.id,
           name: ci.product.name,
@@ -373,71 +374,62 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
             <form onSubmit={handleCompleteOrder} className="flex flex-col gap-4">
               {/* Payment Methods */}
               <div className="flex flex-col gap-3">
-                <label
-                  className={`flex items-start gap-3 p-4 rounded-xl border cursor-pointer transition-colors ${
-                    formData.paymentMethod === 'cod'
-                      ? 'border-primary bg-primary-fixed/25'
-                      : 'border-outline-variant/40 bg-surface-container-low hover:border-primary/40'
-                  }`}
+                <div
+                  aria-disabled="true"
+                  className="flex items-start gap-3 p-4 rounded-xl border border-outline-variant/30 bg-surface-container-low/60 opacity-60 cursor-not-allowed select-none"
                 >
                   <input
                     type="radio"
                     name="paymentMethod"
                     value="cod"
-                    checked={formData.paymentMethod === 'cod'}
-                    onChange={() =>
-                      setFormData({ ...formData, paymentMethod: 'cod' })
-                    }
+                    disabled
                     className="mt-1 accent-primary"
                   />
-                  <span>
-                    <span className="block text-sm font-semibold text-on-surface">
-                      Kapıda Ödeme
+                  <span className="flex-1">
+                    <span className="flex items-center gap-2">
+                      <span className="block text-sm font-semibold text-on-surface">
+                        Kapıda Ödeme
+                      </span>
+                      <span className="inline-flex items-center rounded-full bg-outline/10 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-outline">
+                        Yakında!
+                      </span>
                     </span>
                     <span className="block text-xs text-on-surface-variant mt-1 leading-relaxed">
-                      Siparişiniz özel korumalı kutuda kapınıza gelir; kurye teslimi sırasında
-                      nakit veya temassız ödeyebilirsiniz.
+                      Kapıda ödeme yakında yeniden aktif olacak. Şimdilik Havale/EFT ile
+                      ödeyebilirsiniz.
                     </span>
                   </span>
-                </label>
+                </div>
 
-                {BANK_TRANSFER_ENABLED && (
-                  <label
-                    className={`flex items-start gap-3 p-4 rounded-xl border cursor-pointer transition-colors ${
-                      formData.paymentMethod === 'bank_transfer'
-                        ? 'border-primary bg-primary-fixed/25'
-                        : 'border-outline-variant/40 bg-surface-container-low hover:border-primary/40'
-                    }`}
-                  >
-                    <input
-                      type="radio"
-                      name="paymentMethod"
-                      value="bank_transfer"
-                      checked={formData.paymentMethod === 'bank_transfer'}
-                      onChange={() =>
-                        setFormData({ ...formData, paymentMethod: 'bank_transfer' })
-                      }
-                      className="mt-1 accent-primary"
-                    />
-                    <span>
+                <label className="flex items-start gap-3 p-4 rounded-xl border border-primary bg-primary-fixed/25 cursor-default transition-colors">
+                  <input
+                    type="radio"
+                    name="paymentMethod"
+                    value="bank_transfer"
+                    defaultChecked
+                    className="mt-1 accent-primary"
+                  />
+                  <span className="flex-1">
+                    <span className="flex items-center gap-2">
                       <span className="block text-sm font-semibold text-on-surface">
                         Havale / EFT
                       </span>
-                      <span className="block text-xs text-on-surface-variant mt-1 leading-relaxed">
-                        Sipariş sonrası banka bilgileri e-posta ile gönderilir. Açıklamaya
-                        sipariş numaranızı yazıp dekontu bize iletebilirsiniz.
+                      <span className="inline-flex items-center rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-primary">
+                        Aktif
                       </span>
                     </span>
-                  </label>
-                )}
+                    <span className="block text-xs text-on-surface-variant mt-1 leading-relaxed">
+                      Sipariş sonrası banka bilgileri e-posta ile gönderilir. Açıklamaya
+                      sipariş numaranızı yazıp dekontu bize iletebilirsiniz.
+                    </span>
+                  </span>
+                </label>
               </div>
 
-              {formData.paymentMethod === 'bank_transfer' && (
-                <div className="p-4 bg-secondary-fixed/30 rounded-xl text-xs text-on-surface leading-relaxed">
-                  Havale/EFT seçtiniz. Siparişi onayladıktan sonra banka bilgileri e-posta ile
-                  gönderilecek. Ödemeniz kontrol edildikten sonra siparişiniz kargoya verilir.
-                </div>
-              )}
+              <div className="p-4 bg-secondary-fixed/30 rounded-xl text-xs text-on-surface leading-relaxed">
+                Havale/EFT seçili. Siparişi onayladıktan sonra banka bilgileri e-posta ile
+                gönderilecek. Ödemeniz kontrol edildikten sonra siparişiniz kargoya verilir.
+              </div>
 
               <div className="flex items-start gap-2 text-xs text-on-surface mt-1">
                 <input

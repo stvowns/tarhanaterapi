@@ -62,7 +62,7 @@ export interface Order {
   customerCity: string;
   customerDistrict: string;
   deliveryNote?: string;
-  /** credit_card yalnızca eski sipariş kayıtları için korunur; yeni ödeme akışında kullanılmaz. */
+  /** cod/credit_card yalnızca eski sipariş kayıtları için korunur; yeni ödeme akışı bank_transfer gönderir. */
   paymentMethod: 'cod' | 'bank_transfer' | 'credit_card';
   items: OrderItem[];
   subtotal: number;

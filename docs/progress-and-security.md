@@ -1,10 +1,10 @@
-# TarhanaTerapi — Güncel Durum, Güvenlik ve Operasyon (2026-10-12)
+# TarhanaTerapi — Güncel Durum, Güvenlik ve Operasyon (2026-10-21)
 
 ## Özet
 - Repo: https://github.com/stvowns/tarhanaterapi.git, branch `main`
 - İlk çalışan site: https://tarhanaterapi.netlify.app
 - DB: Supabase ref `atrvalwnvruzsbpkgfrl`; sipariş tek kaynağı `public.orders`
-- Ödeme şu an yalnızca Kapıda Ödeme (card form kapalı)
+- Ödeme şu an yalnızca Havale/EFT; Kapıda Ödeme kartı görünür ama “Yakında!” etiketiyle devre dışı
 - Frontend payment provider henüz net olmadığı için credit-card akışı kapatılmıştır
 
 ## Yapılanlar

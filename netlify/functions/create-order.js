@@ -123,7 +123,7 @@ const required = ['customerName', 'customerEmail', 'customerPhone', 'customerCit
 
   const paymentMethod = ['cod', 'bank_transfer'].includes(payload.paymentMethod)
     ? payload.paymentMethod
-    : 'cod';
+    : 'bank_transfer';
   const orderNumber = `TT-${Date.now().toString().slice(-6)}`;
   const order = {
     order_number: orderNumber,

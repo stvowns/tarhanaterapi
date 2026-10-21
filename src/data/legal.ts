@@ -20,7 +20,7 @@ Kişisel verileriniz; siparişinizi yerine getirmek amacıyla yalnızca gerekli 
 Web sitemiz, oturum yönetimi, sepet bilgilerinin saklanması ve site performansının ölçülmesi amacıyla çerezler kullanır. Tarayıcı ayarlarınızdan çerezleri devre dışı bırakabilirsiniz; ancak bu durumda bazı site özellikleri çalışmayabilir.
 
 5. Veri Güvenliği
-Verileriniz Supabase altyapısı üzerinde şifreli ve güvenli bir şekilde saklanır. Ödeme sırasında kart bilgileri tarafımızca işlenmez ve saklanmaz; kapıda ödeme veya havale/EFT kullanılır.
+Verileriniz Supabase altyapısı üzerinde şifreli ve güvenli bir şekilde saklanır. Ödeme sırasında kart bilgileri tarafımızca işlenmez ve saklanmaz; ödeme havale/EFT ile alınır.
 
 6. Veri Saklama Süresi
 Sipariş ve fatura kayıtları, Türk vergi mevzuatı gereği yasal süre boyunca saklanır. Bu sürenin sonunda veriler silinir veya anonim hale getirilir.
@@ -55,7 +55,7 @@ Madde 6 – Cayma Hakkının Kullanımı
 Cayma hakkını kullanmak isteyen alıcı, satıcıya e-posta yoluyla bildirimde bulunur. Ürün, orijinal ambalajında, hasarsız ve faturasıyla birlikte iade edilmelidir. İade kargo bedeli alıcıya aittir.
 
 Madde 7 – Ödeme
-Ödeme, sipariş sırasında seçilen yöntemle (kapıda ödeme veya havale/EFT) gerçekleştirilir. Havale/EFT seçilen siparişlerde ödeme kontrol edildikten sonra sipariş kargoya verilir.
+Ödeme, havale/EFT ile gerçekleştirilir. Kapıda ödeme şu anda kullanılamamaktadır; yakında yeniden etkinleştirilecektir. Havale/EFT ile ödenen siparişlerde ödeme kontrol edildikten sonra sipariş kargoya verilir.
 
 Madde 8 – Uyuşmazlıkların Çözümü
 İşbu sözleşmeden doğan uyuşmazlıklarda Bursa (Orhangazi) Tüketici Hakem Heyetleri ve Tüketici Mahkemeleri yetkilidir.
@@ -84,7 +84,7 @@ Sipariş ve iletişim süreçlerine göre aşağıdaki veriler işlenebilir:
 - İşlem güvenliği verileri: IP adresi, tarayıcı ve cihaz bilgisi, hata/erişim kayıtları.
 - Pazarlama verileri: yalnızca açık rızanız varsa bülten/e-posta izni ve tercihleriniz.
 - Çerez verileri: site tercihleri ve zorunlu oturum bilgileri.
-Kredi kartı numarası, CVV ve kart şifresi tarafımızca işlenmez ve saklanmaz. Kapıda ödeme seçildiğinde ödeme kurye tarafından tahsil edilir.
+Kredi kartı numarası, CVV ve kart şifresi tarafımızca işlenmez ve saklanmaz. Kapıda ödeme şu anda kullanılamamaktadır; ödeme havale/EFT ile alınır.
 
 3. Kişisel Verilerin İşlenme Amaçları
 - Siparişin oluşturulması, hazırlanması, kargoya verilmesi ve teslim edilmesi.
