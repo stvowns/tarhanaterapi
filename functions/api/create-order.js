@@ -42,18 +42,33 @@ const formatOrderDate = (date) => {
   }
 };
 
-const newOrderNumber = () => {
-  const date = new Intl.DateTimeFormat('en-CA', {
-    timeZone: 'Europe/Istanbul',
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit',
-  })
-    .format(new Date())
-    .replace(/-/g, '')
-    .slice(2);
-  const suffix = Math.floor(10000 + Math.random() * 90000);
-  return `TT-${date}-${suffix}`;
+const ORDER_SEQUENCE_START = 48210;
+// Eski TT-###### siparişleriyle karışmaması için yalnızca bu andan sonra oluşan
+// siparişler sayaç hesabına dahil edilir. İlk yeni sipariş TT-48210 olur.
+const ORDER_SEQUENCE_STARTED_AT = '2026-10-21T16:08:00.000Z';
+
+const nextOrderNumber = async (env) => {
+  const res = await fetch(
+    `${env.SUPABASE_URL}/rest/v1/orders?select=order_number&created_at=gte.${encodeURIComponent(
+      ORDER_SEQUENCE_STARTED_AT
+    )}&order=created_at.desc&limit=500`,
+    {
+      headers: {
+        apikey: env.SUPABASE_SERVICE_ROLE_KEY,
+        Authorization: `Bearer ${env.SUPABASE_SERVICE_ROLE_KEY}`,
+      },
+    }
+  );
+  if (!res.ok) {
+    throw new Error(`Sipariş numarası okunamadı: ${res.status} ${await res.text()}`);
+  }
+  const rows = await res.json();
+  let max = ORDER_SEQUENCE_START - 1;
+  for (const row of rows) {
+    const match = /^TT-(\d{5,6})$/.exec(String(row.order_number || ''));
+    if (match) max = Math.max(max, Number(match[1]));
+  }
+  return `TT-${max + 1}`;
 };
 
 const bankTransferDetails = (env) => ({
@@ -258,10 +273,18 @@ async function insertOrder(env, order) {
     },
     body: JSON.stringify(order),
   });
-  if (!res.ok) throw new Error(await res.text());
-  const data = await res.json();
+  const text = await res.text();
+  if (!res.ok) {
+    const error = new Error(text || `Supabase ${res.status}`);
+    error.status = res.status;
+    throw error;
+  }
+  const data = JSON.parse(text);
   return data[0];
 }
+
+const isDuplicateOrderNumber = (error) =>
+  error?.status === 409 || /23505|duplicate key/i.test(String(error?.message || ''));
 
 async function notifyTelegram(env, summary) {
   if (!env.TELEGRAM_BOT_TOKEN || !env.TELEGRAM_ADMIN_CHAT_ID) return;
@@ -371,9 +394,7 @@ export async function onRequestPost({ request, env }) {
   const paymentMethod = ['cod', 'bank_transfer'].includes(payload.paymentMethod)
     ? payload.paymentMethod
     : 'bank_transfer';
-  const orderNumber = newOrderNumber();
-  const order = {
-    order_number: orderNumber,
+  const baseOrder = {
     customer_name: payload.customerName,
     customer_email: payload.customerEmail,
     customer_phone: payload.customerPhone,
@@ -398,7 +419,27 @@ export async function onRequestPost({ request, env }) {
   };
 
   try {
-    const created = await insertOrder(env, order);
+    let created = null;
+    let order = null;
+    let orderNumber = '';
+
+    // Sıralı numara: aynı anda gelen siparişlerde benzersizlik kısıtına takılırsa
+    // bir sonraki numarayla tekrar denenir.
+    for (let attempt = 0; attempt < 5; attempt += 1) {
+      orderNumber = await nextOrderNumber(env);
+      order = { order_number: orderNumber, ...baseOrder };
+      try {
+        created = await insertOrder(env, order);
+        break;
+      } catch (err) {
+        if (!isDuplicateOrderNumber(err) || attempt === 4) throw err;
+      }
+    }
+
+    if (!created || !order) {
+      throw new Error('Sipariş numarası atanamadı');
+    }
+
     const paymentLabel = paymentMethod === 'bank_transfer' ? 'Havale/EFT' : 'Kapıda Ödeme';
     const summary = `Yeni sipariş ${orderNumber}\n${payload.customerName} - ${payload.customerCity}\nÖdeme: ${paymentLabel}\nToplam: ${total} TL`;
 

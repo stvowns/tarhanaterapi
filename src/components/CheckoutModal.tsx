@@ -143,7 +143,10 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
         throw new Error(data.error || 'Sipariş kaydedilemedi');
       }
 
-      const finalOrderNumber = data.orderNumber || `TT-${Date.now()}`;
+      if (!data.orderNumber) {
+        throw new Error('Sipariş numarası alınamadı');
+      }
+      const finalOrderNumber = data.orderNumber;
 
       const newOrder: Order = {
         id: data.id || `ord-${Date.now()}`,
