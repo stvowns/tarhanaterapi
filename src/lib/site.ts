@@ -21,7 +21,7 @@ export const SITE_NAME = 'TarhanaTerapi';
 export const SITE_LANG = 'tr-TR';
 export const CONTENT_UPDATED = '2026-10-21';
 export const CONTENT_UPDATED_LABEL = '21 Ekim 2026';
-export const OG_IMAGE = `${SITE_URL}/og-image.jpg`;
+export const OG_IMAGE = `${SITE_URL}/og-image-2026.jpg`;
 export const LOGO_URL = `${SITE_URL}/logo.svg`;
 
 export const CONTACT = {

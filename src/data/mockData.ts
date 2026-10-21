@@ -2,9 +2,9 @@ import { Product, Ingredient, Review, CookingStep, Recipe } from '../types';
 
 export const ASSETS = {
   logo: '/logo.svg',
-  heroSteamingBowl: '/images/hero-tarhana.webp',
+  heroSteamingBowl: '/images/hero-tarhana-2026.webp',
   womanTasting: '/images/woman-tasting.webp',
-  flatlayIngredients: '/images/ingredients-flatlay.webp',
+  flatlayIngredients: '/images/ingredients-flatlay-2026.webp',
   productClassic: '/images/urun-klasik.webp',
 };
 
