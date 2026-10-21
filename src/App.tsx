@@ -393,9 +393,9 @@ const setActiveTab = useCallback(
     }
   };
 
-  // Simulate incoming order for instant testing
+  // Simulate incoming order for instant testing (local only, does not touch the DB)
   const handleSimulateIncomingOrder = () => {
-    const randomNum = Math.floor(100000 + Math.random() * 900000);
+    const randomNum = 48210 + Math.floor(Math.random() * 90);
     const mockOrder: Order = {
       id: `ord-${Date.now()}`,
       orderNumber: `TT-${randomNum}`,
@@ -405,7 +405,7 @@ const setActiveTab = useCallback(
       customerAddress: 'Bağdat Cad. No: 142/6',
       customerCity: 'İstanbul',
       customerDistrict: 'Kadıköy',
-      paymentMethod: 'cod',
+      paymentMethod: 'bank_transfer',
       items: [
         {
           productId: PRODUCTS[0].id,
