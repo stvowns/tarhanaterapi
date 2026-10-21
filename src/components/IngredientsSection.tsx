@@ -1,5 +1,5 @@
 import React from 'react';
-import { ASSETS } from '../data/mockData';
+import { ASSETS, INGREDIENTS } from '../data/mockData';
 
 interface IngredientsSectionProps {
   onOpenIngredientsModal: () => void;
@@ -55,91 +55,24 @@ export const IngredientsSection: React.FC<IngredientsSectionProps> = ({
           </div>
 
           {/* Ingredients List */}
-          <div className="lg:col-span-5 flex flex-col gap-3.5">
-            {/* Card 1 */}
-            <div
-              onClick={onOpenIngredientsModal}
-              className="p-4 rounded-xl bg-surface shadow-xs hover:shadow-md transition-all flex items-start gap-4 cursor-pointer border border-transparent hover:border-outline-variant/30"
-            >
-              <div className="w-10 h-10 rounded-full bg-surface-container-high flex items-center justify-center text-primary font-bold shrink-0">
-                1
+          <div className="lg:col-span-5 flex flex-col gap-2.5">
+            {INGREDIENTS.map((item) => (
+              <div
+                key={item.id}
+                onClick={onOpenIngredientsModal}
+                className="p-3.5 rounded-xl bg-surface shadow-xs hover:shadow-md transition-all flex items-start gap-3.5 cursor-pointer border border-transparent hover:border-outline-variant/30"
+              >
+                <div className={`w-9 h-9 rounded-full ${item.badgeBg} flex items-center justify-center text-on-surface font-bold shrink-0`}>
+                  {item.number}
+                </div>
+                <div>
+                  <h4 className="font-title-md text-on-surface text-sm">{item.name}</h4>
+                  <p className="font-body-sm text-on-surface-variant mt-0.5 text-xs leading-relaxed">
+                    {item.description}
+                  </p>
+                </div>
               </div>
-              <div>
-                <h4 className="font-title-md text-on-surface">Köy Tipi Süzme Yoğurt</h4>
-                <p className="font-body-sm text-on-surface-variant mt-0.5">
-                  Otlayan ineklerin sütünden geleneksel usulle yapılmış, ekşimsi ve koyu
-                  kıvamlı yoğurt.
-                </p>
-              </div>
-            </div>
-
-            {/* Card 2 */}
-            <div
-              onClick={onOpenIngredientsModal}
-              className="p-4 rounded-xl bg-surface shadow-xs hover:shadow-md transition-all flex items-start gap-4 cursor-pointer border border-transparent hover:border-outline-variant/30"
-            >
-              <div className="w-10 h-10 rounded-full bg-primary-fixed flex items-center justify-center text-primary font-bold shrink-0">
-                2
-              </div>
-              <div>
-                <h4 className="font-title-md text-on-surface">Tarla Domatesi &amp; Közlenmiş Kapya</h4>
-                <p className="font-body-sm text-on-surface-variant mt-0.5">
-                  Ağustos güneşinde kızarmış mis kokulu tarla domatesleri ve köz ateşiyle
-                  tatlanan tatlı etli kapya biberler.
-                </p>
-              </div>
-            </div>
-
-            {/* Card 3 */}
-            <div
-              onClick={onOpenIngredientsModal}
-              className="p-4 rounded-xl bg-surface shadow-xs hover:shadow-md transition-all flex items-start gap-4 cursor-pointer border border-transparent hover:border-outline-variant/30"
-            >
-              <div className="w-10 h-10 rounded-full bg-secondary-fixed flex items-center justify-center text-secondary font-bold shrink-0">
-                3
-              </div>
-              <div>
-                <h4 className="font-title-md text-on-surface">Az Miktarda Nohut Unu</h4>
-                <p className="font-body-sm text-on-surface-variant mt-0.5">
-                  Hamurun içine az miktarda karıştırılan nohut unu; çorbaya hafif tokluk ve
-                  doğal kıvam katar. Paket içinde ayrıca nohut gönderilmez.
-                </p>
-              </div>
-            </div>
-
-            {/* Card 4 */}
-            <div
-              onClick={onOpenIngredientsModal}
-              className="p-4 rounded-xl bg-surface shadow-xs hover:shadow-md transition-all flex items-start gap-4 cursor-pointer border border-transparent hover:border-outline-variant/30"
-            >
-              <div className="w-10 h-10 rounded-full bg-tertiary-fixed flex items-center justify-center text-tertiary font-bold shrink-0">
-                4
-              </div>
-              <div>
-                <h4 className="font-title-md text-on-surface">Taş Değirmen Ata Buğday Unu</h4>
-                <p className="font-body-sm text-on-surface-variant mt-0.5">
-                  Karakılçık ve siyez buğdaylarının rüşeymi ve kepeği ayrılmadan öğütülmüş
-                  besleyici unu.
-                </p>
-              </div>
-            </div>
-
-            {/* Card 5 */}
-            <div
-              onClick={onOpenIngredientsModal}
-              className="p-4 rounded-xl bg-surface shadow-xs hover:shadow-md transition-all flex items-start gap-4 cursor-pointer border border-transparent hover:border-outline-variant/30"
-            >
-              <div className="w-10 h-10 rounded-full bg-surface-container-high flex items-center justify-center text-on-surface-variant font-bold shrink-0">
-                5
-              </div>
-              <div>
-                <h4 className="font-title-md text-on-surface">Taze Dağ Kekiği &amp; Nane</h4>
-                <p className="font-body-sm text-on-surface-variant mt-0.5">
-                  Yüksek rakımlı yaylalardan toplanan uçucu yağları zengin şifalı aromatik
-                  kurutulmuş otlar.
-                </p>
-              </div>
-            </div>
+            ))}
           </div>
         </div>
       </div>
