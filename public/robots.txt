@@ -1,5 +1,7 @@
 # TarhanaTerapi — AI arama ve klasik arama botlarına tam açık.
 User-agent: *
+# Content Signals (contentsignals.org): arama, AI yanıtları ve model eğitimi serbest.
+Content-Signal: search=yes, ai-input=yes, ai-train=yes
 Allow: /
 
 # AI arama / cevap motorları

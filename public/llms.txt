@@ -54,6 +54,8 @@ Son güncelleme: 19 Ekim 2026
 
 ## Notlar
 
+- İçerik kullanımı: `Content-Signal: search=yes, ai-input=yes, ai-train=yes`.
+- Her sayfanın Markdown sürümü aynı adreste `Accept: text/markdown` başlığıyla veya adresin sonuna `.md` eklenerek alınabilir.
 - Sitede yer alan fiyatlar 19 Ekim 2026 tarihinde doğrulanmıştır. Fiyat değiştiğinde bu dosya ve ürün sayfaları birlikte güncellenir.
 - TarhanaTerapi bir aile işletmesidir; ürünler markanın kendi atölyesinde üretilir.
 - Sağlık iddiası yoktur; ürün geleneksel bir gıdadır. Bebek beslenmesi ve alerjenler için hekime danışılması önerilir.

@@ -25,6 +25,7 @@ import {
   jsonLdForGuide,
   jsonLdForGuideIndex,
   jsonLdForRoute,
+  markdownUrl,
   productPath,
   productSeoDescription,
   routePaths,
@@ -44,6 +45,156 @@ const esc = (value: string) =>
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;')
     .replace(/"/g, '&quot;');
+
+const decodeEntities = (value: string) =>
+  value
+    .replace(/&nbsp;/gi, ' ')
+    .replace(/&amp;/gi, '&')
+    .replace(/&lt;/gi, '<')
+    .replace(/&gt;/gi, '>')
+    .replace(/&quot;/gi, '"')
+    .replace(/&#39;/gi, "'")
+    .replace(/&apos;/gi, "'")
+    .replace(/&mdash;/gi, '—')
+    .replace(/&ndash;/gi, '–')
+    .replace(/&hellip;/gi, '…');
+
+const resolveHref = (href: string) => {
+  if (
+    /^https?:\/\//i.test(href) ||
+    href.startsWith('mailto:') ||
+    href.startsWith('tel:') ||
+    href.startsWith('#')
+  ) {
+    return href;
+  }
+  return `${SITE_URL}${href.startsWith('/') ? '' : '/'}${href}`;
+};
+
+const inlineMarkdown = (html: string): string => {
+  let value = html;
+
+  value = value.replace(
+    /<a\s+[^>]*href="([^"]*)"[^>]*>([\s\S]*?)<\/a>/gi,
+    (_match, href: string, label: string) => `[${inlineMarkdown(label)}](${resolveHref(href)})`
+  );
+  value = value.replace(
+    /<(strong|b)[^>]*>([\s\S]*?)<\/\1>/gi,
+    (_match, _tag, text: string) => `**${inlineMarkdown(text)}**`
+  );
+  value = value.replace(
+    /<(em|i)[^>]*>([\s\S]*?)<\/\1>/gi,
+    (_match, _tag, text: string) => `*${inlineMarkdown(text)}*`
+  );
+  value = value.replace(/<code[^>]*>([\s\S]*?)<\/code>/gi, (_match, text: string) => `\`${text}\``);
+  value = value.replace(/<br\s*\/?>/gi, '\n');
+  value = value.replace(/<[^>]+>/g, '');
+  value = decodeEntities(value);
+  value = value.replace(/[ \t]+/g, ' ').replace(/\n\s+/g, '\n').trim();
+
+  return value;
+};
+
+const tableMarkdown = (table: string): string => {
+  const rows = Array.from(table.matchAll(/<tr[^>]*>([\s\S]*?)<\/tr>/gi)).map((row) => {
+    const cells = Array.from(row[1].matchAll(/<(th|td)[^>]*>([\s\S]*?)<\/\1>/gi)).map((cell) =>
+      inlineMarkdown(cell[2]).replace(/\|/g, '\\|')
+    );
+    return { cells, hasHeader: /<th\b/i.test(row[1]) };
+  });
+
+  if (!rows.length) return '';
+
+  const first = rows[0];
+  const header = first.hasHeader
+    ? first.cells
+    : first.cells.map((_cell, index) => (index === 0 ? 'Özellik' : index === 1 ? 'Değer' : ''));
+  const data = first.hasHeader ? rows.slice(1) : rows;
+  const columnCount = Math.max(header.length, ...data.map((row) => row.cells.length), 1);
+  const pad = (cells: string[]) => [...cells, ...Array(columnCount - cells.length).fill('')];
+  const lines = [
+    `| ${pad(header).join(' | ')} |`,
+    `| ${Array(columnCount).fill('---').join(' | ')} |`,
+    ...data.map((row) => `| ${pad(row.cells).join(' | ')} |`),
+  ];
+
+  return `\n\n${lines.join('\n')}\n\n`;
+};
+
+const htmlToMarkdown = (html: string): string => {
+  const tables: string[] = [];
+  let value = html.replace(/<table[^>]*>[\s\S]*?<\/table>/gi, (table) => {
+    tables.push(tableMarkdown(table));
+    return `\n\n__TABLE_${tables.length - 1}__\n\n`;
+  });
+
+  value = value.replace(
+    /<h([1-6])[^>]*>([\s\S]*?)<\/h\1>/gi,
+    (_match, level: string, text: string) =>
+      `\n\n${'#'.repeat(Number(level))} ${inlineMarkdown(text)}\n\n`
+  );
+
+  value = value.replace(/<dl[^>]*>([\s\S]*?)<\/dl>/gi, (_match, body: string) => {
+    const parts: string[] = [];
+    body.replace(
+      /<dt[^>]*>([\s\S]*?)<\/dt>\s*<dd[^>]*>([\s\S]*?)<\/dd>/gi,
+      (_pair, question: string, answer: string) => {
+        parts.push(`\n\n**${inlineMarkdown(question)}**\n\n${inlineMarkdown(answer)}\n\n`);
+        return '';
+      }
+    );
+    return parts.join('');
+  });
+
+  value = value.replace(/<ul[^>]*>([\s\S]*?)<\/ul>/gi, (_match, body: string) => {
+    const items = Array.from(body.matchAll(/<li[^>]*>([\s\S]*?)<\/li>/gi)).map(
+      (item) => `- ${inlineMarkdown(item[1])}`
+    );
+    return `\n\n${items.join('\n')}\n\n`;
+  });
+
+  value = value.replace(/<ol[^>]*>([\s\S]*?)<\/ol>/gi, (_match, body: string) => {
+    const items = Array.from(body.matchAll(/<li[^>]*>([\s\S]*?)<\/li>/gi)).map(
+      (item, index) => `${index + 1}. ${inlineMarkdown(item[1])}`
+    );
+    return `\n\n${items.join('\n')}\n\n`;
+  });
+
+  value = value.replace(
+    /<p[^>]*>([\s\S]*?)<\/p>/gi,
+    (_match, text: string) => `\n\n${inlineMarkdown(text)}\n\n`
+  );
+  value = value.replace(/<hr\s*\/?>/gi, '\n\n---\n\n');
+  value = value.replace(/<blockquote[^>]*>([\s\S]*?)<\/blockquote>/gi, (_match, text: string) => {
+    const quote = inlineMarkdown(text)
+      .split('\n')
+      .map((line) => `> ${line}`)
+      .join('\n');
+    return `\n\n${quote}\n\n`;
+  });
+  value = value.replace(/<[^>]+>/g, '');
+  value = decodeEntities(value);
+  value = value.replace(/[ \t]+\n/g, '\n').replace(/\n{3,}/g, '\n\n').trim();
+
+  return value
+    .replace(/__TABLE_(\d+)__/g, (_match, index: string) => tables[Number(index)] ?? '')
+    .trim();
+};
+
+const renderMarkdown = (options: {
+  title: string;
+  description: string;
+  canonical: string;
+  content: string;
+}) => `---
+title: ${JSON.stringify(options.title)}
+description: ${JSON.stringify(options.description)}
+url: ${JSON.stringify(options.canonical)}
+language: "tr-TR"
+---
+
+${htmlToMarkdown(options.content)}
+`;
 
 const nav = `
   <header>
@@ -406,6 +557,16 @@ function setHead(html: string, route: string, canonical: string, title: string, 
   );
   out = replaceFirst(
     out,
+    /<link[^>]*rel="alternate"[^>]*type="text\/markdown"[^>]*>/,
+    `<link rel="alternate" type="text/markdown" href="${markdownUrl(canonical)}" />`
+  );
+  out = replaceFirst(
+    out,
+    /<link[^>]*rel="describedby"[^>]*>/,
+    `<link rel="describedby" type="text/plain" href="${SITE_URL}/llms.txt" />`
+  );
+  out = replaceFirst(
+    out,
     /<meta[^>]*property="og:type"[^>]*>/,
     `<meta property="og:type" content="${isProduct ? 'product' : 'website'}" />`
   );
@@ -476,7 +637,13 @@ function renderPage(options: {
   return html;
 }
 
-const targets: Array<{ file: string; html: string; path: string; priority: string }> = [];
+const targets: Array<{
+  file: string;
+  html: string;
+  markdown: string;
+  path: string;
+  priority: string;
+}> = [];
 const legalContent = () => {
   const parts: string[] = [];
   let inList = false;
@@ -549,17 +716,24 @@ const routeContent: Record<SiteRoute, () => string> = {
   const seo = routeSeo[route];
   const path = routePaths[route];
   const canonical = path === '/' ? `${SITE_URL}/` : `${SITE_URL}${path}`;
+  const content = routeContent[route]();
   const html = renderPage({
     route,
     canonical,
     title: seo.title,
     description: seo.description,
     jsonLd: jsonLdForRoute(route),
-    content: routeContent[route](),
+    content,
   });
   targets.push({
     file: route === 'home' ? 'index.html' : `${path.replace(/^\//, '')}.html`,
     html,
+    markdown: renderMarkdown({
+      title: seo.title,
+      description: seo.description,
+      canonical,
+      content,
+    }),
     path,
     priority: route === 'home' ? '1.0' : '0.8',
   });
@@ -570,33 +744,45 @@ PRODUCTS.forEach((product) => {
   const canonical = `${SITE_URL}${path}`;
   const title = `${product.name} — ${product.price} TL | TarhanaTerapi`;
   const description = productSeoDescription(product);
+  const content = productContent(product);
   const html = renderPage({
     route: path,
     canonical,
     title,
     description,
     jsonLd: jsonLdForRoute('products', product),
-    content: productContent(product),
+    content,
     isProduct: true,
   });
   targets.push({
     file: `urunler/${product.id}.html`,
     html,
+    markdown: renderMarkdown({ title, description, canonical, content }),
     path,
     priority: '0.7',
   });
 });
 
+const guideIndexTitle = 'Tarhana Rehberi: Kurutma, Saklama ve Bebek | TarhanaTerapi';
+const guideIndexDescription =
+  'Tarhana nasıl kurutulur, neden ekşir, bebeklere ne zaman verilir ve katkısız tarhana nasıl anlaşılır? Uygulamalı tarhana rehberleri.';
+const guideIndexContent = guidesIndexContent();
+const guideIndexCanonical = `${SITE_URL}${GUIDE_INDEX_PATH}`;
 targets.push({
   file: 'rehber.html',
   html: renderPage({
     route: GUIDE_INDEX_PATH,
-    canonical: `${SITE_URL}${GUIDE_INDEX_PATH}`,
-    title: 'Tarhana Rehberi: Kurutma, Saklama ve Bebek | TarhanaTerapi',
-    description:
-      'Tarhana nasıl kurutulur, neden ekşir, bebeklere ne zaman verilir ve katkısız tarhana nasıl anlaşılır? Uygulamalı tarhana rehberleri.',
+    canonical: guideIndexCanonical,
+    title: guideIndexTitle,
+    description: guideIndexDescription,
     jsonLd: jsonLdForGuideIndex(),
-    content: guidesIndexContent(),
+    content: guideIndexContent,
+  }),
+  markdown: renderMarkdown({
+    title: guideIndexTitle,
+    description: guideIndexDescription,
+    canonical: guideIndexCanonical,
+    content: guideIndexContent,
   }),
   path: GUIDE_INDEX_PATH,
   priority: '0.8',
@@ -604,15 +790,24 @@ targets.push({
 
 GUIDES.forEach((guide) => {
   const path = guidePath(guide);
+  const canonical = guideUrl(guide);
+  const title = `${guide.title} | TarhanaTerapi`;
+  const content = guideContent(guide);
   targets.push({
     file: `rehber/${guide.slug}.html`,
     html: renderPage({
       route: path,
-      canonical: guideUrl(guide),
-      title: `${guide.title} | TarhanaTerapi`,
+      canonical,
+      title,
       description: guide.description,
       jsonLd: jsonLdForGuide(guide),
-      content: guideContent(guide),
+      content,
+    }),
+    markdown: renderMarkdown({
+      title,
+      description: guide.description,
+      canonical,
+      content,
     }),
     path,
     priority: '0.8',
@@ -623,7 +818,14 @@ targets.forEach((target) => {
   const file = join(dist, target.file);
   mkdirSync(dirname(file), { recursive: true });
   writeFileSync(file, target.html, 'utf8');
+
+  const markdownFile = target.file === 'index.html' ? 'index.md' : target.file.replace(/\.html$/, '.md');
+  const markdownPath = join(dist, markdownFile);
+  mkdirSync(dirname(markdownPath), { recursive: true });
+  writeFileSync(markdownPath, target.markdown, 'utf8');
+
   console.log(`  prerender: /${target.file} (${target.html.length} bayt)`);
+  console.log(`  prerender: /${markdownFile} (${target.markdown.length} bayt)`);
 });
 
 const sitemap = `<?xml version="1.0" encoding="UTF-8"?>

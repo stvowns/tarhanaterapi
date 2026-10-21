@@ -46,6 +46,12 @@ export const SHORT_ANSWER =
 export const productPath = (product: Pick<Product, 'id'>) => `/urunler/${product.id}`;
 export const productUrl = (product: Pick<Product, 'id'>) => `${SITE_URL}${productPath(product)}`;
 
+/** Aynı sayfanın build sırasında üretilen Markdown kardeşi. */
+export const markdownUrl = (canonical: string) => {
+  const pathPart = canonical.split(/[?#]/, 1)[0].replace(/\/+$/, '');
+  return pathPart === SITE_URL ? `${SITE_URL}/index.md` : `${pathPart}.md`;
+};
+
 export const routePaths = {
   home: '/',
   products: '/urunler',

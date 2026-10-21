@@ -100,3 +100,7 @@ Evet. Hamur toprak küplerde, hava koşullarına göre 21 gün boyunca her gün 
 ## AI kullanım notu
 
 Bu dosya, AI arama ve cevap motorlarının markayı doğru tanımlaması için özet kaynak olarak yayınlanmıştır. Fiyat, stok ve kampanya bilgisi için ürün sayfaları ve iletişim kanalları esas alınmalıdır. Sağlık iddiası içermez; bebek beslenmesi ve alerjenler için hekime danışılmalıdır.
+
+- Content-Signal: `search=yes, ai-input=yes, ai-train=yes`
+- Markdown negotiation: aynı adrese `Accept: text/markdown` başlığıyla veya adresin sonuna `.md` eklenerek erişilebilir.
+- Agent kimlik doğrulaması: `/auth.md`; genel gezinme için kimlik doğrulaması gerekmez, sipariş ve kişisel veri işlemleri insan onayı gerektirir.

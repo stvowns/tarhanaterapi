@@ -70,10 +70,94 @@ for (const bot of BOTS) {
   }
 }
 
+async function checkAgentReadiness() {
+  const results = [];
+  const add = (name, ok, detail) => {
+    results.push({ name, ok, detail });
+    if (!ok) failures.push({ bot: 'AgentReadiness', path: name, status: 'FAIL', detail });
+  };
+
+  try {
+    const res = await fetch(`${BASE}/robots.txt`, { headers: { 'Cache-Control': 'no-cache' } });
+    const body = await res.text();
+    const signal = body.match(/^Content-Signal:\s*.+$/im)?.[0] || 'yok';
+    const ok =
+      res.ok &&
+      /search=yes/i.test(signal) &&
+      /ai-input=yes/i.test(signal) &&
+      /ai-train=yes/i.test(signal);
+    add('robots.txt Content-Signal', ok, `${res.status} · ${signal}`);
+  } catch (err) {
+    add('robots.txt Content-Signal', false, err.message);
+  }
+
+  try {
+    const res = await fetch(`${BASE}/`, {
+      headers: {
+        Accept: 'text/markdown, text/html;q=0.9, */*;q=0.8',
+        'Cache-Control': 'no-cache',
+      },
+      redirect: 'follow',
+    });
+    const body = await res.text();
+    const type = res.headers.get('content-type') || '';
+    const vary = res.headers.get('vary') || '';
+    const ok =
+      res.status === 200 &&
+      /text\/markdown/i.test(type) &&
+      !/^\s*<!doctype html/i.test(body) &&
+      /accept/i.test(vary);
+    add('Markdown negotiation', ok, `${res.status} · ${type} · Vary: ${vary || 'yok'}`);
+  } catch (err) {
+    add('Markdown negotiation', false, err.message);
+  }
+
+  try {
+    const res = await fetch(`${BASE}/urunler/tarhana-classic.md`, {
+      headers: { 'Cache-Control': 'no-cache' },
+      redirect: 'follow',
+    });
+    const body = await res.text();
+    const type = res.headers.get('content-type') || '';
+    const ok = res.status === 200 && /text\/markdown/i.test(type) && body.includes('Geleneksel');
+    add('Markdown .md kardeşi', ok, `${res.status} · ${type}`);
+  } catch (err) {
+    add('Markdown .md kardeşi', false, err.message);
+  }
+
+  try {
+    const res = await fetch(`${BASE}/`, {
+      headers: { Accept: 'text/html', 'Cache-Control': 'no-cache' },
+      redirect: 'follow',
+    });
+    const link = res.headers.get('link') || '';
+    const ok = /rel="(?:describedby|alternate|api-catalog|service-doc|service-desc)"/i.test(link);
+    add('Link header', ok, `${res.status} · ${link || 'yok'}`);
+  } catch (err) {
+    add('Link header', false, err.message);
+  }
+
+  for (const path of ['/auth.md', '/.well-known/security.txt']) {
+    try {
+      const res = await fetch(`${BASE}${path}`, { headers: { 'Cache-Control': 'no-cache' } });
+      add(path, res.status === 200, `${res.status} · ${res.headers.get('content-type') || 'yok'}`);
+    } catch (err) {
+      add(path, false, err.message);
+    }
+  }
+
+  console.log('\nAgent Readiness sinyalleri:');
+  for (const result of results) {
+    console.log(`${result.ok ? '✅' : '❌'} ${result.name.padEnd(28)} ${result.detail}`);
+  }
+}
+
+await checkAgentReadiness();
+
 console.log('');
 if (failures.length) {
   console.log(`❌ ${failures.length} sorun bulundu.`);
   process.exitCode = 1;
 } else {
-  console.log('✅ Tüm botlar tüm sayfalara erişebiliyor.');
+  console.log('✅ Tüm botlar ve agent sinyalleri erişilebilir.');
 }
