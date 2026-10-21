@@ -9,23 +9,23 @@ export const IngredientsPage: React.FC<IngredientsPageProps> = ({ onGoToShop }) 
   const [activeIngredientTab, setActiveIngredientTab] = useState<number>(1);
   const selected = INGREDIENTS.find((i) => i.id === activeIngredientTab) || INGREDIENTS[0];
 
-  const fermentationPhases = [
+  const productionSteps = [
     {
-      days: 'Gün 1 - 7',
-      phase: 'Canlanma & Hamur Yoğurma',
-      desc: 'Köy tipi canlı süzme yoğurt, ata buğday unu, tatlı köz biber ve domates püreleri toprak küpte bir araya gelir. Her sabah ve akşam tahta tokmakla sevgiyle yoğrulur. Canlı laktobasiller uyanır.',
+      step: '1',
+      title: 'Malzemeler Hazırlanır',
+      desc: 'Taş değirmen buğday unu, köy yoğurdu, tarla domatesi, közlenmiş kapya biber, az miktarda nohut unu ve baharatlar ölçülü şekilde bir araya getirilir.',
       badge: 'bg-primary-fixed text-primary',
     },
     {
-      days: 'Gün 8 - 14',
-      phase: 'Derin Laktik Asit Fermantasyonu',
-      desc: 'Hamur kabarır, gözenekler açılır. Fitik asit parçalanır; böylece buğdaydaki mineraller ve vitaminler vücut tarafından %100 emilebilir hale gelir. Kendine has o büyüleyici ekşimsi anne aroması oluşur.',
+      step: '2',
+      title: 'Hamur Yoğrulur',
+      desc: 'Malzemeler hamur kıvamına gelene kadar yoğrulur. Hamur, kurutma için ince ve eşit kalınlıkta açılır.',
       badge: 'bg-secondary-fixed text-secondary',
     },
     {
-      days: 'Gün 15 - 21',
-      phase: 'Güneşte Doğal Kurutma & Kalburlama',
-      desc: 'Temiz yayla havasında, dut ağacı gölgesi ve güneşin dengeli sıcağında keten bezlere serilir. Ufak lokmalar halinde ufalanıp geleneksel tel kalburlardan ovularak geçirilir.',
+      step: '3',
+      title: 'Güneşte Kurutulur',
+      desc: 'İnce açılan hamur, temiz hava akımı olan bir ortamda güneşte kurutulur. Kuruyan tarhana elenir ve pamuk torbaya doldurulur.',
       badge: 'bg-tertiary-fixed text-tertiary',
     },
   ];
@@ -36,14 +36,14 @@ export const IngredientsPage: React.FC<IngredientsPageProps> = ({ onGoToShop }) 
         {/* Header */}
         <div className="text-center max-w-3xl mx-auto mb-16">
           <span className="font-label-lg uppercase tracking-wider text-secondary font-bold">
-            Kadim Şifa Kimyası
+            Şeffaf İçerik
           </span>
           <h1 className="font-headline-lg text-on-surface mt-2 text-3xl sm:text-4xl">
-            İçindekiler &amp; Nohut Terapi Sırrı
+            İçindekiler &amp; Üretim Adımları
           </h1>
           <p className="font-body-lg text-on-surface-variant mt-2 leading-relaxed">
-            Anadolu'nun bereketli topraklarından el değmemiş saf malzemeler, 21 günlük canlı
-            fermantasyon ve nohutun protein dolu şifasıyla birleşti.
+            Anadolu'nun bereketli topraklarından gelen saf malzemeler, özenli hazırlık ve
+            güneşte kurutma ile birleşiyor.
           </p>
         </div>
 
@@ -58,80 +58,81 @@ export const IngredientsPage: React.FC<IngredientsPageProps> = ({ onGoToShop }) 
           </div>
           <div className="lg:col-span-6 flex flex-col gap-4">
             <span className="font-label-lg uppercase text-primary font-bold">
-              Neden Nohutlu Tarhana?
+              Tarhananın Dokusu
             </span>
             <h2 className="font-headline-md text-2xl sm:text-3xl text-on-surface">
-              Nohutun Kadim Tokluğu ve Prebiyotik Mucizesi
+              Az Miktarda Nohut Unu, Doğal Kıvam
             </h2>
             <p className="font-body-md text-on-surface-variant leading-relaxed">
-              Geleneksel tarhana çoğunlukla yoğurt ve un tabanlıdır. TarhanaTerapi ise bu kadim
-              reçeteyi, Anadolu'nun protein devi <strong>yerli koçbaşı nohut</strong> ile zenginleştirdi.
+              Tarhana; un, yoğurt, domates, biber ve baharatın dengeli karışımıyla hazırlanır.
+              Hamura az miktarda nohut unu eklenmesi hafif bir tokluk ve kıvam katar. Paket
+              içinde ayrıca nohut gönderilmez.
             </p>
             <div className="grid grid-cols-2 gap-3 mt-2">
               <div className="p-3 bg-surface rounded-xl border border-outline-variant/20">
-                <strong className="text-primary text-sm block font-bold">%40 Daha Fazla Protein</strong>
+                <strong className="text-primary text-sm block font-bold">Kısa İçerik Listesi</strong>
                 <p className="text-xs text-on-surface-variant mt-0.5">
-                  Bitkisel protein desteğiyle uzun süre acıkmayı önler, glisemik dalgalanmayı dengeler.
+                  Tanıdık malzemeler; koruyucu, renklendirici ve aroma verici yok.
                 </p>
               </div>
               <div className="p-3 bg-surface rounded-xl border border-outline-variant/20">
-                <strong className="text-secondary text-sm block font-bold">Kadife Dokulu Kıvam</strong>
+                <strong className="text-secondary text-sm block font-bold">Güneşte Kurutma</strong>
                 <p className="text-xs text-on-surface-variant mt-0.5">
-                  Haşlanmış nohutun doğal nişastası, yapay bulyon ve un eklemelerine gerek kalmadan kadife pürüzsüzlüğü sunar.
+                  Hamur ince açılır, temiz hava akımında kurutulur ve elenir.
                 </p>
               </div>
             </div>
           </div>
         </div>
 
-        {/* 21-Day Fermentation Timeline */}
+        {/* Production Steps */}
         <div className="mb-20">
           <div className="text-center max-w-2xl mx-auto mb-10">
             <span className="font-label-lg uppercase text-primary font-bold">
-              Sabır ve Zamanın Eseri
+              Mutfaktan Pakete
             </span>
             <h2 className="font-headline-lg text-2xl sm:text-3xl text-on-surface mt-1">
-              21 Günlük Toprak Küpte Mayalanma Takvimi
+              Üretim Adımlarımız
             </h2>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {fermentationPhases.map((phase, idx) => (
+            {productionSteps.map((item) => (
               <div
-                key={idx}
+                key={item.step}
                 className="p-6 bg-surface-container-lowest rounded-2xl shadow-xs border border-outline-variant/30 flex flex-col justify-between"
               >
                 <div>
-                  <span className={`inline-block px-3 py-1 rounded-full text-xs font-bold mb-3 ${phase.badge}`}>
-                    {phase.days}
+                  <span className={`inline-block px-3 py-1 rounded-full text-xs font-bold mb-3 ${item.badge}`}>
+                    Adım {item.step}
                   </span>
-                  <h3 className="font-title-lg text-on-surface mb-2 font-bold">{phase.phase}</h3>
+                  <h3 className="font-title-lg text-on-surface mb-2 font-bold">{item.title}</h3>
                   <p className="font-body-sm text-on-surface-variant leading-relaxed">
-                    {phase.desc}
+                    {item.desc}
                   </p>
                 </div>
                 <div className="mt-4 pt-3 border-t border-outline-variant/20 text-xs text-outline flex items-center gap-1.5">
                   <span className="material-symbols-outlined text-[16px] text-emerald-600">
                     check_circle
                   </span>
-                  <span>Canlı probiyotik florası korunur</span>
+                  <span>Katkısız üretim</span>
                 </div>
               </div>
             ))}
           </div>
         </div>
 
-        {/* Interactive 12 Natural Ingredients Selector */}
+        {/* Interactive Natural Ingredients Selector */}
         <div className="bg-surface-container-low p-6 sm:p-10 rounded-3xl border border-outline-variant/30 mb-16">
           <div className="max-w-2xl mb-8">
             <span className="font-label-lg uppercase text-secondary font-bold">
               Ata Mirası İçerik
             </span>
             <h2 className="font-headline-lg text-2xl sm:text-3xl text-on-surface mt-1">
-              Topraktan Gelen 12 Doğal Bileşen
+              Topraktan Gelen {INGREDIENTS.length} Doğal Bileşen
             </h2>
             <p className="font-body-md text-on-surface-variant mt-1 text-sm">
-              Malzemelerin üzerine tıklayarak nereden temin edildiğini ve sağlığınıza katkısını inceleyebilirsiniz.
+              Malzemelerin üzerine tıklayarak nereden temin edildiğini ve ürüne katkısını inceleyebilirsiniz.
             </p>
           </div>
 
@@ -191,7 +192,7 @@ export const IngredientsPage: React.FC<IngredientsPageProps> = ({ onGoToShop }) 
                   <span className="material-symbols-outlined text-[16px] text-emerald-600">
                     health_and_safety
                   </span>
-                  Sağlığa &amp; Sindirime Faydaları
+                  Ürüne Katkısı
                 </h4>
 
                 <div className="space-y-2 mb-6">
@@ -208,7 +209,7 @@ export const IngredientsPage: React.FC<IngredientsPageProps> = ({ onGoToShop }) 
               </div>
 
               <div className="pt-4 border-t border-outline-variant/20 flex justify-between items-center">
-                <span className="text-xs text-outline">Sıfır katkı, sıfır koruyucu garantisi</span>
+                <span className="text-xs text-outline">Koruyucu, renklendirici ve aroma verici yok</span>
                 <button
                   onClick={onGoToShop}
                   className="px-5 py-2.5 bg-primary-container hover:bg-primary text-on-primary-container text-xs font-semibold rounded-lg transition-colors cursor-pointer"

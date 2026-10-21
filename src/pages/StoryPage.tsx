@@ -38,8 +38,8 @@ export const StoryPage: React.FC<StoryPageProps> = ({ onGoToShop }) => {
                 family_restroom
               </span>
               <div>
-                <p className="text-xs font-bold text-on-surface">3 Nesildir Korunan Maya</p>
-                <p className="text-[11px] text-outline">1954'ten beri devam eden kültür</p>
+                <p className="text-xs font-bold text-on-surface">3 Nesillik Aile Tarifi</p>
+                <p className="text-[11px] text-outline">1954'ten beri süren aile mutfağı</p>
               </div>
             </div>
           </div>
@@ -71,10 +71,10 @@ export const StoryPage: React.FC<StoryPageProps> = ({ onGoToShop }) => {
             <div className="w-12 h-12 rounded-xl bg-primary-fixed text-primary flex items-center justify-center">
               <span className="material-symbols-outlined text-[26px]">hourglass_bottom</span>
             </div>
-            <h3 className="font-title-lg text-on-surface font-bold">Zamana Saygı (Slow Food)</h3>
+            <h3 className="font-title-lg text-on-surface font-bold">Güneşte Kurutma</h3>
             <p className="font-body-sm text-on-surface-variant leading-relaxed">
-              Endüstriyel fırınlarda 2 saatte kurutulan tarhanalara inat, biz 21 gün boyunca toprak
-              küplerde sabırla bekletiyor, güneşin doğal ısısıyla yavaşça kurutuyoruz.
+              Hamurumuzu temiz hava akımı olan bir ortamda, güneşin doğal ısısıyla kurutuyoruz.
+              Bu yöntem tarhananın kendine özgü aromasını ve dokusunu korur.
             </p>
           </div>
 
@@ -93,10 +93,10 @@ export const StoryPage: React.FC<StoryPageProps> = ({ onGoToShop }) => {
             <div className="w-12 h-12 rounded-xl bg-tertiary-fixed text-tertiary flex items-center justify-center">
               <span className="material-symbols-outlined text-[26px]">energy_savings_leaf</span>
             </div>
-            <h3 className="font-title-lg text-on-surface font-bold">Sıfır Kimyasal, %100 Saflık</h3>
+            <h3 className="font-title-lg text-on-surface font-bold">Katkısız ve Şeffaf</h3>
             <p className="font-body-sm text-on-surface-variant leading-relaxed">
-              Hiçbir koruyucu, raf ömrü uzatıcı, monosodyum glutamat (MSG) veya sentetik maya
-              kullanmıyoruz. Çocuklarımıza yediremeyeceğimiz hiçbir şeyi mutfağımıza sokmuyoruz.
+              Koruyucu, renklendirici, aroma verici veya bulyon kullanmıyoruz. İçindekiler
+              listemiz kısa ve açık; ne yediğinizi bilerek için.
             </p>
           </div>
         </div>

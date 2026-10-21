@@ -16,8 +16,7 @@ export const ProductsSection: React.FC<ProductsSectionProps> = ({
   const [addingId, setAddingId] = useState<string | null>(null);
   const [flyers, setFlyers] = useState<Flyer[]>([]);
 
-  // Take the 4 primary featured products matching the screenshot
-  const featuredProducts = PRODUCTS.slice(0, 4);
+  const featuredProducts = PRODUCTS.filter((product) => product.inStock).slice(0, 1);
 
   const handleAdd = (e: React.MouseEvent, product: Product) => {
     e.stopPropagation();
@@ -45,16 +44,16 @@ export const ProductsSection: React.FC<ProductsSectionProps> = ({
             Doğal Kilerimizden Sofranıza
           </span>
           <h2 className="font-headline-lg text-on-surface mt-2">
-            Şifalı Çorba Seçenekleri
+            Geleneksel Tarhanamız
           </h2>
           <p className="font-body-lg text-on-surface-variant mt-3">
-            Geleneksel pamuklu bez torbalarda sunulan, her damak
-            zevkine uygun nohutlu terapi paketleri.
+            Şu anda tek çeşit, 1 kg pamuk torba geleneksel tarhana sunuyoruz. Acılı ve bebek
+            versiyonları istek üzerine hazırlanır.
           </p>
         </div>
 
-        {/* Product Cards Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        {/* Product Card */}
+        <div className="grid grid-cols-1 max-w-md mx-auto gap-6">
           {featuredProducts.map((product) => {
             const isAdding = addingId === product.id;
 
@@ -63,11 +62,7 @@ export const ProductsSection: React.FC<ProductsSectionProps> = ({
                 key={product.id}
                 data-product-card
                 onClick={() => onSelectProduct(product)}
-                className={`flex flex-col rounded-2xl p-5 transition-all duration-300 transform hover:-translate-y-1 cursor-pointer group ${
-                  product.id === 'tarhana-starter-set'
-                    ? 'bg-surface-container-high shadow-[0_8px_20px_-2px_rgba(45,36,36,0.08)] hover:shadow-[0_16px_32px_-4px_rgba(45,36,36,0.14)]'
-                    : 'bg-surface-container-lowest shadow-[0_4px_16px_-2px_rgba(45,36,36,0.06)] hover:shadow-[0_12px_28px_-4px_rgba(45,36,36,0.1)]'
-                }`}
+                className="flex flex-col rounded-2xl p-5 bg-surface-container-lowest shadow-[0_4px_16px_-2px_rgba(45,36,36,0.06)] hover:shadow-[0_12px_28px_-4px_rgba(45,36,36,0.1)] transition-all duration-300 transform hover:-translate-y-1 cursor-pointer group"
               >
                 {/* Image Container with Badge */}
                 <div className="relative w-full aspect-square rounded-xl bg-surface-container overflow-hidden mb-4">

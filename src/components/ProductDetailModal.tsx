@@ -119,7 +119,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
                   <span className="material-symbols-outlined text-[16px] text-primary">
                     nutrition
                   </span>
-                  100g İçin Besin Değerleri (Analiz Onaylı)
+                  100 g İçin Yaklaşık Besin Değerleri
                 </h4>
                 <div className="grid grid-cols-4 gap-2 text-center text-xs">
                   <div className="p-2 bg-surface rounded-lg">
@@ -135,7 +135,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
                     <strong className="text-secondary">{product.nutrition.fiber}</strong>
                   </div>
                   <div className="p-2 bg-surface rounded-lg">
-                    <span className="text-outline block text-[10px]">Sağlıklı Yağ</span>
+                    <span className="text-outline block text-[10px]">Yağ</span>
                     <strong className="text-on-surface">{product.nutrition.fat}</strong>
                   </div>
                 </div>

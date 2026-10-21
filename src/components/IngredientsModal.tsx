@@ -30,10 +30,10 @@ export const IngredientsModal: React.FC<IngredientsModalProps> = ({
             </span>
             <div>
               <h3 className="font-headline-sm text-on-surface text-xl">
-                Topraktan Gelen 12 Doğal Şifa Bileşeni
+                Topraktan Gelen 7 Doğal Bileşen
               </h3>
               <p className="text-xs text-on-surface-variant">
-                %100 Doğal, Katkısız, Koruyucusuz ve Ata Tohumu Standartlarında
+                Katkısız ve koruyucusuz; az miktarda nohut unu içerir.
               </p>
             </div>
           </div>
@@ -93,7 +93,7 @@ export const IngredientsModal: React.FC<IngredientsModalProps> = ({
         <div className="p-4 bg-surface-container-low border-t border-surface-container-high flex items-center justify-between">
           <div className="flex items-center gap-2 text-xs text-on-surface-variant">
             <span className="material-symbols-outlined text-primary text-[18px]">verified</span>
-            <span>T.C. Tarım ve Orman Bakanlığı Organik Üretim Kodeksine Tam Uyum</span>
+            <span>Koruyucu, renklendirici ve aroma verici kullanılmaz.</span>
           </div>
           <button
             onClick={onClose}

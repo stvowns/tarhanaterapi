@@ -88,7 +88,7 @@ export const GuidePage: React.FC<GuidePageProps> = ({ guide }) => {
               Bu rehberdeki ürünler
             </h2>
             <p className="text-sm text-on-surface-variant mb-4">
-              Katkısız, 21 gün toprak küpte fermente edilen tarhana çeşitlerini inceleyin.
+              Katkısız, aile tarifiyle hazırlanan geleneksel tarhanamızı inceleyin.
             </p>
             <ul className="flex flex-col gap-2">
               {related.map((product) => (

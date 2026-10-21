@@ -19,11 +19,8 @@ export const ProductsPage: React.FC<ProductsPageProps> = ({
   const [flyers, setFlyers] = useState<Flyer[]>([]);
 
   const categories = [
-    { id: 'all', label: 'Tüm Şifalı Çorbalar' },
-    { id: 'classic', label: 'Geleneksel Anne Mayası' },
-    { id: 'spicy', label: 'Acılı & Gurme' },
-    { id: 'baby', label: 'Bebek & Çocuk' },
-    { id: 'sets', label: 'Setler & Koleksiyon' },
+    { id: 'all', label: 'Tüm Tarhana' },
+    { id: 'classic', label: 'Geleneksel' },
   ];
 
   const filteredProducts = useMemo(() => {
@@ -74,13 +71,14 @@ export const ProductsPage: React.FC<ProductsPageProps> = ({
         {/* Page Header */}
         <div className="text-center max-w-3xl mx-auto mb-10">
           <span className="font-label-lg uppercase tracking-wider text-primary font-bold">
-            Doğal Kiler Koleksiyonu
+            Doğal Kilerimizden
           </span>
           <h1 className="font-headline-lg text-on-surface mt-2 text-3xl sm:text-4xl">
-            Şifalı Çorba Çeşitlerimiz
+            Geleneksel Tarhanamız
           </h1>
           <p className="font-body-lg text-on-surface-variant mt-2">
-            Toprak küplerde 21 gün dinlendirilen, ata tohumu nohut taneleriyle lezzetlenen saf ve katkısız harmanlarımız.
+            Tek çeşit, 1 kg pamuk torba. Katkısız, güneşte kurutulmuş geleneksel tarhana.
+            Acılı ve bebek versiyonları istek üzerine hazırlanır.
           </p>
         </div>
 
@@ -111,7 +109,7 @@ export const ProductsPage: React.FC<ProductsPageProps> = ({
               </span>
               <input
                 type="text"
-                placeholder="Çorba ara..."
+                placeholder="Tarhana ara..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="w-full pl-9 pr-3 py-2 text-xs rounded-lg bg-surface-container-low border border-outline-variant/30 focus:outline-none focus:ring-1 focus:ring-primary"
@@ -135,7 +133,7 @@ export const ProductsPage: React.FC<ProductsPageProps> = ({
         {filteredProducts.length === 0 ? (
           <div className="text-center py-20">
             <p className="text-on-surface-variant text-base">
-              Aramanızla eşleşen şifalı çorba bulunamadı.
+              Aramanızla eşleşen tarhana bulunamadı.
             </p>
             <button
               onClick={() => {
@@ -148,7 +146,7 @@ export const ProductsPage: React.FC<ProductsPageProps> = ({
             </button>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 max-w-md mx-auto gap-8">
             {filteredProducts.map((product) => (
               <div
                 key={product.id}

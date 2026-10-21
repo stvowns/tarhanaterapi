@@ -13,20 +13,20 @@ const UNSUBSCRIBE_MAILTO =
   'mailto:satis@tarhanaterapi.com?subject=Abonelikten%20%C3%A7%C4%B1k%C4%B1%C5%9F';
 
 export const DEFAULT_NEWSLETTER: NewsletterFields = {
-  subject: 'Şifa Bülteni: Mevsimlik harmanlar ve 8 tariflik e-kitap',
+  subject: 'Şifa Bülteni: Mevsimlik tarifler ve 8 tariflik e-kitap',
   preheader:
-    'Slow-food tarifleri, bağırsak dostu fermente beslenme notları ve yeni sezon tarhanaları.',
+    'Mevsimlik çorba reçeteleri, tarhana pişirme püf noktaları ve yeni sezon tarhanamız.',
   heading: 'Mevsim döndü, sofranız şifalandı',
   body: `Merhaba,
 
-Sonbaharın ilk soğuklarıyla birlikte mutfağımızda toprak küpler yeniden uyanıyor. Bu ay sizin için mevsimlik harmanlar, slow-food tarifleri ve bağırsak dostu fermente beslenme notlarından bir seçki hazırladık.
+Sonbaharın ilk soğuklarıyla birlikte mutfağımızda yeni harmanlar hazırlanıyor. Bu ay sizin için mevsimlik çorba reçeteleri, tarhana pişirme püf noktaları ve saklama önerilerinden bir seçki hazırladık.
 
-Yeni e-kitabımız “Kadim Çorba Ritüelleri ve Şifalı Tarifler”de 8 tarhana tarifi, 21 günlük fermantasyon rehberi ve saklama önerileri yer alıyor.
+Yeni e-kitabımız “Kadim Çorba Ritüelleri ve Şifalı Tarifler”de 8 tarhana tarifi, pişirme rehberi ve saklama önerileri yer alıyor.
 
-Sofranıza şifa, evinize sıcaklık getiren tarhana çeşitlerimizi keşfedin.`,
+Sofranıza şifa, evinize sıcaklık getiren geleneksel tarhanamızı keşfedin.`,
   highlights: `8 mevsimlik tarhana tarifi
-21 günlük fermantasyon rehberi
-Bağırsak dostu fermente beslenme notları`,
+Tarhana pişirme ve saklama rehberi
+Mevsimlik çorba reçeteleri`,
   ctaLabel: '8 Tariflik E-Kitabı İndir',
   ctaUrl: 'https://tarhanaterapi.com/kadim-corba-rituelleri-ve-sifali-tarifler.pdf',
   footerNote:
@@ -98,7 +98,7 @@ export const buildNewsletterHtml = (fields: NewsletterFields) => {
             <tr>
               <td style="padding:26px 32px 18px;background:#3f4a32;">
                 <div style="font-family:Georgia,'Times New Roman',serif;font-size:24px;line-height:1.2;color:#fffdf8;letter-spacing:.2px;">TarhanaTerapi</div>
-                <div style="margin-top:6px;font-size:11px;letter-spacing:1.6px;text-transform:uppercase;color:#d9e2c8;">Anadolu’nun fermente şifa geleneği</div>
+                <div style="margin-top:6px;font-size:11px;letter-spacing:1.6px;text-transform:uppercase;color:#d9e2c8;">Anadolu’nun geleneksel çorba kültürü</div>
               </td>
             </tr>
             <tr>
@@ -133,7 +133,7 @@ export const buildNewsletterHtml = (fields: NewsletterFields) => {
                 )}" style="display:inline-block;background:#b45f3c;color:#ffffff;text-decoration:none;font-size:14px;font-weight:700;padding:14px 24px;border-radius:10px;">${escapeHtml(
                   fields.ctaLabel
                 )}</a>
-                <p style="margin:18px 0 0;font-size:13px;line-height:1.6;color:#6b6458;">Ya da <a href="https://tarhanaterapi.com/urunler" style="color:#3f4a32;font-weight:700;text-decoration:underline;">tarhana çeşitlerini keşfedin</a>.</p>
+                <p style="margin:18px 0 0;font-size:13px;line-height:1.6;color:#6b6458;">Ya da <a href="https://tarhanaterapi.com/urunler" style="color:#3f4a32;font-weight:700;text-decoration:underline;">geleneksel tarhanamızı keşfedin</a>.</p>
               </td>
             </tr>
             <tr>

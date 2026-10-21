@@ -47,9 +47,9 @@ export const StorySection: React.FC<StorySectionProps> = ({ onReadMoreStory }) =
 
             <p className="font-body-lg text-on-surface-variant leading-relaxed">
               TarhanaTerapi, Orhangazi'nin serin köylerinde alelade bir hazır çorba değil;
-              unutulmaya yüz tutmuş sabır ve sevgi ritüelidir. Çömlek küplerde fermantasyonunu
-              tamamlayan canlı mayalar ve aromatik sebzeler, lokum kıvamında pişmiş nohutlarla
-              kasede buluştuğunda sadece midenizi değil, ruhunuzu da teskin eder.
+              unutulmaya yüz tutmuş sabır ve sevgi ritüelidir. Taş değirmen unu, köy yoğurdu
+              ve güneşte olgunlaşmış sebzeler, kasede sıcacık bir lezzete dönüşür. İlk kaşıkta
+              sadece midenizi değil, ruhunuzu da teskin eder.
             </p>
 
             {/* 3 Pillars Grid */}
@@ -59,10 +59,10 @@ export const StorySection: React.FC<StorySectionProps> = ({ onReadMoreStory }) =
                   <span className="material-symbols-outlined text-[24px]">hourglass_top</span>
                 </div>
                 <div>
-                  <h3 className="font-title-lg text-on-surface">21 Gün Doğal Fermantasyon</h3>
+                  <h3 className="font-title-lg text-on-surface">Geleneksel Aile Tarifi</h3>
                   <p className="font-body-md text-on-surface-variant mt-0.5">
-                    Zamanla demlenen canlı probiyotikler, bağırsak florasını güçlendirir, sindirimi
-                    son derece hafif ve şifalı hale getirir.
+                    Üç nesildir süren tarif, ölçülü malzeme ve özenli hazırlıkla sofralara
+                    taşınır. Her paket aynı aile mutfağının titizliğini korur.
                   </p>
                 </div>
               </div>
@@ -72,10 +72,10 @@ export const StorySection: React.FC<StorySectionProps> = ({ onReadMoreStory }) =
                   <span className="material-symbols-outlined text-[24px]">agriculture</span>
                 </div>
                 <div>
-                  <h3 className="font-title-lg text-on-surface">Haşlanmış Koçbaşı Nohut</h3>
+                  <h3 className="font-title-lg text-on-surface">Güneşte Kurutulan Sebzeler</h3>
                   <p className="font-body-md text-on-surface-variant mt-0.5">
-                    Yerli ata tohumu koçbaşı nohutlar ayrı kazanlarda haşlanır; tereyağı ve kuru
-                    nane ile sotelenip çorbaya zengin bir doku katar.
+                    Tarla domatesi ve közlenmiş kapya biber, doğal yöntemlerle hazırlanır;
+                    çorbaya tatlı bir derinlik ve ipeksi kıvam katar.
                   </p>
                 </div>
               </div>
@@ -85,10 +85,10 @@ export const StorySection: React.FC<StorySectionProps> = ({ onReadMoreStory }) =
                   <span className="material-symbols-outlined text-[24px]">wb_sunny</span>
                 </div>
                 <div>
-                  <h3 className="font-title-lg text-on-surface">Güneşte Doğal Kurutulan Şifa</h3>
+                  <h3 className="font-title-lg text-on-surface">Güneşte Doğal Kurutma</h3>
                   <p className="font-body-md text-on-surface-variant mt-0.5">
-                    Asla endüstriyel fırın kullanılmaz. Temiz yayla havasında, keten bezler üzerinde
-                    ağır ağır kurutularak vitaminleri hapsedilir.
+                    Hamur, temiz hava akımı olan bir ortamda güneşte kurutulur. Bu yöntem,
+                    tarhananın kendine özgü aromasını ve doğal dokusunu korur.
                   </p>
                 </div>
               </div>
@@ -99,7 +99,7 @@ export const StorySection: React.FC<StorySectionProps> = ({ onReadMoreStory }) =
                 onClick={onReadMoreStory}
                 className="inline-flex items-center gap-2 text-primary font-title-md hover:underline cursor-pointer group"
               >
-                <span>Bursa Orhangazi köylerindeki kadim mayalama hikayemizi keşfedin</span>
+                <span>Bursa Orhangazi köylerindeki aile hikayemizi keşfedin</span>
                 <span className="material-symbols-outlined text-[20px] group-hover:translate-x-1 transition-transform">
                   arrow_forward
                 </span>

@@ -127,8 +127,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                 </div>
                 <h3 className="font-title-lg text-on-surface">Sepetiniz henüz boş</h3>
                 <p className="font-body-sm text-on-surface-variant max-w-xs mt-1">
-                  Kadim anne mayasıyla yoğrulan nohutlu tarhana çeşitlerimizden dilediğinizi
-                  ekleyin.
+                  Aile tarifiyle hazırlanan geleneksel tarhanamızı sepete ekleyin.
                 </p>
                 <button
                   onClick={onClose}

@@ -144,7 +144,7 @@ const setActiveTab = useCallback(
     }
   });
 
-  // Cart State (Initialized with 1 featured item at updated price 450 TL)
+  // Cart State (Initialized with the single featured product)
   const [cartItems, setCartItems] = useState<CartItem[]>([
     {
       product: PRODUCTS[0],
@@ -405,21 +405,21 @@ const setActiveTab = useCallback(
       customerAddress: 'Bağdat Cad. No: 142/6',
       customerCity: 'İstanbul',
       customerDistrict: 'Kadıköy',
-      paymentMethod: 'credit_card',
+      paymentMethod: 'cod',
       items: [
         {
-          productId: PRODUCTS[1].id,
-          name: PRODUCTS[1].name,
-          price: PRODUCTS[1].price,
+          productId: PRODUCTS[0].id,
+          name: PRODUCTS[0].name,
+          price: PRODUCTS[0].price,
           quantity: 1,
-          weight: PRODUCTS[1].weight,
-          image: PRODUCTS[1].image,
+          weight: PRODUCTS[0].weight,
+          image: PRODUCTS[0].image,
         },
       ],
-      subtotal: PRODUCTS[1].price,
-      shippingFee: 0,
+      subtotal: PRODUCTS[0].price,
+      shippingFee: 150,
       discount: 0,
-      total: PRODUCTS[1].price,
+      total: PRODUCTS[0].price + 150,
       status: 'Yeni Sipariş',
       createdAt: new Date().toLocaleDateString('tr-TR', {
         day: '2-digit',

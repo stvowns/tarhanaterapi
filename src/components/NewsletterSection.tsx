@@ -30,8 +30,8 @@ export const NewsletterSection: React.FC<NewsletterSectionProps> = ({ onDownload
               "Kadim Çorba Ritüelleri ve Şifalı Tarifler" E-Kitabını Ücretsiz İndirin
             </h2>
             <p className="font-body-md text-on-surface-variant mt-3 leading-relaxed">
-              Anadolu'nun dört bir yanından derlenmiş fermente beslenme sırları, mevsimlik
-              çorba reçeteleri ve nohut terapisinin püf noktaları bir arada.
+              Anadolu'nun dört bir yanından derlenmiş mevsimlik çorba reçeteleri, tarhana
+              pişirme püf noktaları ve saklama önerileri bir arada.
             </p>
           </div>
 

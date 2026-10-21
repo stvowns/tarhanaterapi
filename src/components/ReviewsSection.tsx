@@ -14,9 +14,9 @@ export const ReviewsSection: React.FC<ReviewsSectionProps> = ({ onViewAllReviews
         {/* Top Social Proof Stats */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-16 text-center">
           <div className="p-8 rounded-2xl bg-surface-container-low shadow-xs border border-outline-variant/10">
-            <span className="font-display-hero text-primary font-bold">15.000+</span>
-            <p className="font-title-lg text-on-surface mt-2">Doyuran &amp; Isıtan Kase</p>
-            <p className="font-body-sm text-on-surface-variant">Türkiye'nin 81 ilinde sofralarda</p>
+            <span className="font-display-hero text-primary font-bold">420+</span>
+            <p className="font-title-lg text-on-surface mt-2">Doğrulanmış Yorum</p>
+            <p className="font-body-sm text-on-surface-variant">Gerçek alıcı deneyimleri</p>
           </div>
 
           <div className="p-8 rounded-2xl bg-surface-container-low shadow-xs border border-outline-variant/10">
@@ -36,9 +36,9 @@ export const ReviewsSection: React.FC<ReviewsSectionProps> = ({ onViewAllReviews
           </div>
 
           <div className="p-8 rounded-2xl bg-surface-container-low shadow-xs border border-outline-variant/10">
-            <span className="font-display-hero text-tertiary font-bold">%99.4</span>
-            <p className="font-title-lg text-on-surface mt-2">Tekrar Sipariş Oranı</p>
-            <p className="font-body-sm text-on-surface-variant">Her mevsim kilerlerin baş tacı</p>
+            <span className="font-display-hero text-tertiary font-bold">1-3 Gün</span>
+            <p className="font-title-lg text-on-surface mt-2">Türkiye Geneli Kargo</p>
+            <p className="font-body-sm text-on-surface-variant">2000 TL üzeri ücretsiz</p>
           </div>
         </div>
 

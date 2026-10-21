@@ -29,15 +29,15 @@ export const GUIDES: Guide[] = [
     h1: 'Tarhana Nasıl Kurutulur?',
     description:
       "Ev yapımı tarhana hamuru nasıl açılır, güneşte kaç günde kurur, kuruturken nelere dikkat edilir ve kuruduktan sonra nasıl saklanır? Adım adım rehber.",
-    updated: '2026-10-19',
+    updated: '2026-10-21',
     readingMinutes: 6,
     intro:
-      "Tarhana kurutma, fermantasyonu biten hamurun ince açılıp nemini kaybetmesi sürecidir. Doğru hava akımı, temiz bir bez ve düzenli çevirme ile tarhana 5-10 günde kurur. Kurutma, tarhananın hem raf ömrünü hem de çorbanın kıvamını belirler.",
+      "Tarhana kurutma, hazırlanan hamurun ince açılıp nemini kaybetmesi sürecidir. Doğru hava akımı, temiz bir bez ve düzenli çevirme ile tarhana 5-10 günde kurur. Kurutma, tarhananın hem raf ömrünü hem de çorbanın kıvamını belirler.",
     sections: [
       {
-        h2: 'Fermantasyon bitince hamur nasıl hazırlanır?',
+        h2: 'Hamur kurutmaya nasıl hazırlanır?',
         paragraphs: [
-          'Toprak küpte 21 gün fermente edilen hamur, kurutma gününde fazla suyunu bırakana kadar yoğrulur. Hamur çok sulu kalırsa kuruma süresi uzar ve ekşime artar. Bu yüzden hamurun ele yapışmayan, toparlanan bir kıvamda olması gerekir.',
+          'Hamur, kurutma gününde fazla suyunu bırakana kadar yoğrulur. Hamur çok sulu kalırsa kuruma süresi uzar ve ekşime artar. Bu yüzden hamurun ele yapışmayan, toparlanan bir kıvamda olması gerekir.',
           'Hamur, temiz bir bez veya tahta üzerinde 2-3 mm kalınlığında ince açılır. Kalın açılan tarhana dışarıdan kurur, içi nemli kalır; bu da kısa sürede küflenmeye yol açar.',
         ],
         bullets: [
@@ -80,14 +80,14 @@ export const GUIDES: Guide[] = [
       },
       {
         q: 'Tarhana kururken ekşir mi?',
-        a: 'Hafif ekşilik normaldir; tarhana fermente bir gıdadır. Ancak keskin koku, yapışkanlık veya küf varsa ürün bozulmuş olabilir ve tüketilmemelidir.',
+        a: 'Hafif ekşilik normaldir; tarhana yoğurt ve sebzelerle hazırlanan bir gıdadır. Ancak keskin koku, yapışkanlık veya küf varsa ürün bozulmuş olabilir ve tüketilmemelidir.',
       },
       {
         q: 'Kurutma süresi neden değişir?',
         a: 'Hamurun kalınlığı, hava sıcaklığı, nem oranı ve hava akımı kuruma süresini değiştirir. İnce açılan hamur daha çabuk kurur.',
       },
     ],
-    relatedProducts: ['tarhana-classic', 'tarhana-family-pack'],
+    relatedProducts: ['tarhana-classic'],
   },
   {
     slug: 'bebeklere-tarhana-ne-zaman-verilir',
@@ -95,7 +95,7 @@ export const GUIDES: Guide[] = [
     h1: 'Bebeklere Tarhana Ne Zaman Verilir?',
     description:
       'Bebeklere tarhana kaçıncı ayda verilir, tuz ve acı ne zaman eklenir, alerjen riski nasıl yönetilir? Doktora danışarak uygulanacak güvenli ek gıda rehberi.',
-    updated: '2026-10-19',
+    updated: '2026-10-21',
     readingMinutes: 5,
     intro:
       "Bebeklere tarhana, genellikle 6. aydan sonra ek gıdaya geçişle birlikte, doktor onayıyla ve tuzsuz olarak verilebilir. Tarhana buğday, süt ve nohut içerdiği için alerjen açısından dikkatli başlanmalıdır. Bu rehber bilgilendirme amaçlıdır; bebeğinizin beslenme planı için çocuk doktorunuza danışın.",
@@ -115,8 +115,8 @@ export const GUIDES: Guide[] = [
       {
         h2: 'Tuz ve acı ne zaman eklenir?',
         paragraphs: [
-          'Bebek beslenmesinde 1 yaşından önce ilave tuz önerilmez. Bu nedenle bebek tarhanası tuzsuz ve acısız üretilir. Yetişkin tarhanasından bebeğe vermek için yıkama veya seyreltme yeterli değildir; tuz ve acı biber tamamen çıkarılamaz.',
-          'TarhanaTerapi bebek tarhanası ilave tuz ve acı biber içermez. Yine de ürün etiketindeki içindekiler ve alerjen bilgisi her alımda kontrol edilmelidir.',
+          'Bebek beslenmesinde 1 yaşından önce ilave tuz önerilmez. Bu nedenle bebek versiyonu istek üzerine tuzsuz ve acısız hazırlanır. Yetişkin tarhanasından bebeğe vermek için yıkama veya seyreltme yeterli değildir; tuz ve acı biber tamamen çıkarılamaz.',
+          'TarhanaTerapi bebek versiyonu ilave tuz ve acı biber içermez. Yine de ürün etiketindeki içindekiler ve alerjen bilgisi her alımda kontrol edilmelidir.',
         ],
       },
       {
@@ -141,31 +141,31 @@ export const GUIDES: Guide[] = [
       },
       {
         q: 'Bebek tarhanası tuzsuz mu?',
-        a: 'TarhanaTerapi bebek tarhanası ilave tuz ve acı biber içermez. Yine de 1 yaşından önce hiçbir bebek yemeğine tuz eklenmemelidir.',
+        a: 'TarhanaTerapi bebek versiyonu istek üzerine ilave tuzsuz ve acısız hazırlanır. Yine de 1 yaşından önce hiçbir bebek yemeğine tuz eklenmemelidir.',
       },
       {
         q: 'Tarhana alerji yapar mı?',
         a: 'Buğday, süt ve nohut içerdiği için alerjisi olan bebeklerde risk vardır. İlk denemede üç gün kuralı uygulanmalı ve belirti görülürse doktora başvurulmalıdır.',
       },
     ],
-    relatedProducts: ['tarhana-baby', 'tarhana-classic'],
+    relatedProducts: ['tarhana-classic'],
   },
   {
     slug: 'tarhana-neden-eksir',
     title: 'Tarhana Neden Ekşir? Ekşilik, Nem ve Saklama',
     h1: 'Tarhana Neden Ekşir?',
     description:
-      'Tarhananın ekşimesi normal mi, bozulma nasıl anlaşılır? Fermantasyon, nem, saklama hatası ve küf arasındaki farklar ile çözüm önerileri.',
-    updated: '2026-10-19',
+      'Tarhananın ekşimesi normal mi, bozulma nasıl anlaşılır? Nem, saklama hatası ve küf arasındaki farklar ile çözüm önerileri.',
+    updated: '2026-10-21',
     readingMinutes: 5,
     intro:
-      "Tarhana fermente bir gıda olduğu için hafif ekşilik normaldir. Sorun, ekşiliğin keskin ve rahatsız edici hale gelmesi, yapışkanlık, renk değişimi veya küf oluşmasıdır. Ekşimenin başlıca nedenleri nem, sıcaklık, yetersiz kurutma ve uzun süre açık saklamadır.",
+      "Tarhana, yoğurt ve sebzelerle hazırlandığı için doğal olarak hafif ekşimsi bir tat taşır. Sorun, ekşiliğin keskin ve rahatsız edici hale gelmesi, yapışkanlık, renk değişimi veya küf oluşmasıdır. Ekşimenin başlıca nedenleri nem, sıcaklık, yetersiz kurutma ve uzun süre açık saklamadır.",
     sections: [
       {
         h2: 'Hafif ekşilik normal mi?',
         paragraphs: [
-          'Tarhana, yoğurt ve maya ile fermente edilen bir hamurdan yapılır. Bu nedenle doğal bir ekşimsi tat taşır. Çorbanın kıvamı ve kokusu dengeliyse, hafif ekşilik bir bozulma işareti değildir.',
-          'Ekşilik zamanla artabilir. Özellikle sıcak ve nemli ortamda bekleyen tarhana, nem çekerek daha fazla fermente olur ve keskin bir tat kazanır.',
+          'Tarhana, yoğurt ve sebzelerle hazırlanan bir hamurdan yapılır. Bu nedenle doğal bir ekşimsi tat taşır. Çorbanın kıvamı ve kokusu dengeliyse, hafif ekşilik bir bozulma işareti değildir.',
+          'Ekşilik zamanla artabilir. Özellikle sıcak ve nemli ortamda bekleyen tarhana nem çekerek keskin bir tat kazanır.',
         ],
       },
       {
@@ -209,30 +209,30 @@ export const GUIDES: Guide[] = [
         a: 'Nem alan tarhana topaklanır. Topaklanma ile birlikte ağır koku veya küf varsa ürün kullanılmamalıdır.',
       },
     ],
-    relatedProducts: ['tarhana-classic', 'tarhana-family-pack'],
+    relatedProducts: ['tarhana-classic'],
   },
   {
     slug: 'ev-tarhanasi-ile-hazir-tarhana-farki',
     title: 'Ev Tarhanası ile Hazır Tarhana Arasındaki Fark',
     h1: 'Ev Tarhanası ile Hazır Tarhana Arasındaki Fark',
     description:
-      'Ev yapımı tarhana ile markette satılan hazır tarhana arasındaki içerik, fermantasyon, kurutma, katkı ve lezzet farkları. Satın alırken nelere bakmalı?',
-    updated: '2026-10-19',
+      'Ev yapımı tarhana ile markette satılan hazır tarhana arasındaki içerik, hazırlık, kurutma, katkı ve lezzet farkları. Satın alırken nelere bakmalı?',
+    updated: '2026-10-21',
     readingMinutes: 5,
     intro:
-      "Ev tarhanası ile hazır tarhana arasındaki en büyük fark içerik ve üretim süresidir. Ev tarhanası un, yoğurt, sebze ve baharatla fermente edilip güneşte kurutulur; hazır ürünlerde ise kıvam artırıcı, aroma verici veya tuz oranı yüksek formüller bulunabilir. Her hazır ürün katkılı değildir; fark ürün etiketinde ve üretim yönteminde ortaya çıkar.",
+      "Ev tarhanası ile hazır tarhana arasındaki en büyük fark içerik ve hazırlık sürecidir. Ev tarhanası un, yoğurt, sebze ve baharatla hazırlanıp güneşte kurutulur; hazır ürünlerde ise kıvam artırıcı, aroma verici veya tuz oranı yüksek formüller bulunabilir. Her hazır ürün katkılı değildir; fark ürün etiketinde ve üretim yönteminde ortaya çıkar.",
     sections: [
       {
         h2: 'İçerik ve katkı farkı',
         paragraphs: [
-          'Ev tarhanasında malzeme listesi genellikle un, yoğurt, domates, biber, nohut, tuz ve baharattan oluşur. Hazır çorba tozlarında ise lezzet artırıcı, kıvam verici, renklendirici ve aroma verici bulunabilir. Bu nedenle satın alırken içindekiler listesini okumak gerekir.',
+          'Ev tarhanasında malzeme listesi genellikle un, yoğurt, domates, biber, nohut unu, tuz ve baharattan oluşur. Hazır çorba tozlarında ise lezzet artırıcı, kıvam verici, renklendirici ve aroma verici bulunabilir. Bu nedenle satın alırken içindekiler listesini okumak gerekir.',
           'Katkısız bir tarhanada malzeme listesi kısa ve tanıdıktır. Listede "aroma verici", "lezzet artırıcı" veya "renklendirici" gibi ifadeler varsa ürün işlenmiş bir çorba karışımı olabilir.',
         ],
       },
       {
-        h2: 'Fermantasyon ve kurutma farkı',
+        h2: 'Hazırlık ve kurutma farkı',
         paragraphs: [
-          'Ev tarhanası, hamurun günlerce fermente edilmesiyle yapılır. Bu süre ürüne ekşimsi tat, koku ve kıvam verir. Hazır ürünlerde fermantasyon süresi kısaltılabilir veya aroma ile taklit edilebilir.',
+          'Ev tarhanası, hamurun özenle yoğrulup ince açılması ve güneşte kurutulmasıyla yapılır. Bu süreç ürüne kendine özgü tat, koku ve kıvam verir. Hazır ürünlerde kurutma süresi kısaltılabilir veya aroma ile taklit edilebilir.',
           'Kurutma yöntemi de lezzeti etkiler. Güneşte ve hava akımında kuruyan tarhana, fırında hızlı kurutulan ürüne göre daha fazla aroma kaybetmeden kurur.',
         ],
       },
@@ -243,10 +243,10 @@ export const GUIDES: Guide[] = [
         ],
         bullets: [
           'İçindekiler: Ev tarhanası kısa liste; hazır ürünlerde katkı olabilir.',
-          'Fermantasyon: Ev tarhanası günler sürer; hazır üründe kısa veya aromayla desteklenir.',
+          'Hazırlık: Ev tarhanası özenli yoğurma ve kurutma; hazır üründe kısa süreç.',
           'Kurutma: Ev tarhanası güneş/hava; hazır ürün fırın veya endüstriyel kurutma.',
           'Tuz: Ev tarhanası kontrollü; hazır çorbada yüksek olabilir.',
-          'Lezzet: Ev tarhanası ekşimsi ve nohutlu; hazır ürün daha düz olabilir.',
+          'Lezzet: Ev tarhanası ekşimsi ve baharatlı; hazır ürün daha düz olabilir.',
         ],
       },
       {
@@ -271,7 +271,7 @@ export const GUIDES: Guide[] = [
         a: 'Kısa içindekiler listesi, tanıdık malzemeler, belirgin ekşimsi koku ve doğal renk katkısız ürünün işaretleridir. Kesin bilgi için etiket okunmalıdır.',
       },
     ],
-    relatedProducts: ['tarhana-classic', 'tarhana-baby'],
+    relatedProducts: ['tarhana-classic'],
   },
   {
     slug: 'katkisiz-tarhana-nasil-anlasilir',
@@ -279,7 +279,7 @@ export const GUIDES: Guide[] = [
     h1: 'Katkısız Tarhana Nasıl Anlaşılır?',
     description:
       'Katkısız tarhana etiketinden, renginden ve kokusundan nasıl anlaşılır? İçindekiler listesi, tuz oranı, saklama ve yanıltıcı ifadeler hakkında pratik rehber.',
-    updated: '2026-10-19',
+    updated: '2026-10-21',
     readingMinutes: 4,
     intro:
       "Katkısız tarhana, kısa ve tanıdık bir içindekiler listesine sahiptir; koruyucu, renklendirici ve aroma verici içermez. Ancak ambalajdaki “doğal” veya “organik” ifadeleri tek başına yeterli değildir. Karar vermek için etiket, üretim yeri ve saklama koşulları birlikte okunmalıdır.",
@@ -287,7 +287,7 @@ export const GUIDES: Guide[] = [
       {
         h2: 'İçindekiler listesi nasıl okunur?',
         paragraphs: [
-          'İçindekiler listesi, ürünün neyden yapıldığını gösterir. Katkısız bir tarhanada un, yoğurt, domates, biber, nohut, tuz ve baharat gibi malzemeler bulunur. Liste ne kadar kısaysa ürün o kadar az işlenmiştir.',
+          'İçindekiler listesi, ürünün neyden yapıldığını gösterir. Katkısız bir tarhanada un, yoğurt, domates, biber, nohut unu, tuz ve baharat gibi malzemeler bulunur. Liste ne kadar kısaysa ürün o kadar az işlenmiştir.',
           'Aroma verici, renklendirici, kıvam artırıcı, koruyucu veya tatlandırıcı ifadeleri varsa ürün katkı içeriyordur. Bu ifadelerin bulunmaması, ürünün katkısız olduğunu gösterir.',
         ],
       },
@@ -295,20 +295,20 @@ export const GUIDES: Guide[] = [
         h2: 'Renk ve koku ne söyler?',
         paragraphs: [
           'Doğal tarhana genellikle krem, açık kahve veya kızıl-kahve tonlarındadır. Aşırı parlak ve tek tip renk, renklendirici kullanıldığını düşündürebilir; ancak bu tek başına kanıt değildir.',
-          'Tarhana ekşimsi ve hafif mayalı kokar. Keskin kimyasal koku, nem veya küf kokusu bozulma işareti olabilir.',
+          'Tarhana ekşimsi ve baharatlı kokar. Keskin kimyasal koku, nem veya küf kokusu bozulma işareti olabilir.',
         ],
       },
       {
         h2: 'Tuz ve alerjen kontrolü',
         paragraphs: [
-          'Tuz oranı bebekler, çocuklar ve tansiyon hastaları için önemlidir. Bebek tarhanası alırken “ilave tuzsuz” ifadesi ve içindekiler listesi kontrol edilmelidir.',
+          'Tuz oranı bebekler, çocuklar ve tansiyon hastaları için önemlidir. Bebek versiyonu alırken “ilave tuzsuz” ifadesi ve içindekiler listesi kontrol edilmelidir.',
           'Tarhana buğday, süt ve nohut içerir. Gluten veya süt alerjisi olan kişiler için uygun değildir. Etiketteki alerjen uyarısı mutlaka okunmalıdır.',
         ],
       },
       {
         h2: 'Güvenilir üretici nasıl seçilir?',
         paragraphs: [
-          'Üretim yeri, üretici adı, iletişim bilgisi ve üretim tarihi açıkça yazmalıdır. Üreticinin üretim sürecini, fermantasyon süresini ve içindekileri açıklaması güven verir.',
+          'Üretim yeri, üretici adı, iletişim bilgisi ve üretim tarihi açıkça yazmalıdır. Üreticinin üretim sürecini ve içindekileri açıklaması güven verir.',
           'Fiyatı diğer ürünlerden aşırı düşük olan ürünlerde içerik ve gramaj kontrol edilmelidir. Ucuzluk tek başına kalite göstergesi değildir; gramaj ve içerik birlikte değerlendirilmelidir.',
         ],
       },
@@ -316,7 +316,7 @@ export const GUIDES: Guide[] = [
     faqs: [
       {
         q: 'Katkısız tarhana hangi malzemeleri içerir?',
-        a: 'Genellikle un, yoğurt, domates, biber, nohut, tuz ve baharat içerir. Koruyucu, renklendirici ve aroma verici bulunmaz.',
+        a: 'Genellikle un, yoğurt, domates, biber, nohut unu, tuz ve baharat içerir. Koruyucu, renklendirici ve aroma verici bulunmaz.',
       },
       {
         q: 'Organik tarhana nasıl anlaşılır?',
@@ -327,7 +327,7 @@ export const GUIDES: Guide[] = [
         a: 'Kullanılan biber, domates ve kurutma süresi renk farkını etkiler. Doğal tarhana tek tip renkte olmak zorunda değildir.',
       },
     ],
-    relatedProducts: ['tarhana-classic', 'tarhana-spicy'],
+    relatedProducts: ['tarhana-classic'],
   },
 ];
 

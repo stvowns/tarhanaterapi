@@ -19,8 +19,8 @@ const envUrl = (() => {
 export const SITE_URL = (envUrl || 'https://tarhanaterapi.com').replace(/\/+$/, '');
 export const SITE_NAME = 'TarhanaTerapi';
 export const SITE_LANG = 'tr-TR';
-export const CONTENT_UPDATED = '2026-10-19';
-export const CONTENT_UPDATED_LABEL = '19 Ekim 2026';
+export const CONTENT_UPDATED = '2026-10-21';
+export const CONTENT_UPDATED_LABEL = '21 Ekim 2026';
 export const OG_IMAGE = `${SITE_URL}/og-image.jpg`;
 export const LOGO_URL = `${SITE_URL}/logo.svg`;
 
@@ -38,10 +38,10 @@ export const CONTACT = {
 };
 
 export const BRAND_DEFINITION =
-  "TarhanaTerapi, Bursa Orhangazi'de üç nesilden devraldığı mayayla ata tohumu koçbaşı nohutlu, katkısız anne tarhanasını toprak küplerde 21 gün fermente ederek üreten bir aile işletmesidir.";
+  "TarhanaTerapi, Bursa Orhangazi'de aile tarifiyle, katkısız geleneksel tarhana üreten bir aile işletmesidir. Şu anda 1 kg pamuk torba geleneksel tarhana satışı vardır; acılı ve bebek/çocuk dostu versiyonlar istek üzerine hazırlanır.";
 
 export const SHORT_ANSWER =
-  "TarhanaTerapi tarhanası; taş değirmen buğday unu, köy yoğurdu, tarla domatesi, közlenmiş kapya biber, koçbaşı nohut ve kaya tuzuyla yapılır. Hamur toprak küpte 21 gün fermente edilir; koruyucu, renklendirici ve aroma verici kullanılmaz. 1 kg klasik pamuk torba 450 TL, 1 kg pamuk çuvallı aile paketi 450 TL'dir. Türkiye geneli kargo 1-3 iş günü sürer, 2000 TL üzeri siparişlerde ücretsizdir; 2000 TL altı siparişlerde 150 TL'dir.";
+  "TarhanaTerapi tarhanası; taş değirmen buğday unu, köy yoğurdu, tarla domatesi, közlenmiş kapya biber, az miktarda nohut unu, kaya tuzu ve baharatlarla hazırlanır. Koruyucu, renklendirici ve aroma verici kullanılmaz. 1 kg geleneksel tarhana 500 TL'dir. Türkiye geneli kargo 1-3 iş günü sürer; 2000 TL üzeri siparişlerde ücretsizdir, 2000 TL altı siparişlerde 150 TL'dir.";
 
 export const productPath = (product: Pick<Product, 'id'>) => `/urunler/${product.id}`;
 export const productUrl = (product: Pick<Product, 'id'>) => `${SITE_URL}${productPath(product)}`;
@@ -66,24 +66,24 @@ export type SiteRoute = keyof typeof routePaths;
 
 export const routeSeo: Record<SiteRoute, { title: string; description: string }> = {
   home: {
-    title: 'TarhanaTerapi — Nohutlu Hakiki Anne Tarhanası | 21 Gün Fermente',
+    title: 'TarhanaTerapi — Geleneksel Katkısız Tarhana | 1 kg 500 TL',
     description:
-      "Bursa Orhangazi'de ata tohumu koçbaşı nohutlu, katkısız anne tarhanası. Toprak küpte 21 gün fermente; 1 kg 450 TL, 1-3 iş günde kargo.",
+      "Bursa Orhangazi'de aile tarifiyle hazırlanan katkısız tarhana. 1 kg pamuk torba 500 TL; 2000 TL üzeri kargo ücretsiz, 1-3 iş günde teslimat.",
   },
   products: {
     title: 'Tarhana Ürünleri ve Fiyatları | TarhanaTerapi',
     description:
-      'Klasik, acılı, bebek dostu, 1 kg aile ve hediye seti tarhana seçenekleri. Güncel fiyatlar, içindekiler ve kargo bilgisi; katkısız, 21 gün fermente.',
+      '1 kg geleneksel tarhana 500 TL. Acılı ve bebek versiyonları istek üzerine. Güncel fiyat, içindekiler ve kargo bilgisi.',
   },
   ingredients: {
-    title: 'İçindekiler ve 21 Günlük Fermantasyon | TarhanaTerapi',
+    title: 'İçindekiler ve Üretim Adımları | TarhanaTerapi',
     description:
-      'Koçbaşı nohut, köy yoğurdu, taş değirmen unu, tarla domatesi ve köz kapya biber. TarhanaTerapi tarhanasının içindekiler ve 21 günlük üretim süreci.',
+      'Buğday unu, köy yoğurdu, tarla domatesi, közlenmiş kapya biber, az miktarda nohut unu ve baharatlar. TarhanaTerapi tarhanasının içindekileri ve üretim adımları.',
   },
   story: {
-    title: 'Üretim Hikayemiz: Orhangazi ve Üç Nesil Maya | TarhanaTerapi',
+    title: 'Üretim Hikayemiz: Orhangazi ve Aile Tarifi | TarhanaTerapi',
     description:
-      "Üç nesilden gelen anne mayası, Bursa Orhangazi'deki üretim atölyesi ve toprak küpte 21 günlük fermantasyon. TarhanaTerapi'nin üretici hikayesi.",
+      "Bursa Orhangazi'deki üretim atölyesi, üç nesillik aile tarifi ve katkısız tarhana üretimi. TarhanaTerapi'nin üretici hikayesi.",
   },
   reviews: {
     title: 'Müşteri Yorumları ve Deneyimler | TarhanaTerapi',
@@ -103,11 +103,7 @@ export const routeSeo: Record<SiteRoute, { title: string; description: string }>
 };
 
 export const productSeoDescription = (product: Product) => {
-  const conciseDescription =
-    product.id === 'tarhana-starter-set'
-      ? 'El yapımı kase, şimşir kaşık, 1 kg tarhana ve nohut.'
-      : product.description.replace(/^1 kg [^.]+\.\s*/, '');
-
+  const conciseDescription = product.description.replace(/^1 kg [^.]+\.\s*/, '');
   return `${product.name} ${product.price} TL. ${conciseDescription} 2000 TL üzeri kargo ücretsiz.`;
 };
 
@@ -139,7 +135,7 @@ const organization = () => ({
   },
   image: OG_IMAGE,
   description:
-    "Bursa Orhangazi'de ata tohumu koçbaşı nohutlu, katkısız anne tarhanası üreten aile işletmesi.",
+    "Bursa Orhangazi'de aile tarifiyle katkısız geleneksel tarhana üreten aile işletmesi.",
   slogan: 'Bir kasede saklı çocukluk ve şifa.',
   email: CONTACT.email,
   telephone: CONTACT.phone,
@@ -155,10 +151,10 @@ const organization = () => ({
   sameAs: [CONTACT.instagram],
   knowsAbout: [
     'Tarhana',
-    'Geleneksel gıda fermantasyonu',
+    'Geleneksel tarhana üretimi',
     'Anadolu mutfağı',
-    'Nohutlu tarhana çorbası',
-    'Bebek dostu tarhana',
+    'Tarhana çorbası',
+    'Katkısız gıda',
   ],
 });
 
@@ -182,7 +178,7 @@ const localBusiness = () => ({
   email: CONTACT.email,
   priceRange: '₺₺',
   currenciesAccepted: 'TRY',
-  paymentAccepted: 'Kredi kartı, banka kartı, havale/EFT',
+  paymentAccepted: 'Kapıda ödeme',
   address,
   parentOrganization: { '@id': orgId },
   openingHoursSpecification: {
@@ -320,7 +316,7 @@ export function jsonLdForRoute(route: SiteRoute, product?: Product): Record<stri
         {
           '@type': 'ItemList',
           '@id': `${SITE_URL}/#products`,
-          name: 'TarhanaTerapi tarhana çeşitleri',
+          name: 'TarhanaTerapi ürünleri',
           numberOfItems: PRODUCTS.length,
           itemListElement: PRODUCTS.map((p, i) => ({
             '@type': 'ListItem',
@@ -487,7 +483,7 @@ export function jsonLdForGuide(guide: Guide): Record<string, unknown> {
         description: guide.description,
         url,
         mainEntityOfPage: url,
-        datePublished: '2026-10-19',
+        datePublished: '2026-10-21',
         dateModified: guide.updated,
         inLanguage: SITE_LANG,
         author: { '@id': orgId },

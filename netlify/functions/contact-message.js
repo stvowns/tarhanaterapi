@@ -17,7 +17,7 @@ const notifyEmail = async (subject, html) => {
   await fetch('https://api.resend.com/emails', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${RESEND_API_KEY}` },
-    body: JSON.stringify({ from: 'TarhanaTerapi <iletisim@tarhanaterapi.com>', to: ['sifa@tarhanaterapi.com'], subject, html }),
+    body: JSON.stringify({ from: 'TarhanaTerapi <iletisim@tarhanaterapi.com>', to: ['satis@tarhanaterapi.com'], subject, html }),
   });
 };
 

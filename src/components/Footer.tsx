@@ -50,9 +50,8 @@ export const Footer: React.FC<FooterProps> = ({
               <span className="font-headline-sm text-primary font-bold">TarhanaTerapi</span>
             </div>
             <p className="font-body-md text-on-surface-variant leading-relaxed">
-              Anadolu'nun kadim topraklarından sofranıza uzanan şifa ritüeli. Doğal
-              fermantasyon, yerel nohut ve ata tohumları ile hazırlanan, modern
-              gastronomiyle harmanlanmış geleneksel sağlık iksiri.
+              Anadolu'nun kadim topraklarından sofranıza uzanan şifa ritüeli. Aile tarifi,
+              yerel malzemeler ve özenli hazırlıkla üretilen katkısız geleneksel tarhana.
             </p>
             <div className="flex items-center gap-2 pt-1">
               <a
@@ -100,7 +99,7 @@ export const Footer: React.FC<FooterProps> = ({
                 }}
                 className="text-left font-body-md text-on-surface-variant hover:text-primary transition-colors cursor-pointer"
               >
-                Şifalı Çorbalar
+                Tarhanamız
               </a>
               <a
                 href={routePaths.ingredients}
@@ -110,7 +109,7 @@ export const Footer: React.FC<FooterProps> = ({
                 }}
                 className="text-left font-body-md text-on-surface-variant hover:text-primary transition-colors cursor-pointer"
               >
-                Nohut Terapi
+                İçindekiler
               </a>
               <a
                 href={routePaths.story}
@@ -120,7 +119,7 @@ export const Footer: React.FC<FooterProps> = ({
                 }}
                 className="text-left font-body-md text-on-surface-variant hover:text-primary transition-colors cursor-pointer"
               >
-                Gelenek &amp; Maya
+                Gelenek &amp; Tarif
               </a>
               <a
                 href="/rehber"
@@ -153,7 +152,7 @@ export const Footer: React.FC<FooterProps> = ({
 
           {/* Col 3: Kadim Saflık */}
           <div className="lg:col-span-3 flex flex-col gap-3">
-            <span className="font-title-lg text-on-surface font-semibold">Kadim Saflık</span>
+            <span className="font-title-lg text-on-surface font-semibold">Katkısız Üretim</span>
             <div className="flex flex-col gap-3">
               <div className="flex items-start gap-2.5">
                 <span className="material-symbols-outlined text-primary text-[20px] mt-0.5 shrink-0">
@@ -175,10 +174,10 @@ export const Footer: React.FC<FooterProps> = ({
                 </span>
                 <div>
                   <p className="font-title-md text-on-surface text-sm font-semibold">
-                    Anne Eliyle Fermente
+                    Güneşte Kurutulmuş
                   </p>
                   <p className="font-body-sm text-on-surface-variant text-xs mt-0.5">
-                    Toprak küplerde 21 gün dinlendirilen probiyotik güç.
+                    Hamur, güneşte ve hava akımında doğal yöntemle kurutulur.
                   </p>
                 </div>
               </div>
@@ -203,8 +202,8 @@ export const Footer: React.FC<FooterProps> = ({
           <div className="lg:col-span-3 flex flex-col gap-3">
             <span className="font-title-lg text-on-surface font-semibold">Şifa Bülteni</span>
             <p className="font-body-md text-on-surface-variant text-sm leading-relaxed">
-              Mevsimlik harmanlar, slow-food tarifleri ve bağırsak dostu beslenme rehberleri
-              posta kutunuzda.
+              Mevsimlik çorba reçeteleri, tarhana pişirme püf noktaları ve yeni ürün
+              duyuruları posta kutunuzda.
             </p>
             <form onSubmit={handleSubscribe} className="flex flex-col gap-2 mt-1">
               <div className="flex items-center rounded-lg bg-surface-container-lowest px-3 py-2.5 shadow-2xs border border-outline-variant/30">

@@ -14,7 +14,7 @@ export const ReviewsPage: React.FC<ReviewsPageProps> = ({ reviews, onAddReview }
   const [author, setAuthor] = useState('');
   const [location, setLocation] = useState('');
   const [rating, setRating] = useState(5);
-  const [productName, setProductName] = useState('Geleneksel Nohutlu Anne Tarhanası');
+  const [productName, setProductName] = useState('Geleneksel Tarhana');
   const [content, setContent] = useState('');
   const [formSuccess, setFormSuccess] = useState(false);
 
@@ -199,10 +199,9 @@ export const ReviewsPage: React.FC<ReviewsPageProps> = ({ reviews, onAddReview }
                   onChange={(e) => setProductName(e.target.value)}
                   className="w-full px-3 py-2 text-xs rounded-lg bg-surface-container-low border border-outline-variant/30"
                 >
-                  <option value="Geleneksel Nohutlu Anne Tarhanası">Geleneksel Nohutlu Anne Tarhanası</option>
-                  <option value="Acılı Gurme Terapisi">Acılı Gurme Terapisi</option>
-                  <option value="Bebek & Çocuk Dostu Tarhana">Bebek & Çocuk Dostu Tarhana</option>
-                  <option value="TarhanaTerapi Başlangıç Seti">TarhanaTerapi Başlangıç Seti</option>
+                  <option value="Geleneksel Tarhana">Geleneksel Tarhana (1 kg)</option>
+                  <option value="Acılı Tarhana (istek üzerine)">Acılı Tarhana (istek üzerine)</option>
+                  <option value="Bebek Tarhanası (istek üzerine)">Bebek Tarhanası (istek üzerine)</option>
                 </select>
               </div>
             </div>

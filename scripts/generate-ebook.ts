@@ -18,7 +18,7 @@ import { RECIPES_EBOOK } from '../src/data/mockData';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const root = path.resolve(__dirname, '..');
 const outputPdf = path.join(root, 'public', 'kadim-corba-rituelleri-ve-sifali-tarifler.pdf');
-const coverPath = path.join(root, 'public', 'images', 'urun-set.webp');
+const coverPath = path.join(root, 'public', 'images', 'urun-klasik.webp');
 
 const esc = (value: unknown) =>
   String(value ?? '').replace(/[&<>"']/g, (char) => {
@@ -153,10 +153,10 @@ const html = `<!DOCTYPE html>
         <div class="brand">TarhanaTerapi</div>
         <div style="margin-top:6mm"><span class="badge">ÜCRETSİZ E-KİTAP</span></div>
         <h1>Kadim Çorba<br>Ritüelleri ve<br>Şifalı Tarifler</h1>
-        <p class="sub">Anadolu'nun fermente beslenme mirası, 21 günlük toprak küp sırrı ve sekiz mevsimlik tarhana tarifi.</p>
+        <p class="sub">Aile tarifi, güneşte kurutulmuş tarhana ve sekiz mevsimlik tarhana tarifi.</p>
       </div>
       <div class="cover-bottom">
-        Bursa Orhangazi · Üç nesilden gelen anne mayası<br>
+        Bursa Orhangazi · Üç nesillik aile tarifi<br>
         tarhanaterapi.com · satis@tarhanaterapi.com
       </div>
     </div>
@@ -166,28 +166,27 @@ const html = `<!DOCTYPE html>
     <div class="kicker">Giriş</div>
     <h2>Bir Kaşıkta Saklı Şifa</h2>
     <p class="intro">
-      Tarhana, Anadolu'nun en eski fermente gıdalarından biridir. Un, yoğurt, domates, biber ve nohutun
-      güneşle buluştuğu bu kadim karışım; sadece bir çorba değil, nesiller boyu aktarılan bir sağlık
-      ritüelidir. TarhanaTerapi'de bu ritüeli üç nesilden devraldığımız mayayla, toprak küplerde 21 gün
-      fermente ederek sürdürüyoruz. Bu kitap; mevsimlik malzemelerle hazırlanan sekiz tarif, 21 günlük
-      fermantasyon rehberi ve bağırsak dostu fermente beslenme notlarından oluşur.
+      Tarhana, Anadolu'nun geleneksel çorbalarından biridir. Un, yoğurt, domates, biber ve az miktarda
+      nohut ununun güneşle buluştuğu bu karışım; nesiller boyu aktarılan bir aile tarifidir.
+      TarhanaTerapi'de bu tarifi üç nesildir sürdürüyoruz. Bu kitap; mevsimlik malzemelerle hazırlanan
+      sekiz tarif, pişirme rehberi ve saklama önerilerinden oluşur.
     </p>
     <div class="quote">
-      "İyi tarhana acele edilmez. Zaman, bakterilerin işini yapmasına izin verdiğinizde lezzete dönüşür."
+      "İyi tarhana acele edilmez. Doğru malzeme, doğru kıvam ve güneşte sabırlı kurutma lezzete dönüşür."
     </div>
-    <h3 class="section-title">21 Günlük Fermantasyonun Üç Evresi</h3>
+    <h3 class="section-title">Tarhananın Üç Adımı</h3>
     <div class="three">
       <div class="card">
-        <h3>1–7. Gün: Uyanış</h3>
-        <p>Köy süzme yoğurdu, taş değirmen buğday unu, tarla domatesi ve közlenmiş kapya biber hamuru mayalanmaya başlar.</p>
+        <h3>1. Yoğurma</h3>
+        <p>Köy süzme yoğurdu, taş değirmen buğday unu, tarla domatesi ve közlenmiş kapya biber hamur kıvamına gelene kadar yoğrulur.</p>
       </div>
       <div class="card">
-        <h3>8–14. Gün: Laktik Asit</h3>
-        <p>Laktik asit bakterileri çoğalır; fitik asit parçalanır ve minerallerin emilimi kolaylaşır.</p>
+        <h3>2. İnce Açma</h3>
+        <p>Hamur eşit kalınlıkta ince açılır; kuruma sırasında topaklanmaması için özen gösterilir.</p>
       </div>
       <div class="card">
-        <h3>15–21. Gün: Güneş</h3>
-        <p>Hamur keten bez üzerinde, doğal yayla havasında kurutulur; kalburdan geçirilip pamuk torbaya girer.</p>
+        <h3>3. Güneşte Kurutma</h3>
+        <p>Hamur temiz hava akımında güneşte kurutulur; elenip pamuk torbaya konur.</p>
       </div>
     </div>
     <div class="page-footer">TarhanaTerapi · Kadim Çorba Ritüelleri ve Şifalı Tarifler</div>
@@ -198,13 +197,13 @@ const html = `<!DOCTYPE html>
   <section class="page content">
     <div class="kicker">Kiler Rehberi</div>
     <h2>Tazeliği ve Şifayı Koruma</h2>
-    <p class="intro">Tarhananız doğru saklandığında lezzetini ve fermente değerini aylarca korur.</p>
+    <p class="intro">Tarhananız doğru saklandığında lezzetini ve dokusunu aylarca korur.</p>
     <ul class="storage" style="margin-top:8mm; padding-left:6mm;">
       <li>Pamuk torbasında veya kapalı cam saklama kabında, doğrudan ışıktan uzak ve 18–22 °C oda sıcaklığında saklayın.</li>
       <li>Saklama kabının içine 1 adet kurutulmuş defne yaprağı koymak nem ve güvelenmeyi engeller.</li>
       <li>Asla ıslak veya metal kaşıkla kaba girmeyin; kuru tahta kaşık kullanın.</li>
-      <li>Buzdolabında saklamak gerekmez; nemli ortamlar topaklanmaya yol açabilir.</li>
-      <li>Son kullanma tarihi ambalaj üzerindedir; açıldıktan sonra 6 ay içinde tüketmeniz önerilir.</li>
+      <li>Açıldıktan sonra, özellikle yaz aylarında kapalı kapta buzdolabında saklayabilirsiniz.</li>
+      <li>Son kullanma tarihi ambalaj üzerindedir; açıldıktan sonra 1 yıl içinde tüketmeniz önerilir.</li>
     </ul>
     <div class="contact">
       <h3>TarhanaTerapi'ye Ulaşın</h3>

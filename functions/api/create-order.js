@@ -6,12 +6,7 @@
 const RATE_LIMIT = new Map();
 
 const PRODUCT_PRICES = {
-  'tarhana-classic': 450,
-  'tarhana-spicy': 500,
-  'tarhana-baby': 500,
-  'tarhana-starter-set': 850,
-  'tarhana-family-pack': 450,
-  'tarhana-gourmet-duo': 900,
+  'tarhana-classic': 500,
 };
 const FREE_SHIPPING_THRESHOLD = 2000;
 const STANDARD_SHIPPING_FEE = 150;
@@ -88,7 +83,7 @@ const customerOrderHtml = (order, orderNumber) => {
             <tr>
               <td style="background-color:#31523c;padding:24px 28px;">
                 <div style="font-size:22px;font-weight:bold;color:#ffffff;letter-spacing:0.3px;">TarhanaTerapi</div>
-                <div style="font-size:12px;color:#d7e4d6;margin-top:4px;">Bursa Orhangazi · 21 gün toprak küpte fermente</div>
+                <div style="font-size:12px;color:#d7e4d6;margin-top:4px;">Bursa Orhangazi · Geleneksel aile tarifi</div>
               </td>
             </tr>
 

@@ -72,15 +72,10 @@ function rateLimited(ip) {
 }
 
 const PRODUCT_PRICES = {
-  'tarhana-classic': 450,
-  'tarhana-spicy': 500,
-  'tarhana-baby': 500,
-  'tarhana-starter-set': 850,
-  'tarhana-family-pack': 450,
-  'tarhana-gourmet-duo': 900,
+  'tarhana-classic': 500,
 };
 const FREE_SHIPPING_THRESHOLD = 2000;
-const STANDARD_SHIPPING_FEE = 45;
+const STANDARD_SHIPPING_FEE = 150;
 
 const required = ['customerName', 'customerEmail', 'customerPhone', 'customerCity', 'customerDistrict', 'customerAddress'];
   for (const key of required) {

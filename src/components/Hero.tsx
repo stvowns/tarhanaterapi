@@ -31,13 +31,13 @@ export const Hero: React.FC<HeroProps> = ({
                 <span className="material-symbols-outlined text-[16px] text-secondary">
                   soup_kitchen
                 </span>
-                Geleneksel Anne Mayası
+                Geleneksel Aile Tarifi
               </span>
               <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary-fixed text-on-primary-fixed font-label-sm tracking-wide uppercase shadow-2xs">
                 <span className="material-symbols-outlined text-[16px] text-primary">
                   auto_awesome
                 </span>
-                Bol Nohutlu Özel Reçete
+                1 kg Pamuk Torba
               </span>
             </div>
 
@@ -45,7 +45,7 @@ export const Hero: React.FC<HeroProps> = ({
             <h1 className="font-headline-lg text-on-surface leading-tight tracking-tight text-balance">
               Bir Kasede Saklı{' '}
               <span className="italic text-primary">Çocukluk ve Şifa:</span>{' '}
-              Nohutlu Hakiki Tarhana Çorbası
+              Geleneksel Tarhana Çorbası
             </h1>
 
             {/* AI cevapları için marka tanımı: H1'in hemen altında, görünür metin */}
@@ -55,9 +55,9 @@ export const Hero: React.FC<HeroProps> = ({
 
             {/* Sensory Narrative */}
             <p className="font-body-lg text-on-surface-variant max-w-2xl leading-relaxed">
-              Geleneksel fermantasyon, süzme yoğurt, güneşle olgunlaşmış etli kapya biberler
-              ve tereyağında hafifçe sotelenmiş altın sarısı nohutların kadim harmonisi.
-              Her yudumda ruhunuzu saran sıcacık bir esenlik ve gastronomi terapisi.
+              Taş değirmen unu, köy yoğurdu, güneşle olgunlaşmış domates ve közlenmiş kapya
+              biberin kadim harmonisi. Tereyağında nane ve pul biberle taçlanan, her yudumda
+              ruhunuzu saran sıcacık bir esenlik.
             </p>
 
             {/* CTAs */}
@@ -86,21 +86,21 @@ export const Hero: React.FC<HeroProps> = ({
             {/* Bottom Micro Metrics */}
             <div className="grid grid-cols-3 gap-4 pt-6 border-t border-outline-variant/30 mt-2">
               <div className="flex flex-col">
-                <span className="font-headline-md text-primary font-bold">21 Gün</span>
+                <span className="font-headline-md text-primary font-bold">1 kg</span>
                 <span className="font-body-sm text-on-surface-variant">
-                  Toprak Küpte Mayalanma
+                  Pamuk Torba
                 </span>
               </div>
               <div className="flex flex-col">
-                <span className="font-headline-md text-secondary font-bold">%100</span>
+                <span className="font-headline-md text-secondary font-bold">0 Katkı</span>
                 <span className="font-body-sm text-on-surface-variant">
-                  Yerli Koçbaşı Nohut
+                  Koruyucu &amp; Aroma Yok
                 </span>
               </div>
               <div className="flex flex-col">
-                <span className="font-headline-md text-tertiary font-bold">0 Katkı</span>
+                <span className="font-headline-md text-tertiary font-bold">Güneşte</span>
                 <span className="font-body-sm text-on-surface-variant">
-                  Koruyucusuz &amp; Saf
+                  Doğal Kurutma
                 </span>
               </div>
             </div>
@@ -110,11 +110,11 @@ export const Hero: React.FC<HeroProps> = ({
           <div className="lg:col-span-5 relative flex justify-center">
             <div className="relative w-full aspect-square max-w-lg rounded-2xl overflow-hidden shadow-[0_24px_48px_-8px_rgba(45,36,36,0.18),0_12px_24px_-4px_rgba(200,75,49,0.12)] bg-surface-container group">
               <img
-                alt="Nohutlu sıcak ve dumanı tüten geleneksel tarhana çorbası kasesi"
+                alt="Pamuk torbada geleneksel tarhana"
                 className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700"
                 src={ASSETS.heroSteamingBowl}
-                width={512}
-                height={286}
+                width={1024}
+                height={1024}
                 loading="eager"
                 fetchPriority="high"
               />
@@ -124,20 +124,20 @@ export const Hero: React.FC<HeroProps> = ({
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 rounded-full bg-primary-fixed flex items-center justify-center text-primary shadow-xs">
                     <span className="material-symbols-outlined text-[22px]">
-                      local_fire_department
+                      shopping_bag
                     </span>
                   </div>
                   <div>
                     <h4 className="font-title-md text-on-surface text-sm sm:text-base">
-                      Dumanı Üstünde Lezzet
+                      Pamuk Torbada Tazelik
                     </h4>
                     <p className="font-body-sm text-on-surface-variant text-xs sm:text-sm">
-                      Tereyağlı naneli nohut sosuyla
+                      1 kg geleneksel tarhana
                     </p>
                   </div>
                 </div>
                 <span className="font-headline-sm text-primary font-bold text-sm sm:text-lg">
-                  100% Organik
+                  Katkısız
                 </span>
               </div>
             </div>

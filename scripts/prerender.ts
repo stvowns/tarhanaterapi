@@ -266,7 +266,11 @@ const productFaqs = [
   },
   {
     q: 'İçinde katkı maddesi var mı?',
-    a: 'Koruyucu, renklendirici ve aroma verici kullanılmaz. Ürün buğday unu, yoğurt, nohut, domates, biber, tuz ve baharatlardan oluşur. Buğday içerdiği için glutensiz değildir.',
+    a: 'Koruyucu, renklendirici ve aroma verici kullanılmaz. Ürün buğday unu, yoğurt, domates, biber, az miktarda nohut unu, tuz ve baharatlardan oluşur. Buğday içerdiği için glutensiz değildir.',
+  },
+  {
+    q: 'Nohut ayrıca gönderiliyor mu?',
+    a: 'Hayır. Nohut, hamura az miktarda nohut unu olarak katılır; paket içinde ayrı nohut bulunmaz.',
   },
 ];
 
@@ -276,17 +280,19 @@ const productContent = (product: Product) => `
     <h1>${esc(product.name)}</h1>
     <p class="static-definition">
       <strong>${esc(product.name)}</strong>, TarhanaTerapi'nin Bursa Orhangazi'deki aile
-      atölyesinde ürettiği ${esc(product.weight.toLowerCase())} üründür. ${esc(product.description)}
+      atölyesinde ürettiği ${esc(product.weight.toLowerCase())} üründür. ${esc(
+        product.description.replace(/^1 kg pamuk torba\.\s*/, '')
+      )}
     </p>
     <p><strong>Fiyat: ${product.price} TL</strong> · ${esc(product.weight)} · Stokta</p>
-    <p><a class="static-cta" href="/urunler">Sepete ekle ve diğer ürünleri gör</a></p>
+    <p><a class="static-cta" href="/urunler">Ürün sayfasına git</a></p>
 
     <h2>Ürün detayı</h2>
     <p>${esc(product.details)}</p>
 
     <h2>İçindekiler</h2>
     <ul>${product.ingredients.map((item) => `<li>${esc(item)}</li>`).join('')}</ul>
-    <p>Alerjen bilgisi: buğday (gluten), süt (yoğurt) ve nohut içerir. Glutensiz değildir.</p>
+    <p>Alerjen bilgisi: buğday (gluten), süt (yoğurt) ve nohut (az miktarda nohut unu) içerir. Glutensiz değildir.</p>
 
     <h2>100 g başına besin değerleri</h2>
     <table>
@@ -310,36 +316,32 @@ const productContent = (product: Product) => `
     <h2>${esc(product.name)} hakkında sık sorulan sorular</h2>
     <dl>${productFaqs.map((item) => `<dt>${esc(item.q)}</dt><dd>${esc(item.a)}</dd>`).join('')}</dl>
 
-    <h2>Diğer tarhana çeşitleri</h2>
-    <ul>
-      ${PRODUCTS.filter((item) => item.id !== product.id)
-        .map(
-          (item) =>
-            `<li><a href="${productPath(item)}">${esc(item.name)}</a> — ${item.price} TL</li>`
-        )
-        .join('')}
-    </ul>
+    <h2>İstek üzerine çeşitler</h2>
+    <p>
+      Acılı ve bebek/çocuk dostu versiyonlar istek üzerine hazırlanır. Sipariş öncesi
+      <a href="/iletisim">iletişime geçebilirsiniz</a>.
+    </p>
   </main>
   ${contactBlock}`;
 
 const homeContent = () => `
   <main>
-    <h1>Nohutlu Hakiki Anne Tarhanası</h1>
+    <h1>Geleneksel Tarhana</h1>
     <p class="static-definition"><strong>TarhanaTerapi</strong>, ${esc(
       BRAND_DEFINITION.replace(/^TarhanaTerapi,\s*/, '')
     )}</p>
     <p>${esc(SHORT_ANSWER)}</p>
-    <p><a class="static-cta" href="/urunler">Ürünleri ve güncel fiyatları gör</a></p>
+    <p><a class="static-cta" href="/urunler">Ürünü ve güncel fiyatı gör</a></p>
 
-    <h2>Tarhana çeşitleri ve fiyatları</h2>
+    <h2>Ürün ve fiyat</h2>
     ${productTable()}
 
     <h2>Neden TarhanaTerapi?</h2>
     <ul>
-      <li>21 gün toprak küpte, her gün yoğrularak fermente edilen canlı anne mayası.</li>
-      <li>Ata tohumu koçbaşı nohut; bitkisel protein ve prebiyotik lif kaynağı.</li>
+      <li>Üç nesillik aile tarifi; taş değirmen unu, köy yoğurdu ve güneşte olgunlaşmış sebzeler.</li>
+      <li>Az miktarda nohut unu hamura karışır; paket içinde ayrı nohut gönderilmez.</li>
       <li>Koruyucu, renklendirici ve aroma verici yok.</li>
-      <li>Pamuk torbada, hava yastıklı koruyucu ambalajla Türkiye geneli kargo.</li>
+      <li>Hamur güneşte ve hava akımında kurutulur; pamuk torbada paketlenir.</li>
       <li>Üretim yeri: Orhangazi / Bursa; 1-3 iş gününde teslimat.</li>
     </ul>
 
@@ -351,18 +353,16 @@ const productsContent = () => `
   <main>
     <h1>Tarhana Ürünleri ve Fiyatları</h1>
     <p class="static-definition">
-      TarhanaTerapi'nin tüm ürünleri Bursa Orhangazi'deki aile atölyesinde, toprak küpte 21 gün
-      fermente edilerek üretilir. Aşağıdaki fiyatlar ${CONTENT_UPDATED_LABEL} tarihinde
-      doğrulanmıştır; 2000 TL üzeri siparişlerde kargo ücretsizdir; 2000 TL altı siparişlerde 150 TL'dir.
+      TarhanaTerapi'nin geleneksel tarhanası Bursa Orhangazi'deki aile atölyesinde, aile tarifiyle
+      hazırlanır. Aşağıdaki fiyatlar ${CONTENT_UPDATED_LABEL} tarihinde doğrulanmıştır; 2000 TL
+      üzeri siparişlerde kargo ücretsizdir; 2000 TL altı siparişlerde 150 TL'dir.
     </p>
     ${productTable()}
     <h2>Hangi tarhana kime uygun?</h2>
     <ul>
-      <li><strong>Klasik:</strong> İlk kez alacaklar ve geleneksel nohutlu lezzet arayanlar.</li>
-      <li><strong>Acılı gurme:</strong> Maraş ipek biberi sevenler.</li>
-      <li><strong>Bebek dostu:</strong> Tuzsuz ve acısız arayan 6 ay üzeri bebekli aileler.</li>
-      <li><strong>Aile paketi:</strong> 1 kg ile uzun kış boyunca stok yapmak isteyenler.</li>
-      <li><strong>Başlangıç seti:</strong> Hediye ve ilk deneyim için kase + kaşık + tarhana.</li>
+      <li><strong>Geleneksel tarhana:</strong> İlk kez alacaklar ve klasik tarhana lezzeti arayanlar.</li>
+      <li><strong>Acılı versiyon:</strong> Pul biber ve baharatlı sevenler için istek üzerine.</li>
+      <li><strong>Bebek/çocuk dostu versiyon:</strong> Tuzsuz ve acısız arayan aileler için istek üzerine.</li>
     </ul>
     ${faqBlock(6)}
   </main>
@@ -370,10 +370,10 @@ const productsContent = () => `
 
 const ingredientsContent = () => `
   <main>
-    <h1>İçindekiler ve 21 Günlük Fermantasyon</h1>
+    <h1>İçindekiler ve Üretim Adımları</h1>
     <p class="static-definition">
       TarhanaTerapi tarhanası; taş değirmen buğday unu, köy yoğurdu, tarla domatesi, közlenmiş
-      kapya biber, ata tohumu koçbaşı nohut, kaya tuzu ve dağ baharatlarından yapılır. Hazır
+      kapya biber, az miktarda nohut unu, kaya tuzu ve dağ baharatlarından yapılır. Hazır
       çorba değildir; koruyucu, renklendirici ve aroma verici içermez.
     </p>
 
@@ -383,39 +383,39 @@ const ingredientsContent = () => `
       <p>${esc(item.description)} Kaynak: ${esc(item.source)}. ${esc(item.benefits.join(', '))}.</p>`
     ).join('\n')}
 
-    <h2>21 günlük üretim süreci</h2>
+    <h2>Üretim adımları</h2>
     <ol>
-      <li>Koçbaşı nohut haşlanır, sebzeler ve baharatlar hazırlanır.</li>
-      <li>Un, yoğurt ve malzemeler toprak küpte karıştırılır.</li>
-      <li>Hamur 21 gün boyunca her gün yoğrularak fermente edilir.</li>
-      <li>İnce açılan hamur güneşte kurutulur ve elenir.</li>
+      <li>Un, yoğurt, domates, biber, az miktarda nohut unu ve baharatlar hazırlanır.</li>
+      <li>Malzemeler hamur kıvamına gelene kadar yoğrulur.</li>
+      <li>Hamur ince ve eşit kalınlıkta açılır.</li>
+      <li>Güneşte ve hava akımında kurutulur, elenir.</li>
       <li>Pamuk torbalara doldurulup sevk edilir.</li>
     </ol>
-    <p>Buğday ve süt içerir; glutensiz ve laktozsuz değildir.</p>
+    <p>Buğday, süt ve nohut içerir; glutensiz ve laktozsuz değildir.</p>
     ${faqBlock(5)}
   </main>
   ${contactBlock}`;
 
 const storyContent = () => `
   <main>
-    <h1>Üretim Hikayemiz: Orhangazi ve Üç Nesil Maya</h1>
+    <h1>Üretim Hikayemiz: Orhangazi ve Aile Tarifi</h1>
     <p class="static-definition">${esc(BRAND_DEFINITION)}</p>
     <p>
-      TarhanaTerapi'nin mayası, Orhangazi'de üç nesil boyunca kurulan sofralardan geliyor.
-      Üretim, Bursa Orhangazi'deki Gedelek Köyü Mevkii'ndeki aile atölyesinde yapılır. Her parti
-      hamur, toprak küplerde 21 gün boyunca her gün yoğrularak fermente edilir.
+      TarhanaTerapi'nin tarifi, Orhangazi'de üç nesil boyunca kurulan sofralardan geliyor.
+      Üretim, Bursa Orhangazi'deki Gedelek Köyü Mevkii'ndeki aile atölyesinde yapılır. Hamur,
+      aile tarifine göre yoğrulur; ince açılır ve güneşte/hava akımında kurutulur.
     </p>
     <p>
       Amaç, market rafında uzun süre dayanması için işlenmiş bir çorba tozu değil; anne
-      mutfağındaki gibi nohutlu, ekşimsi ve katkısız bir tarhana üretmek. Bu yüzden koruyucu,
+      mutfağındaki gibi ekşimsi ve katkısız bir tarhana üretmek. Bu yüzden koruyucu,
       renklendirici ve aroma verici kullanılmaz. Ürünler nefes alan pamuk
       torbalarda paketlenir.
     </p>
     <h2>Üretim bilgileri</h2>
     <ul>
       <li>Üretim yeri: ${esc(CONTACT.address.street)}, ${CONTACT.address.locality} / ${CONTACT.address.region}</li>
-      <li>Fermantasyon: toprak küpte 21 gün</li>
-      <li>Ana malzemeler: koçbaşı nohut, köy yoğurdu, taş değirmen buğday unu, domates, kapya biber</li>
+      <li>Üretim: yoğurma, ince açma ve güneşte/hava akımında kurutma</li>
+      <li>Ana malzemeler: taş değirmen buğday unu, köy yoğurdu, domates, kapya biber, az miktarda nohut unu</li>
       <li>Katkı: koruyucu, renklendirici ve aroma verici yok</li>
       <li>Satış: Türkiye geneli kargo, 1-3 iş günü</li>
     </ul>

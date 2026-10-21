@@ -37,7 +37,7 @@ export const IngredientsSection: React.FC<IngredientsSectionProps> = ({
               <span className="material-symbols-outlined text-primary text-[20px]">
                 fact_check
               </span>
-              <span>12 Doğal Bileşen (Tümünü İncele)</span>
+              <span>7 Doğal Bileşen (Tümünü İncele)</span>
             </button>
           </div>
         </div>
@@ -47,7 +47,7 @@ export const IngredientsSection: React.FC<IngredientsSectionProps> = ({
           {/* Flatlay Image */}
           <div className="lg:col-span-7 rounded-2xl overflow-hidden shadow-[0_16px_32px_-4px_rgba(45,36,36,0.1)] aspect-[16/11] bg-surface-container group">
             <img
-              alt="Ahşap masa üzerinde köy yoğurdu, domates, nohut, un ve taze otların yer aldığı zengin tarhana malzemeleri flatlay düzeni"
+              alt="Ahşap masa üzerinde tarhana, domates, biber, tuz ve taze baharatlar"
               className="w-full h-full object-cover group-hover:scale-102 transition-transform duration-700"
               src={ASSETS.flatlayIngredients}
               loading="lazy"
@@ -67,7 +67,7 @@ export const IngredientsSection: React.FC<IngredientsSectionProps> = ({
               <div>
                 <h4 className="font-title-md text-on-surface">Köy Tipi Süzme Yoğurt</h4>
                 <p className="font-body-sm text-on-surface-variant mt-0.5">
-                  Otlayan ineklerin sütünden geleneksel usulle mayalanmış canlı, ekşimsi ve koyu
+                  Otlayan ineklerin sütünden geleneksel usulle yapılmış, ekşimsi ve koyu
                   kıvamlı yoğurt.
                 </p>
               </div>
@@ -99,10 +99,10 @@ export const IngredientsSection: React.FC<IngredientsSectionProps> = ({
                 3
               </div>
               <div>
-                <h4 className="font-title-md text-on-surface">Yerli Koçbaşı Nohut</h4>
+                <h4 className="font-title-md text-on-surface">Az Miktarda Nohut Unu</h4>
                 <p className="font-body-sm text-on-surface-variant mt-0.5">
-                  İç Anadolu ovalarından toplanmış, suda kabaran, protein ve lif deposu dolgun
-                  nohut taneleri.
+                  Hamurun içine az miktarda karıştırılan nohut unu; çorbaya hafif tokluk ve
+                  doğal kıvam katar. Paket içinde ayrıca nohut gönderilmez.
                 </p>
               </div>
             </div>

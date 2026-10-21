@@ -5,3 +5,10 @@
 # Bilinmeyen yollar için SPA fallback KULLANILMAZ.
 # Cloudflare Pages, public/404.html dosyasını gerçek 404 durum koduyla servis eder.
 # Bu, arama motorlarında soft-404 oluşmasını engeller.
+
+# Kaldırılan ürün URL'leri tek ürüne yönlendirilir.
+/urunler/tarhana-spicy /urunler/tarhana-classic 301
+/urunler/tarhana-baby /urunler/tarhana-classic 301
+/urunler/tarhana-family-pack /urunler/tarhana-classic 301
+/urunler/tarhana-starter-set /urunler/tarhana-classic 301
+/urunler/tarhana-gourmet-duo /urunler/tarhana-classic 301

@@ -95,11 +95,11 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({
                   verified
                 </span>
                 <span className="font-title-md text-sm font-bold text-on-surface">
-                  Kadim Dost
+                  Sadık Dost
                 </span>
               </div>
               <span className="text-[10px] text-outline mt-1 block">
-                Tüm siparişlerde hediye nohut
+                Tüm siparişlerde özenli paketleme
               </span>
             </div>
           </div>

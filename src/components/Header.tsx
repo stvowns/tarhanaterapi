@@ -31,8 +31,8 @@ export const Header: React.FC<HeaderProps> = ({
 
   const navLinks: { id: ActiveTab; label: string }[] = [
     { id: 'home', label: 'Ana Sayfa' },
-    { id: 'products', label: 'Şifalı Çorbalarımız' },
-    { id: 'ingredients', label: 'İçindekiler & Nohut Terapi' },
+    { id: 'products', label: 'Tarhanamız' },
+    { id: 'ingredients', label: 'İçindekiler' },
     { id: 'story', label: 'Hikayemiz' },
     { id: 'reviews', label: 'Yorumlar' },
     { id: 'contact', label: 'İletişim' },

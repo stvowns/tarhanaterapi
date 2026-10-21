@@ -20,7 +20,11 @@ const productFaqs = [
   },
   {
     q: 'İçinde katkı maddesi var mı?',
-    a: 'Koruyucu, renklendirici ve aroma verici kullanılmaz. Ürün; buğday unu, yoğurt, nohut, domates, biber, tuz ve baharatlardan oluşur. Buğday içerdiği için glutensiz değildir.',
+    a: 'Koruyucu, renklendirici ve aroma verici kullanılmaz. Ürün; buğday unu, yoğurt, domates, biber, az miktarda nohut unu, tuz ve baharatlardan oluşur. Buğday içerdiği için glutensiz değildir.',
+  },
+  {
+    q: 'Nohut ayrıca gönderiliyor mu?',
+    a: 'Hayır. Nohut, hamura az miktarda nohut unu olarak katılır; paket içinde ayrı nohut bulunmaz.',
   },
 ];
 
@@ -147,7 +151,8 @@ export const ProductPage: React.FC<ProductPageProps> = ({ product, onAddToCart }
                 ))}
               </ul>
               <p className="text-xs text-outline mt-3">
-                Alerjen bilgisi: buğday (gluten), süt (yoğurt) ve nohut içerir. Glutensiz değildir.
+                Alerjen bilgisi: buğday (gluten), süt (yoğurt) ve nohut (az miktarda nohut unu)
+                içerir. Glutensiz değildir.
               </p>
             </div>
 
@@ -202,21 +207,28 @@ export const ProductPage: React.FC<ProductPageProps> = ({ product, onAddToCart }
 
             <div className="rounded-xl bg-surface-container-low p-5 border border-outline-variant/30">
               <h2 className="font-title-md text-base font-semibold text-on-surface mb-3">
-                Diğer tarhana çeşitleri
+                İstek üzerine çeşitler
               </h2>
-              <ul className="flex flex-col gap-2">
-                {related.map((item) => (
-                  <li key={item.id}>
-                    <a
-                      href={productPath(item)}
-                      className="text-sm text-on-surface-variant hover:text-primary flex items-center justify-between gap-2"
-                    >
-                      <span>{item.name}</span>
-                      <span className="text-primary font-semibold whitespace-nowrap">{item.price} TL</span>
-                    </a>
-                  </li>
-                ))}
-              </ul>
+              {related.length > 0 ? (
+                <ul className="flex flex-col gap-2">
+                  {related.map((item) => (
+                    <li key={item.id}>
+                      <a
+                        href={productPath(item)}
+                        className="text-sm text-on-surface-variant hover:text-primary flex items-center justify-between gap-2"
+                      >
+                        <span>{item.name}</span>
+                        <span className="text-primary font-semibold whitespace-nowrap">{item.price} TL</span>
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <p className="text-xs text-on-surface-variant leading-relaxed">
+                  Acılı ve bebek/çocuk dostu versiyonlar istek üzerine hazırlanır. Sipariş
+                  öncesi iletişime geçebilirsiniz.
+                </p>
+              )}
             </div>
 
             <p className="text-[11px] text-outline leading-relaxed">

@@ -1,29 +1,31 @@
 # TarhanaTerapi
 
-> Bursa Orhangazi'de üç nesilden gelen mayayla, ata tohumu koçbaşı nohutlu ve katkısız anne tarhanası üreten aile işletmesi. Ürünler toprak küpte 21 gün fermente edilir; 1 kg pamuk torba, 1 kg pamuk çuval ve hediye seti olarak satılır. Türkiye geneli 1-3 iş gününde kargo, 2000 TL üzeri ücretsiz; 2000 TL altı 150 TL.
+> Bursa Orhangazi'de aile tarifiyle, katkısız geleneksel tarhana üreten aile işletmesi. 1 kg pamuk torba geleneksel tarhana 500 TL'dir; acılı ve bebek/çocuk dostu versiyonlar istek üzerine hazırlanır. Türkiye geneli 1-3 iş gününde kargo, 2000 TL üzeri ücretsiz; 2000 TL altı 150 TL.
 
 Canonical site: https://tarhanaterapi.com/
 Dil: Türkçe (tr-TR)
-Son güncelleme: 19 Ekim 2026
+Son güncelleme: 21 Ekim 2026
 
 ## Kısa cevaplar
 
-- TarhanaTerapi nedir? Bursa Orhangazi'de üç nesilden devraldığı mayayla ata tohumu koçbaşı nohutlu, katkısız anne tarhanasını toprak küplerde 21 gün fermente ederek üreten bir aile işletmesidir.
-- Fiyatlar: 1 kg klasik 450 TL, 1 kg acılı 500 TL, 1 kg tuzsuz bebek tarhanası 500 TL, 1 kg aile paketi 450 TL, 2 x 1 kg ikili gurme paketi 900 TL, başlangıç seti 850 TL.
+- TarhanaTerapi nedir? Bursa Orhangazi'de aile tarifiyle, katkısız geleneksel tarhana üreten bir aile işletmesidir. Şu anda 1 kg pamuk torba geleneksel tarhana satışı vardır.
+- Fiyat: 1 kg geleneksel tarhana 500 TL'dir. Acılı ve bebek/çocuk dostu versiyonlar istek üzerine hazırlanır; fiyat ve stok için iletişime geçilmelidir.
 - Kargo: Aynı veya ertesi iş günü kargoya verilir; Türkiye geneli teslimat 1-3 iş günüdür. 2000 TL ve üzeri siparişlerde kargo ücretsizdir; 2000 TL altı siparişlerde 150 TL'dir.
-- İçindekiler: Taş değirmen buğday unu, köy yoğurdu, tarla domatesi, közlenmiş kapya biber, koçbaşı nohut, kaya tuzu, dağ kekiği ve nane. Koruyucu, renklendirici ve aroma verici yok.
+- İçindekiler: Taş değirmen buğday unu, köy yoğurdu, tarla domatesi, közlenmiş kapya biber, az miktarda nohut unu, kaya tuzu, dağ kekiği ve nane. Koruyucu, renklendirici ve aroma verici yok.
+- Nohut: Hamura az miktarda nohut unu olarak katılır; paket içinde ayrı nohut gönderilmez.
 - Alerjen: Buğday (gluten), süt (yoğurt) ve nohut içerir. Glutensiz değildir; çölyak hastaları için uygun değildir.
-- Bebek tarhanası: Tuzsuz ve acısızdır; doktora danışarak 6. aydan itibaren ek gıdada kullanılabilir.
-- Saklama: Güneş görmeyen serin ve kuru yerde, kapalı pamuk torbada 1 yıla kadar.
+- Bebek tarhanası: İstek üzerine tuzsuz ve acısız hazırlanır; doktora danışarak 6. aydan itibaren ek gıdada kullanılabilir.
+- Saklama: Güneş görmeyen serin ve kuru yerde, kapalı pamuk torbada veya saklama kabında 1 yıla kadar.
+- Üretim: Hamur yoğrulur, ince açılır ve güneşte/hava akımında kurutulur. Uzun dinlendirme veya bekleme süreci yoktur.
 - Üretim yeri: Gedelek Köyü Mevkii No: 28, Orhangazi / Bursa.
 - İletişim: 0850 302 82 74 · satis@tarhanaterapi.com
 
 ## Sayfalar
 
-- [Ana Sayfa](https://tarhanaterapi.com/): Marka tanımı, ürün özeti, fiyatlar ve SSS.
-- [Ürünler ve Fiyatlar](https://tarhanaterapi.com/urunler): Tüm tarhana çeşitleri, güncel fiyatlar ve karşılaştırma.
-- [İçindekiler ve Fermantasyon](https://tarhanaterapi.com/icerik): Malzemeler, 21 günlük üretim süreci ve alerjen bilgisi.
-- [Hikayemiz](https://tarhanaterapi.com/hikaye): Orhangazi atölyesi ve üç nesillik maya.
+- [Ana Sayfa](https://tarhanaterapi.com/): Marka tanımı, ürün özeti, fiyat ve SSS.
+- [Ürünler ve Fiyatlar](https://tarhanaterapi.com/urunler): Güncel ürün, fiyat ve istek üzerine çeşitler.
+- [İçindekiler ve Üretim](https://tarhanaterapi.com/icerik): Malzemeler, üretim adımları ve alerjen bilgisi.
+- [Hikayemiz](https://tarhanaterapi.com/hikaye): Orhangazi atölyesi ve üç nesillik aile tarifi.
 - [Yorumlar](https://tarhanaterapi.com/yorumlar): Müşteri deneyimleri.
 - [İletişim ve SSS](https://tarhanaterapi.com/iletisim): Telefon, e-posta, adres, kargo ve sık sorulan sorular.
 
@@ -33,21 +35,16 @@ Son güncelleme: 19 Ekim 2026
 - [Tarhana nasıl kurutulur?](https://tarhanaterapi.com/rehber/tarhana-nasil-kurutulur): Açma, güneşte kurutma, süre ve saklama.
 - [Bebeklere tarhana ne zaman verilir?](https://tarhanaterapi.com/rehber/bebeklere-tarhana-ne-zaman-verilir): 6. ay, tuz, alerjen ve pişirme.
 - [Tarhana neden ekşir?](https://tarhanaterapi.com/rehber/tarhana-neden-eksir): Ekşilik, nem, küf ve saklama.
-- [Ev tarhanası ile hazır tarhana farkı](https://tarhanaterapi.com/rehber/ev-tarhanasi-ile-hazir-tarhana-farki): İçerik, fermantasyon ve etiket karşılaştırması.
+- [Ev tarhanası ile hazır tarhana farkı](https://tarhanaterapi.com/rehber/ev-tarhanasi-ile-hazir-tarhana-farki): İçerik, hazırlık ve etiket karşılaştırması.
 - [Katkısız tarhana nasıl anlaşılır?](https://tarhanaterapi.com/rehber/katkisiz-tarhana-nasil-anlasilir): Etiket okuma ve üretici seçimi.
 
-## Ürün sayfaları
+## Ürün sayfası
 
-- [Geleneksel Nohutlu Anne Tarhanası — 1 kg, 450 TL](https://tarhanaterapi.com/urunler/tarhana-classic)
-- [Acılı Gurme Terapisi — 1 kg, 500 TL](https://tarhanaterapi.com/urunler/tarhana-spicy)
-- [Bebek & Çocuk Dostu Tarhana — 1 kg, 500 TL](https://tarhanaterapi.com/urunler/tarhana-baby)
-- [TarhanaTerapi Başlangıç Seti — 1 kg tarhana + set, 850 TL](https://tarhanaterapi.com/urunler/tarhana-starter-set)
-- [Kiler Boyu 1 kg Pamuk Çuvallı Tarhana — 450 TL](https://tarhanaterapi.com/urunler/tarhana-family-pack)
-- [İkili Gurme Şifa Paketi — 2 × 1 kg, 900 TL](https://tarhanaterapi.com/urunler/tarhana-gourmet-duo)
+- [Geleneksel Tarhana — 1 kg pamuk torba, 500 TL](https://tarhanaterapi.com/urunler/tarhana-classic)
 
 ## Kaynaklar
 
-- [Kadim Çorba Ritüelleri ve Şifalı Tarifler — ücretsiz PDF e-kitap](https://tarhanaterapi.com/kadim-corba-rituelleri-ve-sifali-tarifler.pdf): 21 günlük fermantasyon ve 8 tarhana tarifi.
+- [Kadim Çorba Ritüelleri ve Şifalı Tarifler — ücretsiz PDF e-kitap](https://tarhanaterapi.com/kadim-corba-rituelleri-ve-sifali-tarifler.pdf): 8 tarhana tarifi, pişirme ve saklama rehberi.
 - [llms-full.txt](https://tarhanaterapi.com/llms-full.txt): Ürün, SSS ve politikaların tam metni.
 - [Sitemap](https://tarhanaterapi.com/sitemap.xml)
 - [robots.txt](https://tarhanaterapi.com/robots.txt)
@@ -56,6 +53,6 @@ Son güncelleme: 19 Ekim 2026
 
 - İçerik kullanımı: `Content-Signal: search=yes, ai-input=yes, ai-train=yes`.
 - Her sayfanın Markdown sürümü aynı adreste `Accept: text/markdown` başlığıyla veya adresin sonuna `.md` eklenerek alınabilir.
-- Sitede yer alan fiyatlar 19 Ekim 2026 tarihinde doğrulanmıştır. Fiyat değiştiğinde bu dosya ve ürün sayfaları birlikte güncellenir.
+- Sitede yer alan fiyatlar 21 Ekim 2026 tarihinde doğrulanmıştır. Fiyat değiştiğinde bu dosya ve ürün sayfaları birlikte güncellenir.
 - TarhanaTerapi bir aile işletmesidir; ürünler markanın kendi atölyesinde üretilir.
 - Sağlık iddiası yoktur; ürün geleneksel bir gıdadır. Bebek beslenmesi ve alerjenler için hekime danışılması önerilir.

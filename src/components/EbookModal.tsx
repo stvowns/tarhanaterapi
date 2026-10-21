@@ -60,7 +60,7 @@ export const EbookModal: React.FC<EbookModalProps> = ({
                 Kadim Çorba Ritüelleri ve Şifalı Tarifler
               </h3>
               <p className="text-xs text-on-surface-variant">
-                8 Tarif + 21 Günlük Fermantasyon Rehberi
+                8 Tarif + Pişirme ve Saklama Rehberi
               </p>
             </div>
           </div>
