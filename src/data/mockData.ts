@@ -446,15 +446,11 @@ export const FAQS = [
   },
   {
     q: 'Tarhana nerede üretiliyor?',
-    a: "Üretim, Bursa Orhangazi'deki Muradiye Mh. adresindeki aile atölyesinde yapılır. İstanbul Kadıköy Moda'da bir tadım noktası bulunur. Siparişler Türkiye'nin her iline kargolanır."
+    a: "Üretim, Bursa Orhangazi'deki Muradiye Mh. adresindeki aile atölyesinde yapılır. Siparişler Türkiye'nin her iline kargolanır."
   },
   {
     q: 'Tarhana nasıl pişirilir?',
     a: "Bir kase tarhanayı 1-2 bardak soğuk suyla topak kalmayacak şekilde karıştırın. Kaynayan et suyu veya suya ekleyip 10-15 dakika kısık ateşte karıştırarak pişirin. Üzerine tereyağında nane ve pul biber ekleyebilirsiniz."
-  },
-  {
-    q: 'Tarhana nasıl üretilir?',
-    a: "Taş değirmen buğday unu, köy yoğurdu, domates, közlenmiş kapya biber, az miktarda nohut unu ve baharatlar karıştırılır. Hamur yoğrulup ince açılır; güneşte ve hava akımında kurutulur. Uzun dinlendirme veya bekleme süreci yoktur."
   },
   {
     q: 'Bebek tarhanası kaçıncı aydan itibaren verilebilir?',

@@ -80,25 +80,17 @@ export const ContactPage: React.FC<ContactPageProps> = ({ onShowToast }) => {
               </div>
             </div>
 
-            {/* Ateliers */}
+            {/* Atelier */}
             <div className="p-6 bg-surface-container-low rounded-2xl border border-outline-variant/30 flex flex-col gap-4">
               <span className="text-xs font-bold uppercase tracking-wider text-primary">
-                Atölye &amp; Tadım Noktalarımız
+                Üretim Atölyemiz
               </span>
-              <div className="border-b border-outline-variant/20 pb-3">
+              <div>
                 <strong className="text-xs font-bold text-on-surface block">
                   Bursa Orhangazi Doğal Üretim Çiftliği
                 </strong>
                 <p className="text-xs text-on-surface-variant mt-0.5">
                   Muradiye Mh., Orhangazi / Bursa
-                </p>
-              </div>
-              <div>
-                <strong className="text-xs font-bold text-on-surface block">
-                  İstanbul Kadıköy Tadım Atölyesi
-                </strong>
-                <p className="text-xs text-on-surface-variant mt-0.5">
-                  Caferağa Mah. Şifa Sokak No: 8/B, Moda, Kadıköy / İstanbul
                 </p>
               </div>
             </div>

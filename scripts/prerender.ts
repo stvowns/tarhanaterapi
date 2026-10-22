@@ -441,9 +441,8 @@ const contactContent = () => `
   <main>
     <h1>İletişim, Adres, Kargo ve SSS</h1>
     <p class="static-definition">
-      TarhanaTerapi sipariş, kargo ve ürün soruları için ${CONTACT.phone} numarasından veya
-      ${CONTACT.email} adresinden ulaşılabilir. Üretim atölyesi Bursa Orhangazi'de, tadım
-      noktası İstanbul Kadıköy Moda'dadır.
+      TarhanaTerapi sipariş, kargo ve ürün soruları için ${CONTACT.email} adresinden
+      ulaşılabilir. Üretim atölyesi Bursa Orhangazi'deki Muradiye Mh. adresindedir.
     </p>
     ${contactBlock}
     <h2>Kargo ve teslimat</h2>

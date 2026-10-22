@@ -89,6 +89,38 @@ function playNotificationChime() {
   }
 }
 
+type SessionUser = {
+  id: string;
+  email?: string;
+  user_metadata?: Record<string, any>;
+};
+
+function buildUserFromSession(user: SessionUser): User {
+  let cached: User | null = null;
+  try {
+    const raw = localStorage.getItem('tt_current_user');
+    const parsed = raw ? (JSON.parse(raw) as User) : null;
+    if (parsed?.email?.toLowerCase() === user.email?.toLowerCase()) cached = parsed;
+  } catch {
+    // Yerel önbellek yoksa devam et.
+  }
+
+  return {
+    id: user.id,
+    fullName: user.user_metadata?.full_name || user.email?.split('@')[0] || 'Kullanıcı',
+    email: user.email || '',
+    phone: user.user_metadata?.phone || cached?.phone,
+    city: user.user_metadata?.city || cached?.city,
+    district: user.user_metadata?.district || cached?.district,
+    address: user.user_metadata?.address || cached?.address,
+    points: Number(user.user_metadata?.points ?? cached?.points ?? 100),
+    isAdmin:
+      user.email?.toLowerCase() === 'layeredstudio78@gmail.com' ||
+      user.email?.toLowerCase() === 'admin@tarhanaterapi.com',
+    createdAt: cached?.createdAt || new Date().toLocaleDateString('tr-TR'),
+  };
+}
+
 export default function App() {
   const location = useLocation();
 const navigate = useNavigate();
@@ -359,6 +391,7 @@ const setActiveTab = useCallback(
           city: updatedUser.city,
           district: updatedUser.district,
           address: updatedUser.address,
+          points: updatedUser.points,
         },
       }).catch(() => {});
     }
@@ -543,32 +576,14 @@ const setActiveTab = useCallback(
       if (!active) return;
       const user = data.session?.user;
       if (user) {
-        setCurrentUser({
-          id: user.id,
-          fullName: user.user_metadata?.full_name || user.email?.split('@')[0] || 'Kullanıcı',
-          email: user.email || '',
-          points: 0,
-          isAdmin:
-            user.email?.toLowerCase() === 'layeredstudio78@gmail.com' ||
-            user.email?.toLowerCase() === 'admin@tarhanaterapi.com',
-          createdAt: new Date().toLocaleDateString('tr-TR'),
-        });
+        setCurrentUser(buildUserFromSession(user));
       }
     });
 
     const { data: authSub } = supabase.auth.onAuthStateChange((_event, session) => {
       const user = session?.user;
       if (!user) return;
-      setCurrentUser({
-        id: user.id,
-        fullName: user.user_metadata?.full_name || user.email?.split('@')[0] || 'Kullanıcı',
-        email: user.email || '',
-        points: 0,
-        isAdmin:
-          user.email?.toLowerCase() === 'layeredstudio78@gmail.com' ||
-          user.email?.toLowerCase() === 'admin@tarhanaterapi.com',
-        createdAt: new Date().toLocaleDateString('tr-TR'),
-      });
+      setCurrentUser(buildUserFromSession(user));
     });
 
     return () => {
@@ -599,6 +614,47 @@ const setActiveTab = useCallback(
   }, [currentUser?.isAdmin]);
 
   useEffect(() => {
+    if (!currentUser?.email || currentUser.isAdmin) return;
+    let active = true;
+
+    supabase.auth.getSession().then(({ data }) => {
+      const token = data.session?.access_token;
+      if (!token) return;
+
+      fetch('/api/my-orders', {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+        .then((res) => (res.ok ? res.json() : null))
+        .then((payload) => {
+          if (!active || !Array.isArray(payload?.orders)) return;
+          const fetched = payload.orders as Order[];
+          setOrders((prev) => {
+            const existing = new Set(fetched.map((order) => order.id));
+            return [...prev.filter((order) => !existing.has(order.id)), ...fetched];
+          });
+
+          const latest = fetched[0];
+          if (latest && !currentUser.address && latest.customerAddress) {
+            const updatedUser = {
+              ...currentUser,
+              phone: currentUser.phone || latest.customerPhone,
+              city: currentUser.city || latest.customerCity,
+              district: currentUser.district || latest.customerDistrict,
+              address: currentUser.address || latest.customerAddress,
+            };
+            setCurrentUser(updatedUser);
+            localStorage.setItem('tt_current_user', JSON.stringify(updatedUser));
+          }
+        })
+        .catch(() => {});
+    });
+
+    return () => {
+      active = false;
+    };
+  }, [currentUser?.email, currentUser?.isAdmin, isProfileModalOpen]);
+
+  useEffect(() => {
     if (!currentUser?.email) return;
     const channel = supabase
       .channel(`customer-orders-${currentUser.email}`)
@@ -627,33 +683,6 @@ const setActiveTab = useCallback(
     };
   }, [currentUser?.email]);
 
-  useEffect(() => {
-    if (!currentUser?.email || currentUser.address) return;
-    let active = true;
-    supabase
-      .from('orders')
-      .select('customer_phone,customer_city,customer_district,customer_address')
-      .eq('customer_email', currentUser.email)
-      .order('created_at', { ascending: false })
-      .limit(1)
-      .then(({ data }) => {
-        if (!active || !data || !data.length) return;
-        const o = data[0];
-        if (!o.customer_address) return;
-        const updatedUser = {
-          ...currentUser,
-          phone: currentUser.phone || o.customer_phone,
-          city: currentUser.city || o.customer_city,
-          district: currentUser.district || o.customer_district,
-          address: currentUser.address || o.customer_address,
-        };
-        setCurrentUser(updatedUser);
-        localStorage.setItem('tt_current_user', JSON.stringify(updatedUser));
-      });
-    return () => {
-      active = false;
-    };
-  }, [currentUser?.email, currentUser?.address]);
   const seo = useMemo(() => {
     if (currentGuide) {
       return {

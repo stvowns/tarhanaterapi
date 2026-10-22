@@ -43,7 +43,7 @@ const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
             id: u.id,
             fullName: u.user_metadata?.full_name || u.email?.split('@')[0] || 'Kullanıcı',
             email: u.email || '',
-            points: 0,
+            points: Number(u.user_metadata?.points ?? 100),
             isAdmin:
               u.email?.toLowerCase() === 'layeredstudio78@gmail.com' ||
               u.email?.toLowerCase() === 'admin@tarhanaterapi.com',
@@ -100,7 +100,7 @@ const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
         fullName: (u.user_metadata?.full_name as string) || u.email?.split('@')[0] || 'Kullanıcı',
         email: u.email || '',
         phone: (u.user_metadata?.phone as string) || '',
-        points: 0,
+        points: Number(u.user_metadata?.points ?? 100),
         isAdmin:
           u.email?.toLowerCase() === 'layeredstudio78@gmail.com' ||
           u.email?.toLowerCase() === 'admin@tarhanaterapi.com',
@@ -125,7 +125,7 @@ const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
         email,
         password,
         options: {
-          data: { full_name: fullName, phone },
+          data: { full_name: fullName, phone, points: 100 },
         },
       });
       if (signUpError || !data.user) {
