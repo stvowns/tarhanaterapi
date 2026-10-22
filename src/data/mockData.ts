@@ -430,11 +430,11 @@ export const RECIPES_EBOOK: Recipe[] = [
 export const FAQS = [
   {
     q: 'TarhanaTerapi nedir, ne üretir?',
-    a: "TarhanaTerapi, Bursa Orhangazi'de aile tarifiyle, katkısız geleneksel tarhana üreten bir aile işletmesidir. Şu anda 1 kg pamuk torba geleneksel tarhana satışı vardır; acılı ve bebek/çocuk dostu versiyonlar istek üzerine hazırlanır."
+    a: "TarhanaTerapi, Bursa Orhangazi'de aile tarifiyle, katkısız geleneksel tarhana üreten bir aile işletmesidir. Şu anda 1 kg pamuk torba geleneksel tarhana satışı vardır; acılı versiyon istek üzerine hazırlanır."
   },
   {
     q: 'Tarhana fiyatları ne kadar?',
-    a: "Ekim 2026 itibarıyla 1 kg geleneksel tarhana 500 TL'dir. Acılı ve bebek versiyonları istek üzerine hazırlanır; fiyat ve stok için iletişime geçebilirsiniz. 2000 TL üzeri siparişlerde kargo ücretsizdir; 2000 TL altı siparişlerde 150 TL'dir."
+    a: "Ekim 2026 itibarıyla 1 kg geleneksel tarhana 500 TL'dir. Güncel stok ve toplu alım için iletişime geçebilirsiniz."
   },
   {
     q: 'Kargo ücreti ne kadar, kaç günde teslim edilir?',
@@ -442,7 +442,7 @@ export const FAQS = [
   },
   {
     q: 'Tarhana glutensiz mi, çölyak hastaları kullanabilir mi?',
-    a: "Hayır. TarhanaTerapi tarhanası buğday unu içerdiği için glutensiz değildir ve çölyak hastaları için uygun değildir. Bebek versiyonu da buğday, süt ve nohut içerir; yalnızca ilave tuz ve acı biber kullanılmaz."
+    a: "Hayır. Buğday unu, süt ve nohut içerdiği için glutensiz değildir; çölyak hastaları için uygun değildir."
   },
   {
     q: 'Tarhana nerede üretiliyor?',
@@ -451,10 +451,6 @@ export const FAQS = [
   {
     q: 'Tarhana nasıl pişirilir?',
     a: "Bir kase tarhanayı 1-2 bardak soğuk suyla topak kalmayacak şekilde karıştırın. Kaynayan et suyu veya suya ekleyip 10-15 dakika kısık ateşte karıştırarak pişirin. Üzerine tereyağında nane ve pul biber ekleyebilirsiniz."
-  },
-  {
-    q: 'Nohut ayrıca gönderiliyor mu?',
-    a: "Hayır. Nohut, hamura az miktarda nohut unu olarak katılır; paket içinde ayrı nohut bulunmaz. Ürün nohut içerdiği için alerjen bilgisine dikkat edilmelidir."
   },
   {
     q: 'Tarhana nasıl üretilir?',

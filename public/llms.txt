@@ -1,6 +1,6 @@
 # TarhanaTerapi
 
-> Bursa Orhangazi'de aile tarifiyle, katkısız geleneksel tarhana üreten aile işletmesi. 1 kg pamuk torba geleneksel tarhana 500 TL'dir; acılı ve bebek/çocuk dostu versiyonlar istek üzerine hazırlanır. Türkiye geneli 1-3 iş gününde kargo, 2000 TL üzeri ücretsiz; 2000 TL altı 150 TL.
+> Bursa Orhangazi'de aile tarifiyle, katkısız geleneksel tarhana üreten aile işletmesi. 1 kg pamuk torba geleneksel tarhana 500 TL'dir; acılı versiyon istek üzerine hazırlanır. Türkiye geneli 1-3 iş gününde kargo, 2000 TL üzeri ücretsiz; 2000 TL altı 150 TL.
 
 Canonical site: https://tarhanaterapi.com/
 Dil: Türkçe (tr-TR)
@@ -9,11 +9,10 @@ Son güncelleme: 21 Ekim 2026
 ## Kısa cevaplar
 
 - TarhanaTerapi nedir? Bursa Orhangazi'de aile tarifiyle, katkısız geleneksel tarhana üreten bir aile işletmesidir. Şu anda 1 kg pamuk torba geleneksel tarhana satışı vardır.
-- Fiyat: 1 kg geleneksel tarhana 500 TL'dir. Acılı ve bebek/çocuk dostu versiyonlar istek üzerine hazırlanır; fiyat ve stok için iletişime geçilmelidir.
+- Fiyat: 1 kg geleneksel tarhana 500 TL'dir. Güncel stok ve toplu alım için iletişime geçilmelidir.
 - Kargo: Aynı veya ertesi iş günü kargoya verilir; Türkiye geneli teslimat 1-3 iş günüdür. 2000 TL ve üzeri siparişlerde kargo ücretsizdir; 2000 TL altı siparişlerde 150 TL'dir.
 - Ödeme: Havale/EFT. Kapıda ödeme yakında yeniden etkinleştirilecektir. Havale/EFT siparişlerinde banka bilgileri sipariş onay e-postasıyla gönderilir; ödeme kontrol edildikten sonra sipariş kargoya verilir.
 - İçindekiler: Taş değirmen buğday unu, köy yoğurdu, tarla domatesi, közlenmiş kapya biber, az miktarda nohut unu, kaya tuzu, dağ kekiği ve nane. Koruyucu, renklendirici ve aroma verici yok.
-- Nohut: Hamura az miktarda nohut unu olarak katılır; paket içinde ayrı nohut gönderilmez.
 - Alerjen: Buğday (gluten), süt (yoğurt) ve nohut içerir. Glutensiz değildir; çölyak hastaları için uygun değildir.
 - Bebek tarhanası: İstek üzerine tuzsuz ve acısız hazırlanır; doktora danışarak 6. aydan itibaren ek gıdada kullanılabilir.
 - Saklama: Güneş görmeyen serin ve kuru yerde, kapalı pamuk torbada veya saklama kabında 1 yıla kadar.

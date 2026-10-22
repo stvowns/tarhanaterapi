@@ -223,7 +223,6 @@ const footer = `
 const contactBlock = `
   <h2>İletişim</h2>
   <p>
-    Telefon / WhatsApp: <a href="tel:${CONTACT.phoneHref}">${CONTACT.phone}</a><br />
     E-posta: <a href="mailto:${CONTACT.email}">${CONTACT.email}</a><br />
     Üretim atölyesi: ${esc(CONTACT.address.street)}, ${CONTACT.address.locality} / ${CONTACT.address.region}<br />
     Çalışma saatleri: Pazartesi–Cumartesi 09:00–18:30
@@ -267,10 +266,6 @@ const productFaqs = [
   {
     q: 'İçinde katkı maddesi var mı?',
     a: 'Koruyucu, renklendirici ve aroma verici kullanılmaz. Ürün buğday unu, yoğurt, domates, biber, az miktarda nohut unu, tuz ve baharatlardan oluşur. Buğday içerdiği için glutensiz değildir.',
-  },
-  {
-    q: 'Nohut ayrıca gönderiliyor mu?',
-    a: 'Hayır. Nohut, hamura az miktarda nohut unu olarak katılır; paket içinde ayrı nohut bulunmaz.',
   },
 ];
 

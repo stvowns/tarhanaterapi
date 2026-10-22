@@ -53,36 +53,12 @@ export const ContactPage: React.FC<ContactPageProps> = ({ onShowToast }) => {
           <h1 className="font-headline-lg text-on-surface mt-2 text-3xl sm:text-4xl">
             İletişim, Atölye &amp; Merak Edilenler
           </h1>
-          <p className="font-body-lg text-on-surface-variant mt-2 leading-relaxed">
-            Sorularınız, kurumsal hediye siparişleriniz veya kooperatif işbirlikleri için buradayız.
-          </p>
         </div>
 
         {/* Contact Split */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 mb-20">
           {/* Left Info Cards */}
           <div className="lg:col-span-5 flex flex-col gap-6">
-            {/* Phone Card */}
-            <div className="p-6 bg-surface-container-low rounded-2xl border border-outline-variant/30 flex items-start gap-4">
-              <div className="w-12 h-12 rounded-xl bg-primary-fixed text-primary flex items-center justify-center shrink-0">
-                <span className="material-symbols-outlined text-[24px]">support_agent</span>
-              </div>
-              <div>
-                <span className="text-xs font-bold uppercase tracking-wider text-outline">
-                  Telefon &amp; WhatsApp Destek
-                </span>
-                <a
-                  href="tel:+908503028274"
-                  className="font-headline-sm text-lg font-bold text-primary block hover:underline mt-0.5"
-                >
-                  0850 302 82 74
-                </a>
-                <p className="text-xs text-on-surface-variant mt-1">
-                  Pazartesi - Cumartesi: 09:00 - 18:30 (Müşteri ve Şifa Hattı)
-                </p>
-              </div>
-            </div>
-
             {/* Email Card */}
             <div className="p-6 bg-surface-container-low rounded-2xl border border-outline-variant/30 flex items-start gap-4">
               <div className="w-12 h-12 rounded-xl bg-secondary-fixed text-secondary flex items-center justify-center shrink-0">

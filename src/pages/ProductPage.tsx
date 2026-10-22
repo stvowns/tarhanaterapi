@@ -22,10 +22,6 @@ const productFaqs = [
     q: 'İçinde katkı maddesi var mı?',
     a: 'Koruyucu, renklendirici ve aroma verici kullanılmaz. Ürün; buğday unu, yoğurt, domates, biber, az miktarda nohut unu, tuz ve baharatlardan oluşur. Buğday içerdiği için glutensiz değildir.',
   },
-  {
-    q: 'Nohut ayrıca gönderiliyor mu?',
-    a: 'Hayır. Nohut, hamura az miktarda nohut unu olarak katılır; paket içinde ayrı nohut bulunmaz.',
-  },
 ];
 
 export const ProductPage: React.FC<ProductPageProps> = ({ product, onAddToCart }) => {
@@ -194,8 +190,6 @@ export const ProductPage: React.FC<ProductPageProps> = ({ product, onAddToCart }
                 Sipariş ve destek
               </h2>
               <p className="text-xs text-on-surface-variant leading-relaxed">
-                Telefon / WhatsApp: <a className="text-primary" href="tel:+908503028274">0850 302 82 74</a>
-                <br />
                 E-posta:{' '}
                 <a className="text-primary" href="mailto:satis@tarhanaterapi.com">
                   satis@tarhanaterapi.com
