@@ -3,7 +3,7 @@
  * Yönetici oturumu doğrulanır; seçilen Resend kontaktlarına bülten e-postası gönderir.
  */
 
-const ADMIN_EMAILS = ['layeredstudio78@gmail.com', 'admin@tarhanaterapi.com'];
+const ADMIN_EMAILS = ['layeredstudio78@gmail.com'];
 const MAX_RECIPIENTS = 25;
 const SITE_URL = 'https://tarhanaterapi.com';
 const UNSUBSCRIBE_MAILTO =

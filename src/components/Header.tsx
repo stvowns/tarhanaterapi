@@ -97,9 +97,7 @@ export const Header: React.FC<HeaderProps> = ({
         <div className="flex items-center gap-2 sm:gap-3 shrink-0">
           {/* Admin Management Dashboard Button - Only visible to admin users */}
           {Boolean(
-            currentUser?.isAdmin ||
-              currentUser?.email === 'layeredstudio78@gmail.com' ||
-              currentUser?.email === 'admin@tarhanaterapi.com'
+            currentUser?.isAdmin || currentUser?.email === 'layeredstudio78@gmail.com'
           ) && (
             <button
               onClick={onOpenAdminModal}
@@ -236,9 +234,7 @@ export const Header: React.FC<HeaderProps> = ({
               )}
 
               {Boolean(
-                currentUser?.isAdmin ||
-                  currentUser?.email === 'layeredstudio78@gmail.com' ||
-                  currentUser?.email === 'admin@tarhanaterapi.com'
+                currentUser?.isAdmin || currentUser?.email === 'layeredstudio78@gmail.com'
               ) && (
                 <button
                   onClick={() => {

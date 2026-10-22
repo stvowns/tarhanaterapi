@@ -276,12 +276,9 @@ export const AdminModal: React.FC<AdminModalProps> = ({
     return true;
   });
 
-  const isAuthorized =
-    Boolean(
-      currentUser?.isAdmin ||
-        currentUser?.email === 'layeredstudio78@gmail.com' ||
-        currentUser?.email === 'admin@tarhanaterapi.com'
-    );
+  const isAuthorized = Boolean(
+    currentUser?.isAdmin || currentUser?.email === 'layeredstudio78@gmail.com'
+  );
 
   if (!isOpen) return null;
 
@@ -1285,7 +1282,7 @@ CREATE TABLE subscribers (
 
         {/* Footer */}
         <div className="p-4 bg-surface-container-low border-t border-surface-container-high flex justify-between items-center text-xs text-outline shrink-0">
-          <span>Yönetici Bildirim Hattı: admin@tarhanaterapi.com</span>
+          <span>Yönetici Bildirim Hattı: satis@tarhanaterapi.com</span>
           <button
             onClick={onClose}
             className="px-5 py-2 bg-primary text-on-primary rounded-lg text-xs font-semibold hover:bg-primary-container transition-colors cursor-pointer"

@@ -4,7 +4,7 @@
  * Alıcıya e-posta yalnızca sipariş "Kargoya Verildi" durumuna geçtiğinde gönderilir.
  */
 
-const ADMIN_EMAILS = ['layeredstudio78@gmail.com', 'admin@tarhanaterapi.com'];
+const ADMIN_EMAILS = ['layeredstudio78@gmail.com'];
 const ALLOWED_STATUSES = ['Yeni Sipariş', 'Hazırlanıyor', 'Kargoya Verildi', 'Tamamlandı'];
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 

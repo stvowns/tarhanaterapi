@@ -46,7 +46,7 @@
 ### API ve yönetici güvenliği
 
 - Tüm yönetici uçları (`list-orders`, `update-order-status`, `list-subscribers`, `list-reviews`, `moderate-review`, `send-newsletter`, `list-newsletter-contacts`) Supabase ile **e-posta doğrulaması yapılmış kullanıcı** istiyor.
-- Yönetici allowlist e-posta bazlı: `layeredstudio78@gmail.com`, `admin@tarhanaterapi.com`.
+- Yönetici allowlist e-posta bazlı: `layeredstudio78@gmail.com`.
 - `create-order`: zorunlu alan, e-posta/telefon/adres uzunluğu, ürün adedi ve toplam tutar üst sınırı doğrulanıyor; fiyatlar sunucuda yeniden hesaplanıyor.
 - Kapıda Ödeme varsayılan olarak kapalı; yalnızca `ALLOW_COD=true` ile açılabiliyor.
 - Telegram webhook **fail-closed**: `TELEGRAM_WEBHOOK_SECRET` yoksa veya gelen secret eşleşmiyorsa `401`; admin chat ID kontrolü de yapılıyor.

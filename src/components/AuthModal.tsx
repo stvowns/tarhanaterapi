@@ -44,9 +44,7 @@ const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
             fullName: u.user_metadata?.full_name || u.email?.split('@')[0] || 'Kullanıcı',
             email: u.email || '',
             points: Number(u.user_metadata?.points ?? 100),
-            isAdmin:
-              u.email?.toLowerCase() === 'layeredstudio78@gmail.com' ||
-              u.email?.toLowerCase() === 'admin@tarhanaterapi.com',
+            isAdmin: u.email?.toLowerCase() === 'layeredstudio78@gmail.com',
             createdAt: new Date().toLocaleDateString('tr-TR'),
           };
           onLoginSuccess(user);
@@ -101,9 +99,7 @@ const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
         email: u.email || '',
         phone: (u.user_metadata?.phone as string) || '',
         points: Number(u.user_metadata?.points ?? 100),
-        isAdmin:
-          u.email?.toLowerCase() === 'layeredstudio78@gmail.com' ||
-          u.email?.toLowerCase() === 'admin@tarhanaterapi.com',
+        isAdmin: u.email?.toLowerCase() === 'layeredstudio78@gmail.com',
         createdAt: new Date().toLocaleDateString('tr-TR'),
       };
       onLoginSuccess(user);

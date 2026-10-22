@@ -3,7 +3,7 @@
  * Yönetici oturumu doğrulanır; yorum onaylanır veya silinir.
  */
 
-const ADMIN_EMAILS = ['layeredstudio78@gmail.com', 'admin@tarhanaterapi.com'];
+const ADMIN_EMAILS = ['layeredstudio78@gmail.com'];
 
 const json = (body, status = 200) =>
   new Response(JSON.stringify(body), {

@@ -3,7 +3,7 @@
  * Sadece admin e-postalarına açıktır (Supabase access token doğrulanır).
  */
 
-const ADMIN_EMAILS = ['layeredstudio78@gmail.com', 'admin@tarhanaterapi.com'];
+const ADMIN_EMAILS = ['layeredstudio78@gmail.com'];
 
 const json = (body, status = 200) =>
   new Response(JSON.stringify(body), {
