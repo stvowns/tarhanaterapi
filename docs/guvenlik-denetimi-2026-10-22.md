@@ -21,19 +21,22 @@
 - Güvenlik başlıklarına `frame-ancestors`, `form-action`, `upgrade-insecure-requests`,
   `X-Permitted-Cross-Domain-Policies` ve `Cross-Origin-Opener-Policy` eklendi.
 
-## Supabase tarafında yapılması gereken (manuel, kritik)
+## Supabase RLS sertleştirmesi — uygulandı (22 Ekim 2026)
 
-Supabase Dashboard → SQL Editor içinde `supabase/security-hardening.sql` dosyasını çalıştırın.
-Bu dosya:
+`supabase/security-hardening.sql` Supabase SQL Editor içinde çalıştırıldı. Bu dosya:
 
-- `orders`, `order_items`, `subscribers` üzerindeki tüm `INSERT` politikalarını kaldırır.
+- `orders`, `order_items`, `subscribers` üzerindeki tüm `INSERT` politikalarını kaldırdı.
   Bu politikalar açıkken public anon anahtarıyla API atlanarak sahte sipariş/abone eklenebiliyordu.
-- `reviews` tablosunda yalnızca `verified = true` kayıtların public okunmasına izin verir.
+- `reviews` tablosunda yalnızca `verified = true` kayıtların public okunmasına izin veriyor.
   Önceden onay bekleyen yorumlar da anon anahtarla okunabiliyordu.
-- `subscribers.unsubscribed_at` kolonunu ve `orders(customer_email)` indeksini ekler.
+- `subscribers.unsubscribed_at` kolonunu ve `orders(customer_email)` indeksini ekledi.
 
-Doğrulama: dosyanın sonundaki `pg_policies` sorgusunda `orders`, `order_items`, `subscribers`
-için `INSERT` politikası görünmemeli; `reviews` için yalnızca onaylı okuma politikası olmalı.
+Doğrulama (public publishable anahtarıyla):
+
+- `orders`, `order_items`, `subscribers`, `reviews` INSERT denemeleri artık `42501`
+  “new row violates row-level security policy” döndürüyor.
+- `orders` ve `subscribers` SELECT denemeleri boş liste döndürüyor; public erişim yok.
+- Onaylı yorum uç noktası çalışıyor; onay bekleyenler uç noktası yetkisiz `401` veriyor.
 
 ## Acil operasyonel aksiyonlar
 
