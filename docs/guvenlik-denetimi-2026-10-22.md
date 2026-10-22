@@ -82,7 +82,7 @@ Doğrulama (public publishable anahtarıyla):
   enrollment yapılmadan admin paneli yalnızca e-posta+şifre ile korunuyor.
 - Bülten aboneliğinde double opt-in yok; biri başkasının e-postasını formdan ekleyebilir.
 - CSP'de `script-src 'unsafe-inline'` var; JSON-LD ve mevcut yapı nedeniyle korunuyor.
-- `netlify/functions` altındaki eski fonksiyonlar artık kullanılmıyor; ileride silinmeli.
+- `netlify/functions`, `netlify.toml` ve `vercel.json` kaldırıldı; canlı API yalnızca `functions/api/*` altında.
 - `npm audit` (prod + dev) temiz; bilinen bağımlılık açığı yok.
 
 ## İlgili dokümanlar

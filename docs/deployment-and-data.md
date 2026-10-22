@@ -16,7 +16,7 @@
 | DNS / SSL / CDN | Cloudflare (Universal SSL, HSTS) |
 
 - Eski Netlify sitesi silindi; `tarhanaterapi.netlify.app` artık 404 döner.
-- Repodaki `netlify/`, `netlify.toml` ve `vercel.json` yalnızca tarihsel referanstır; canlıda kullanılmaz.
+- Repodaki eski `netlify/`, `netlify.toml` ve `vercel.json` dosyaları kaldırıldı; canlıda yalnızca Cloudflare Pages kullanılır.
 - Cloudflare Pages projesinde Git Provider **bağlıdır**; `git push` otomatik build/deploy tetikler. Manuel `wrangler pages deploy` da kullanılabilir.
 
 ### Cloudflare WAF rate limiting

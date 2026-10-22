@@ -1,6 +1,5 @@
 /**
  * Cloudflare Pages Function — POST /api/contact-message
- * Kaynak: netlify/functions/contact-message.js (davranış birebir korunmuştur).
  */
 
 const rateLimit = new Map();

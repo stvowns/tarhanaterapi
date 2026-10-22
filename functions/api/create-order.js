@@ -1,6 +1,5 @@
 /**
  * Cloudflare Pages Function — POST /api/create-order
- * Kaynak: netlify/functions/create-order.js (davranış birebir korunmuştur).
  */
 
 const RATE_LIMIT = new Map();

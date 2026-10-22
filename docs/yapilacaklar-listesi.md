@@ -200,7 +200,7 @@ Teknik GEO altyapısı, hosting taşıması, e-posta/bülten altyapısı, secret
 - **Rate limit:** Cloudflare WAF'ta `POST /api/*` için IP başına 5 istek/10 sn kuralı aktif. Free plan nedeniyle period/duration 10 sn; daha güçlü koruma için Turnstile veya üst plan gerekir.
 - **MFA:** Altyapı hazır ancak `ADMIN_MFA_REQUIRED` kapalı; Supabase Confirm email de kapalı. Enrollment yapılmadan admin paneli yalnızca e-posta+şifre ile korunuyor.
 - **Doğrulanmamış yorum sayıları:** 420/215/310/180/145/98. Gerçek yorumlarla değiştirilene kadar `AggregateRating` eklenmeyecek.
-- **Netlify:** Site silindi; `netlify/` ve `netlify.toml` yalnızca referans olarak repoda duruyor, canlıda kullanılmıyor.
+- **Netlify:** Site silindi; `netlify/` ve `netlify.toml` repodan kaldırıldı. Canlıda yalnızca Cloudflare Pages kullanılıyor.
 - **AI garantisi yok:** Altyapı tam olsa bile "önerme" trafiğe, atıflara ve zamana bağlı.
 - **Yandex paneli:** Şu an Yandex kaynaklı veri kesintisi var; doğrulama/sitemap işlemleri panel düzelince yapılmalı.
 

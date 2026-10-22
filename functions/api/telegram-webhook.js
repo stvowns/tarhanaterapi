@@ -1,7 +1,6 @@
 /**
  * Cloudflare Pages Function — POST /api/telegram-webhook
  * Telegram botu üzerinden sipariş görüntüleme ve durum güncelleme.
- * Kaynak: netlify/functions/telegram-webhook.js
  */
 
 const ALLOWED_STATUSES = ['Yeni Sipariş', 'Hazırlanıyor', 'Kargoya Verildi', 'Tamamlandı'];
