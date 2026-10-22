@@ -57,6 +57,7 @@ create table if not exists subscribers (
   id uuid primary key default gen_random_uuid(),
   email text unique not null,
   source text not null check (source in ('ebook', 'newsletter')),
+  unsubscribed_at timestamptz,
   created_at timestamptz default now()
 );
 
@@ -90,11 +91,12 @@ alter table faq enable row level security;
 -- Public read for product, faq, reviews
 create policy "public read products" on products for select using (true);
 create policy "public read faq" on faq for select using (true);
-create policy "public read reviews" on reviews for select using (true);
+-- Yalnızca onaylanmış yorumlar herkese açıktır. Onay bekleyenler service role ile okunur.
+create policy "public read approved reviews" on reviews for select using (verified = true);
 
--- Order insert for anon (checkout), read by matching email handled by service role in API
-create policy "anon insert orders" on orders for insert with check (true);
-create policy "anon insert order_items" on order_items for insert with check (true);
-create policy "anon insert subscribers" on subscribers for insert with check (true);
+-- Sipariş, sipariş kalemi ve bülten kayıtları yalnızca Cloudflare Functions
+-- tarafından service role anahtarıyla yazılır. Anon insert politikası verilmez;
+-- aksi halde herkes Supabase anon anahtarıyla doğrudan sahte sipariş/abone ekleyebilir.
+create index if not exists orders_customer_email_idx on orders (customer_email);
 
 -- Admin policies can be narrowed with JWT claim in production.

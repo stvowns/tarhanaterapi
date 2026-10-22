@@ -4,6 +4,9 @@
  * Kaynak: netlify/functions/telegram-webhook.js
  */
 
+const ALLOWED_STATUSES = ['Yeni Sipariş', 'Hazırlanıyor', 'Kargoya Verildi', 'Tamamlandı'];
+const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+
 const text = (body, status = 200) =>
   new Response(body, { status, headers: { 'Content-Type': 'text/plain; charset=utf-8' } });
 
@@ -34,6 +37,43 @@ const supabase = async (env, path, options = {}) => {
   }
 };
 
+const esc = (value) =>
+  String(value ?? '').replace(/[&<>"']/g, (char) => {
+    switch (char) {
+      case '&':
+        return '&amp;';
+      case '<':
+        return '&lt;';
+      case '>':
+        return '&gt;';
+      case '"':
+        return '&quot;';
+      default:
+        return '&#39;';
+    }
+  });
+
+const notifyShippedEmail = async (env, order) => {
+  if (!env.RESEND_API_KEY || !order?.customer_email) return;
+  const orderNumber = String(order.order_number || '');
+  const res = await fetch('https://api.resend.com/emails', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${env.RESEND_API_KEY}` },
+    body: JSON.stringify({
+      from: 'TarhanaTerapi <satis@tarhanaterapi.com>',
+      to: [order.customer_email],
+      subject: `Siparişiniz Kargoya Verildi: ${orderNumber}`,
+      html: `<p>Sayın ${esc(order.customer_name || 'Müşteri')},</p>
+             <p><strong>${esc(orderNumber)}</strong> numaralı siparişiniz kargoya verildi.</p>
+             <p>TarhanaTerapi'yi tercih ettiğiniz için teşekkür ederiz.</p>
+             <p>Sevgiler,<br>TarhanaTerapi</p>`,
+    }),
+  });
+  if (!res.ok) {
+    console.error('telegram shipped email error', res.status, (await res.text()).slice(0, 500));
+  }
+};
+
 const toOrder = (r) => ({
   id: r.id,
   orderNumber: r.order_number,
@@ -43,7 +83,7 @@ const toOrder = (r) => ({
   customerAddress: r.customer_address || '',
   customerCity: r.customer_city,
   customerDistrict: r.customer_district,
-  paymentMethod: r.payment_method || 'cod',
+  paymentMethod: r.payment_method || 'bank_transfer',
   deliveryNote: r.delivery_note || '',
   items: Array.isArray(r.items) ? r.items : [],
   subtotal: Number(r.subtotal || 0),
@@ -147,9 +187,19 @@ const sendOrderDetail = async (env, chatId, messageId, orderId) => {
 };
 
 export async function onRequestPost({ request, env }) {
-  if (env.TELEGRAM_WEBHOOK_SECRET) {
-    const got = request.headers.get('x-telegram-bot-api-secret-token');
-    if (got !== env.TELEGRAM_WEBHOOK_SECRET) return text('unauthorized', 401);
+  // Webhook gizli anahtarı tanımlı değilse uç nokta kapalı kalır.
+  // Aksi halde herkes sahte Telegram güncellemesi göndererek sipariş durumu değiştirebilir.
+  const webhookSecret = env.TELEGRAM_WEBHOOK_SECRET;
+  if (!webhookSecret) {
+    console.error('TELEGRAM_WEBHOOK_SECRET tanımlı değil; webhook isteği reddedildi.');
+    return text('webhook secret not configured', 503);
+  }
+  const got = request.headers.get('x-telegram-bot-api-secret-token');
+  if (got !== webhookSecret) return text('unauthorized', 401);
+
+  if (!env.TELEGRAM_ADMIN_CHAT_ID) {
+    console.error('TELEGRAM_ADMIN_CHAT_ID tanımlı değil; webhook isteği reddedildi.');
+    return text('admin chat not configured', 503);
   }
 
   let update = {};
@@ -165,10 +215,10 @@ export async function onRequestPost({ request, env }) {
 
   if (!chatId) return text('ok');
 
-  if (env.TELEGRAM_ADMIN_CHAT_ID && String(chatId) !== String(env.TELEGRAM_ADMIN_CHAT_ID)) {
+  if (String(chatId) !== String(env.TELEGRAM_ADMIN_CHAT_ID)) {
     await tg(env, 'sendMessage', {
       chat_id: chatId,
-      text: `Yetkisiz sohbet (id:${chatId}). Yönetici ID: ${env.TELEGRAM_ADMIN_CHAT_ID}. Bu sohbetten /orders kullanılmaz.`,
+      text: `Yetkisiz sohbet (id:${chatId}). Bu sohbetten /orders kullanılmaz.`,
     });
     return text('ignored');
   }
@@ -208,7 +258,9 @@ export async function onRequestPost({ request, env }) {
       }
 
       if (data.startsWith('order:')) {
-        await sendOrderDetail(env, chatId, messageId, data.slice(6));
+        const orderId = data.slice(6);
+        if (!UUID_RE.test(orderId)) return text('invalid order', 400);
+        await sendOrderDetail(env, chatId, messageId, orderId);
         return text('ok');
       }
 
@@ -216,16 +268,28 @@ export async function onRequestPost({ request, env }) {
         const parts = data.split(':');
         const id = parts[1];
         const status = parts.slice(2).join(':');
+        if (!UUID_RE.test(id) || !ALLOWED_STATUSES.includes(status)) {
+          return text('invalid status', 400);
+        }
+        const current = await supabase(
+          env,
+          `orders?id=eq.${id}&select=status,order_number,customer_name,customer_email`
+        );
+        const previousStatus = Array.isArray(current.data) ? current.data[0]?.status : '';
         await supabase(env, `orders?id=eq.${id}`, {
           method: 'PATCH',
           body: JSON.stringify({ status, updated_at: new Date().toISOString() }),
         });
+        if (status === 'Kargoya Verildi' && previousStatus !== 'Kargoya Verildi') {
+          await notifyShippedEmail(env, Array.isArray(current.data) ? current.data[0] : null);
+        }
         await sendOrderDetail(env, chatId, messageId, id);
         return text('ok');
       }
 
       if (data.startsWith('pay:')) {
         const id = data.slice(4);
+        if (!UUID_RE.test(id)) return text('invalid order', 400);
         await supabase(env, `orders?id=eq.${id}`, {
           method: 'PATCH',
           body: JSON.stringify({ payment_status: 'Ödendi', updated_at: new Date().toISOString() }),

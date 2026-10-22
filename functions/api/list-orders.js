@@ -27,6 +27,7 @@ async function getAdminEmail(env, authHeader) {
   });
   if (!res.ok) return null;
   const user = await res.json();
+  if (!user?.email_confirmed_at && !user?.confirmed_at) return null;
   const email = String(user?.email || '').toLowerCase();
   return ADMIN_EMAILS.includes(email) ? email : null;
 }
@@ -61,7 +62,7 @@ export async function onRequestGet({ request, env }) {
     customerAddress: r.customer_address || '',
     customerCity: r.customer_city,
     customerDistrict: r.customer_district,
-    paymentMethod: r.payment_method || 'cod',
+    paymentMethod: r.payment_method || 'bank_transfer',
     deliveryNote: r.delivery_note || '',
     items: Array.isArray(r.items) ? r.items : [],
     subtotal: Number(r.subtotal || 0),

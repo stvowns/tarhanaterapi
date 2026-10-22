@@ -152,40 +152,6 @@ const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
     }
   };
 
-  const handleFastDemoLogin = () => {
-    const demoUser: User = {
-      id: 'demo-user-1',
-      fullName: 'Ayşe Yılmaz',
-      email: 'ayse.yilmaz@tarhanaterapi.com',
-      phone: '0532 123 45 67',
-      city: 'İstanbul',
-      district: 'Kadıköy',
-      address: 'Caferağa Mah. Şifa Sok. No: 12 D: 4',
-      points: 150,
-      isAdmin: false,
-      createdAt: '12.01.2025',
-    };
-    onLoginSuccess(demoUser);
-    onClose();
-  };
-
-  const handleFastAdminLogin = () => {
-    const adminUser: User = {
-      id: 'admin-user-1',
-      fullName: 'Mağaza Yöneticisi',
-      email: 'layeredstudio78@gmail.com',
-      phone: '0850 302 82 74',
-      city: 'Bursa',
-      district: 'Orhangazi',
-      address: 'Muradiye Mh., Orhangazi',
-      points: 999,
-      isAdmin: true,
-      createdAt: '01.01.2025',
-    };
-    onLoginSuccess(adminUser);
-    onClose();
-  };
-
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 overflow-y-auto">
       {/* Backdrop */}
@@ -375,17 +341,6 @@ const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
             </form>
           )}
 
-          {/* Quick Demo Login Option */}
-          <div className="mt-4 pt-4 border-t border-outline-variant/20 flex flex-col gap-2 text-center">
-            <button
-              type="button"
-              onClick={handleFastDemoLogin}
-              className="text-xs text-primary font-semibold hover:underline flex items-center justify-center gap-1 mx-auto cursor-pointer"
-            >
-              <span className="material-symbols-outlined text-[16px]">bolt</span>
-              <span>Hızlı Müşteri Girişi (Ayşe Yılmaz)</span>
-            </button>
-          </div>
         </div>
       </div>
     </div>

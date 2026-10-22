@@ -26,6 +26,7 @@ async function getUserEmail(env, authHeader) {
   });
   if (!res.ok) return null;
   const user = await res.json();
+  if (!user?.email_confirmed_at && !user?.confirmed_at) return null;
   const email = String(user?.email || '').trim().toLowerCase();
   return email || null;
 }
@@ -39,7 +40,7 @@ const mapOrder = (r) => ({
   customerAddress: r.customer_address || '',
   customerCity: r.customer_city,
   customerDistrict: r.customer_district,
-  paymentMethod: r.payment_method || 'cod',
+  paymentMethod: r.payment_method || 'bank_transfer',
   deliveryNote: r.delivery_note || '',
   items: Array.isArray(r.items) ? r.items : [],
   subtotal: Number(r.subtotal || 0),
@@ -61,7 +62,7 @@ export async function onRequestGet({ request, env }) {
   const escapedEmail = email.replace(/[\\%_]/g, '\\$&');
   const filter = encodeURIComponent(escapedEmail);
   const res = await fetch(
-    `${env.SUPABASE_URL}/rest/v1/orders?select=*&customer_email=ilike.${filter}&order=created_at.desc`,
+    `${env.SUPABASE_URL}/rest/v1/orders?select=id,order_number,customer_name,customer_email,customer_phone,customer_address,customer_city,customer_district,payment_method,delivery_note,items,subtotal,shipping_fee,discount,total,status,created_at&customer_email=ilike.${filter}&order=created_at.desc`,
     {
       method: 'GET',
       headers: {

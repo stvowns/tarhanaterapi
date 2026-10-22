@@ -11,6 +11,10 @@ const PRODUCT_PRICES = {
 const FREE_SHIPPING_THRESHOLD = 2000;
 const STANDARD_SHIPPING_FEE = 150;
 const SITE_URL = 'https://tarhanaterapi.com';
+const MAX_ITEMS = 10;
+const MAX_QUANTITY_PER_ITEM = 20;
+const isValidEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email);
+const cleanText = (value, maxLength) => String(value ?? '').trim().slice(0, maxLength);
 
 const esc = (value) =>
   String(value ?? '').replace(/[&<>"']/g, (char) => {
@@ -102,7 +106,7 @@ const customerOrderHtml = (order, orderNumber, bankTransfer = {}) => {
         ? 'Havale / EFT'
         : order.payment_method === 'credit_card'
           ? 'Kredi / Banka Kartı'
-          : order.payment_method || 'Kapıda Ödeme';
+          : order.payment_method || 'Havale / EFT';
 
   const itemRows = order.items
     .map(
@@ -333,6 +337,11 @@ async function notifyEmail(env, to, subject, html) {
 }
 
 export async function onRequestPost({ request, env }) {
+  const contentLength = Number(request.headers.get('content-length') || 0);
+  if (contentLength > 64 * 1024) {
+    return json({ error: 'İstek çok büyük' }, 413);
+  }
+
   let payload;
   try {
     payload = JSON.parse((await request.text()) || '{}');
@@ -340,23 +349,26 @@ export async function onRequestPost({ request, env }) {
     return json({ error: 'Invalid JSON' }, 400);
   }
 
-  const required = [
-    'customerName',
-    'customerEmail',
-    'customerPhone',
-    'customerCity',
-    'customerDistrict',
-    'customerAddress',
-  ];
-  for (const key of required) {
-    if (
-      payload[key] === undefined ||
-      payload[key] === null ||
-      payload[key] === '' ||
-      (Array.isArray(payload[key]) && payload[key].length === 0)
-    ) {
-      return json({ error: 'missing required field' }, 400);
-    }
+  const customerName = cleanText(payload.customerName, 120);
+  const customerEmail = cleanText(payload.customerEmail, 254).toLowerCase();
+  const customerPhone = cleanText(payload.customerPhone, 32);
+  const customerCity = cleanText(payload.customerCity, 80);
+  const customerDistrict = cleanText(payload.customerDistrict, 80);
+  const customerAddress = cleanText(payload.customerAddress, 500);
+  const deliveryNote = cleanText(payload.deliveryNote || payload.delivery_note, 500);
+
+  if (
+    !customerName ||
+    !customerEmail ||
+    !customerPhone ||
+    !customerCity ||
+    !customerDistrict ||
+    !customerAddress
+  ) {
+    return json({ error: 'missing required field' }, 400);
+  }
+  if (!isValidEmail(customerEmail)) {
+    return json({ error: 'Geçerli bir e-posta adresi girin.' }, 400);
   }
 
   const ip = (
@@ -385,45 +397,50 @@ export async function onRequestPost({ request, env }) {
     );
   }
 
-  const normalizedItems = Array.isArray(payload.items) ? payload.items : [];
+  const rawItems = Array.isArray(payload.items) ? payload.items : [];
+  if (rawItems.length === 0 || rawItems.length > MAX_ITEMS) {
+    return json({ error: 'Sepette 1 ile 10 arasında ürün olmalı' }, 400);
+  }
+
+  const normalizedItems = [];
   let subtotal = 0;
-  for (const item of normalizedItems) {
-    const price = PRODUCT_PRICES[item.productId];
-    const qty = Number(item.quantity);
-    if (!price || !Number.isInteger(qty) || qty < 1) {
+  for (const item of rawItems) {
+    const productId = String(item?.productId || '');
+    const price = Object.prototype.hasOwnProperty.call(PRODUCT_PRICES, productId)
+      ? PRODUCT_PRICES[productId]
+      : 0;
+    const qty = Number(item?.quantity);
+    if (!price || !Number.isInteger(qty) || qty < 1 || qty > MAX_QUANTITY_PER_ITEM) {
       return json({ error: 'Invalid product or quantity' }, 400);
     }
     subtotal += price * qty;
+    normalizedItems.push({
+      productId,
+      name: cleanText(item?.name, 160) || 'Tarhana',
+      price,
+      quantity: qty,
+      weight: cleanText(item?.weight, 40),
+      image: cleanText(item?.image, 500),
+    });
   }
-  const shippingFee =
-    subtotal >= FREE_SHIPPING_THRESHOLD || normalizedItems.length === 0
-      ? 0
-      : STANDARD_SHIPPING_FEE;
+
+  const shippingFee = subtotal >= FREE_SHIPPING_THRESHOLD ? 0 : STANDARD_SHIPPING_FEE;
   const discount = 0;
   const total = subtotal + shippingFee - discount;
 
-  // Yeni checkout yalnızca bank_transfer gönderir. cod, eski/manuel siparişler için kabul edilir.
-  // Eksik veya geçersiz değerde yeni akışın varsayılanı olan bank_transfer kullanılır.
-  const paymentMethod = ['cod', 'bank_transfer'].includes(payload.paymentMethod)
-    ? payload.paymentMethod
-    : 'bank_transfer';
+  // Kapıda ödeme varsayılan olarak kapalıdır. Yalnızca açıkça etkinleştirilirse kabul edilir.
+  const paymentMethod =
+    payload.paymentMethod === 'cod' && env.ALLOW_COD === 'true' ? 'cod' : 'bank_transfer';
   const baseOrder = {
-    customer_name: payload.customerName,
-    customer_email: payload.customerEmail,
-    customer_phone: payload.customerPhone,
-    customer_address: payload.customerAddress,
-    customer_city: payload.customerCity,
-    customer_district: payload.customerDistrict,
+    customer_name: customerName,
+    customer_email: customerEmail,
+    customer_phone: customerPhone,
+    customer_address: customerAddress,
+    customer_city: customerCity,
+    customer_district: customerDistrict,
     payment_method: paymentMethod,
-    delivery_note: payload.deliveryNote || payload.delivery_note || null,
-    items: normalizedItems.map((it) => ({
-      productId: it.productId,
-      name: it.name,
-      price: PRODUCT_PRICES[it.productId],
-      quantity: it.quantity,
-      weight: it.weight || '',
-      image: it.image || '',
-    })),
+    delivery_note: deliveryNote || null,
+    items: normalizedItems,
     subtotal,
     shipping_fee: shippingFee,
     discount,
@@ -454,13 +471,13 @@ export async function onRequestPost({ request, env }) {
     }
 
     const paymentLabel = paymentMethod === 'bank_transfer' ? 'Havale/EFT' : 'Kapıda Ödeme';
-    const summary = `Yeni sipariş ${orderNumber}\n${payload.customerName} - ${payload.customerCity}\nÖdeme: ${paymentLabel}\nToplam: ${total} TL`;
+    const summary = `Yeni sipariş ${orderNumber}\n${customerName} - ${customerCity}\nÖdeme: ${paymentLabel}\nToplam: ${total} TL`;
 
     const notifications = await Promise.allSettled([
       notifyTelegram(env, summary),
       notifyEmail(
         env,
-        payload.customerEmail,
+        customerEmail,
         `Siparişiniz alındı: ${orderNumber}`,
         customerOrderHtml(order, orderNumber, bankTransferDetails(env))
       ),

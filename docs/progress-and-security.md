@@ -46,8 +46,8 @@
 - `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`
 - `TELEGRAM_BOT_TOKEN`, `TELEGRAM_ADMIN_CHAT_ID`, `TELEGRAM_WEBHOOK_SECRET`
 - (Optional) `RESEND_API_KEY`
-- Telegram webhook URL: `https://tarhanaterapi.netlify.app/.netlify/functions/telegram-webhook`
-- Secret: `tarhana-secret-2026`
+- Telegram webhook URL (Cloudflare): `https://tarhanaterapi.com/api/telegram-webhook`
+- `TELEGRAM_WEBHOOK_SECRET` değeri yalnızca Cloudflare Secrets içinde tutulur; repoya yazılmaz.
 
 ## Yerel Çalıştırma
 - `npm install --legacy-peer-deps`

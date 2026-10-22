@@ -407,30 +407,31 @@ const setActiveTab = useCallback(
 
   const handleUpdateOrderStatus = async (orderId: string, newStatus: Order['status']) => {
     const target = orders.find((o) => o.id === orderId);
+    const previousStatus = target?.status;
     setOrders((prev) =>
       prev.map((o) => (o.id === orderId ? { ...o, status: newStatus } : o))
     );
-    showToast(`Sipariş durumu güncellendi: ${newStatus}`);
 
     try {
       const { data: sessionData } = await supabase.auth.getSession();
       const token = sessionData.session?.access_token;
-      await fetch('/api/update-order-status', {
+      const res = await fetch('/api/update-order-status', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           ...(token ? { Authorization: `Bearer ${token}` } : {}),
         },
-        body: JSON.stringify({
-          orderId,
-          status: newStatus,
-          customerName: target?.customerName,
-          customerEmail: target?.customerEmail,
-          orderNumber: target?.orderNumber,
-        }),
+        body: JSON.stringify({ orderId, status: newStatus }),
       });
+      if (!res.ok) throw new Error('update failed');
+      showToast(`Sipariş durumu güncellendi: ${newStatus}`);
     } catch {
-      showToast('Durum güncellendi; DB senkronizasyonu başarısız olabilir.');
+      if (previousStatus) {
+        setOrders((prev) =>
+          prev.map((o) => (o.id === orderId ? { ...o, status: previousStatus } : o))
+        );
+      }
+      showToast('Sipariş durumu güncellenemedi. Lütfen tekrar deneyin.');
     }
   };
 

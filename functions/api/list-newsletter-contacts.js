@@ -26,6 +26,7 @@ async function getAdminEmail(env, authHeader) {
   });
   if (!res.ok) return null;
   const user = await res.json();
+  if (!user?.email_confirmed_at && !user?.confirmed_at) return null;
   const email = String(user?.email || '').toLowerCase();
   return ADMIN_EMAILS.includes(email) ? email : null;
 }

@@ -141,7 +141,7 @@ export const buildNewsletterHtml = (fields: NewsletterFields) => {
                 <p style="margin:0 0 8px;font-size:12px;line-height:1.7;color:#6b6458;">${escapeHtml(
                   fields.footerNote
                 )}</p>
-                <p style="margin:0 0 8px;font-size:12px;line-height:1.7;color:#6b6458;">TarhanaTerapi · Orhangazi / Bursa · <a href="mailto:satis@tarhanaterapi.com" style="color:#3f4a32;">satis@tarhanaterapi.com</a> · 0850 302 82 74</p>
+                <p style="margin:0 0 8px;font-size:12px;line-height:1.7;color:#6b6458;">TarhanaTerapi · Orhangazi / Bursa · <a href="mailto:satis@tarhanaterapi.com" style="color:#3f4a32;">satis@tarhanaterapi.com</a></p>
                 <p style="margin:0;font-size:12px;line-height:1.7;color:#6b6458;">Abonelikten çıkmak için <a href="${UNSUBSCRIBE_MAILTO}" style="color:#3f4a32;text-decoration:underline;">buraya tıklayın</a>.</p>
               </td>
             </tr>

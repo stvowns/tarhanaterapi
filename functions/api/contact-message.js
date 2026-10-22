@@ -102,14 +102,15 @@ export async function onRequestPost({ request, env }) {
   const sPhone = sanitize(phone);
   const sTopic = sanitize(topic);
   const sMessage = sanitize(message).replace(/\n/g, '<br/>');
+  const safeTopic = topic.replace(/[\r\n]+/g, ' ');
 
-  const text = `Yeni iletişim mesajı\nAd: ${name}\nE-posta: ${email}\nTelefon: ${phone}\nKonu: ${topic}\nMesaj: ${message}`;
+  const text = `Yeni iletişim mesajı\nAd: ${name}\nE-posta: ${email}\nTelefon: ${phone}\nKonu: ${safeTopic}\nMesaj: ${message}`;
 
   await Promise.allSettled([
     notifyTelegram(env, text),
     notifyEmail(
       env,
-      `İletişim Formu: ${topic}`,
+      `İletişim Formu: ${safeTopic}`,
       `<p><strong>Ad:</strong> ${sName}</p><p><strong>E-posta:</strong> ${sEmail}</p><p><strong>Telefon:</strong> ${sPhone}</p><p><strong>Konu:</strong> ${sTopic}</p><p><strong>Mesaj:</strong><br/>${sMessage}</p>`
     ),
   ]);

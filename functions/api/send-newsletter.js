@@ -5,6 +5,35 @@
 
 const ADMIN_EMAILS = ['layeredstudio78@gmail.com', 'admin@tarhanaterapi.com'];
 const MAX_RECIPIENTS = 25;
+const SITE_URL = 'https://tarhanaterapi.com';
+const UNSUBSCRIBE_MAILTO =
+  'mailto:satis@tarhanaterapi.com?subject=Abonelikten%20%C3%A7%C4%B1k%C4%B1%C5%9F';
+const encoder = new TextEncoder();
+
+const base64UrlEncode = (bytes) => {
+  let binary = '';
+  const array = new Uint8Array(bytes);
+  for (let index = 0; index < array.length; index += 1) {
+    binary += String.fromCharCode(array[index]);
+  }
+  return btoa(binary).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+};
+
+async function buildUnsubscribeUrl(email, env) {
+  const secret = env.UNSUBSCRIBE_SECRET || env.RESEND_API_KEY || '';
+  if (!secret) return UNSUBSCRIBE_MAILTO;
+
+  const key = await crypto.subtle.importKey(
+    'raw',
+    encoder.encode(secret),
+    { name: 'HMAC', hash: 'SHA-256' },
+    false,
+    ['sign']
+  );
+  const signature = await crypto.subtle.sign('HMAC', key, encoder.encode(email));
+  const token = `${base64UrlEncode(encoder.encode(email))}.${base64UrlEncode(signature)}`;
+  return `${SITE_URL}/api/unsubscribe?token=${token}`;
+}
 
 const json = (body, status = 200) =>
   new Response(JSON.stringify(body), {
@@ -31,19 +60,29 @@ async function getAdminEmail(env, authHeader) {
   });
   if (!res.ok) return null;
   const user = await res.json();
+  if (!user?.email_confirmed_at && !user?.confirmed_at) return null;
   const email = String(user?.email || '').toLowerCase();
   return ADMIN_EMAILS.includes(email) ? email : null;
 }
 
-async function sendOne({ apiKey, from, replyTo, subject, html, email }) {
+async function sendOne({ apiKey, from, replyTo, subject, html, email, unsubscribeUrl }) {
+  const personalizedHtml = unsubscribeUrl.startsWith('https://')
+    ? html.split(UNSUBSCRIBE_MAILTO).join(unsubscribeUrl)
+    : html;
+
   const body = JSON.stringify({
     from,
     to: [email],
     reply_to: replyTo,
     subject,
-    html,
+    html: personalizedHtml,
     headers: {
-      'List-Unsubscribe': `<mailto:${replyTo}?subject=Abonelikten%20%C3%A7%C4%B1k%C4%B1%C5%9F>`,
+      'List-Unsubscribe': unsubscribeUrl.startsWith('https://')
+        ? `<${unsubscribeUrl}>`
+        : `<${UNSUBSCRIBE_MAILTO}>`,
+      ...(unsubscribeUrl.startsWith('https://')
+        ? { 'List-Unsubscribe-Post': 'List-Unsubscribe=One-Click' }
+        : {}),
     },
   });
 
@@ -87,7 +126,7 @@ export async function onRequestPost({ request, env }) {
     return json({ error: 'Invalid JSON' }, 400);
   }
 
-  const subject = String(payload.subject || '').trim();
+  const subject = String(payload.subject || '').replace(/[\r\n]+/g, ' ').trim();
   const html = String(payload.html || '');
   const recipients = Array.isArray(payload.recipients)
     ? Array.from(
@@ -120,8 +159,9 @@ export async function onRequestPost({ request, env }) {
     const email = recipients[index];
     // Resend ücretsiz plan hız limitine takılmamak için küçük bir aralık bırakıyoruz.
     if (index > 0) await wait(320);
+    const unsubscribeUrl = await buildUnsubscribeUrl(email, env);
     results.push(
-      await sendOne({ apiKey, from, replyTo, subject, html, email })
+      await sendOne({ apiKey, from, replyTo, subject, html, email, unsubscribeUrl })
     );
   }
 

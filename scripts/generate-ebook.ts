@@ -157,7 +157,7 @@ const html = `<!DOCTYPE html>
       </div>
       <div class="cover-bottom">
         Bursa Orhangazi · Üç nesillik aile tarifi<br>
-        tarhanaterapi.com · satis@tarhanaterapi.com
+        tarhanaterapi.com
       </div>
     </div>
   </section>

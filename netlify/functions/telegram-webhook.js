@@ -130,10 +130,9 @@ const sendOrderDetail = async (chatId, messageId, orderId) => {
 exports.handler = async (event) => {
   if (event.httpMethod !== 'POST') return { statusCode: 200, body: 'ok' };
 
-  if (TELEGRAM_WEBHOOK_SECRET) {
-    const got = event.headers['x-telegram-bot-api-secret-token'] || event.headers['X-Telegram-Bot-Api-Secret-Token'];
-    if (got !== TELEGRAM_WEBHOOK_SECRET) return { statusCode: 401, body: 'unauthorized' };
-  }
+  if (!TELEGRAM_WEBHOOK_SECRET) return { statusCode: 503, body: 'webhook secret not configured' };
+  const got = event.headers['x-telegram-bot-api-secret-token'] || event.headers['X-Telegram-Bot-Api-Secret-Token'];
+  if (got !== TELEGRAM_WEBHOOK_SECRET) return { statusCode: 401, body: 'unauthorized' };
 
   let update = {};
   try { update = JSON.parse(event.body || '{}'); } catch { return { statusCode: 400, body: 'bad json' }; }
@@ -143,8 +142,8 @@ exports.handler = async (event) => {
   const chatId = message?.chat?.id || callback?.message?.chat?.id;
 
   if (!chatId) return { statusCode: 200, body: 'ok' };
-  if (TELEGRAM_ADMIN_CHAT_ID && String(chatId) !== String(TELEGRAM_ADMIN_CHAT_ID)) {
-    await tg('sendMessage', { chat_id: chatId, text: `Yetkisiz sohbet (id:${chatId}). Yönetici ID: ${TELEGRAM_ADMIN_CHAT_ID}. Bu sohbetten /orders kullanılmaz.` });
+  if (!TELEGRAM_ADMIN_CHAT_ID || String(chatId) !== String(TELEGRAM_ADMIN_CHAT_ID)) {
+    await tg('sendMessage', { chat_id: chatId, text: `Yetkisiz sohbet (id:${chatId}). Bu sohbetten /orders kullanılmaz.` });
     return { statusCode: 200, body: 'ignored' };
   }
 
