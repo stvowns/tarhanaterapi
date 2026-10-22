@@ -29,7 +29,7 @@ export const CONTACT = {
   phoneHref: '+908503028274',
   email: 'satis@tarhanaterapi.com',
   address: {
-    street: 'Gedelek Köyü Mevkii No: 28',
+    street: 'Muradiye Mh.',
     locality: 'Orhangazi',
     region: 'Bursa',
     country: 'TR',

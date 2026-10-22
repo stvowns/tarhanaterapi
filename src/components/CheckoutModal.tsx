@@ -227,29 +227,26 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
         {/* Stepper Indicator */}
         <div className="flex border-b border-surface-container">
           <div
-            className={`flex-1 py-2.5 text-center text-xs font-semibold border-b-2 ${
-              step >= 1
+            className={`flex-1 py-2.5 text-center text-xs font-semibold border-b-2 ${step >= 1
                 ? 'border-primary text-primary bg-primary-fixed/20'
                 : 'border-transparent text-outline'
-            }`}
+              }`}
           >
             1. Teslimat
           </div>
           <div
-            className={`flex-1 py-2.5 text-center text-xs font-semibold border-b-2 ${
-              step >= 2
+            className={`flex-1 py-2.5 text-center text-xs font-semibold border-b-2 ${step >= 2
                 ? 'border-primary text-primary bg-primary-fixed/20'
                 : 'border-transparent text-outline'
-            }`}
+              }`}
           >
             2. Ödeme
           </div>
           <div
-            className={`flex-1 py-2.5 text-center text-xs font-semibold border-b-2 ${
-              step === 3
+            className={`flex-1 py-2.5 text-center text-xs font-semibold border-b-2 ${step === 3
                 ? 'border-primary text-primary bg-primary-fixed/20'
                 : 'border-transparent text-outline'
-            }`}
+              }`}
           >
             3. Onay
           </div>
@@ -496,7 +493,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
                 Siparişiniz Başarıyla Alındı!
               </h3>
               <p className="font-body-md text-on-surface-variant max-w-sm mt-1">
-                Siparişiniz bize ulaştı. En kısa sürede özenle hazırlanıp kargoya verilecek.
+                En kısa sürede özenle hazırlanıp kargoya verilecektir.
               </p>
 
               <div className="my-6 p-4 rounded-xl bg-surface-container-low border border-outline-variant/30 text-left w-full max-w-md">
@@ -555,7 +552,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
                   )}
                   <p className="mt-2 text-on-surface-variant">
                     Açıklama alanına <strong>{orderCode}</strong> yazarak dekontu
-                    satis@tarhanaterapi.com adresine iletebilirsiniz. Biz görünce hemen işleme
+                    satis@tarhanaterapi.com adresine iletebilirsiniz. Biz görünce de hemen işleme
                     alırız :)
                   </p>
                   {!HAS_BANK_TRANSFER_DETAILS && (

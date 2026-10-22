@@ -177,7 +177,7 @@ const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
       phone: '0850 302 82 74',
       city: 'Bursa',
       district: 'Orhangazi',
-      address: 'Gedelek Köyü No: 28, Orhangazi',
+      address: 'Muradiye Mh., Orhangazi',
       points: 999,
       isAdmin: true,
       createdAt: '01.01.2025',

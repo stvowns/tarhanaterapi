@@ -201,7 +201,7 @@ export const ProductPage: React.FC<ProductPageProps> = ({ product, onAddToCart }
                   satis@tarhanaterapi.com
                 </a>
                 <br />
-                Üretim: Gedelek Köyü Mevkii No: 28, Orhangazi / Bursa
+                Üretim: Muradiye Mh., Orhangazi / Bursa
               </p>
             </div>
 

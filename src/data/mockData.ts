@@ -446,7 +446,7 @@ export const FAQS = [
   },
   {
     q: 'Tarhana nerede üretiliyor?',
-    a: "Üretim, Bursa Orhangazi'deki Gedelek Köyü Mevkii No: 28 adresindeki aile atölyesinde yapılır. İstanbul Kadıköy Moda'da bir tadım noktası bulunur. Siparişler Türkiye'nin her iline kargolanır."
+    a: "Üretim, Bursa Orhangazi'deki Muradiye Mh. adresindeki aile atölyesinde yapılır. İstanbul Kadıköy Moda'da bir tadım noktası bulunur. Siparişler Türkiye'nin her iline kargolanır."
   },
   {
     q: 'Tarhana nasıl pişirilir?',

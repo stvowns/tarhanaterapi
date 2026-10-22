@@ -210,7 +210,7 @@ const html = `<!DOCTYPE html>
       <p>
         Telefon / WhatsApp: 0850 302 82 74<br>
         E-posta: satis@tarhanaterapi.com<br>
-        Adres: Gedelek Köyü Mevkii No: 28, Orhangazi / Bursa<br>
+        Adres: Muradiye Mh., Orhangazi / Bursa<br>
         Web: tarhanaterapi.com
       </p>
     </div>

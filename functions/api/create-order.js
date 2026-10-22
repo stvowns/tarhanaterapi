@@ -85,9 +85,9 @@ const bankTransferDetails = (env) => ({
   ).trim(),
   accountName: String(
     env.BANK_TRANSFER_ACCOUNT_NAME ||
-      env.VITE_BANK_TRANSFER_ACCOUNT_NAME ||
-      CONFIGURED_BANK_TRANSFER.accountName ||
-      ''
+    env.VITE_BANK_TRANSFER_ACCOUNT_NAME ||
+    CONFIGURED_BANK_TRANSFER.accountName ||
+    ''
   ).trim(),
   iban: String(
     env.BANK_TRANSFER_IBAN || env.VITE_BANK_TRANSFER_IBAN || CONFIGURED_BANK_TRANSFER.iban || ''
@@ -137,7 +137,6 @@ const customerOrderHtml = (order, orderNumber, bankTransfer = {}) => {
             <tr>
               <td style="background-color:#31523c;padding:24px 28px;">
                 <div style="font-size:22px;font-weight:bold;color:#ffffff;letter-spacing:0.3px;">TarhanaTerapi</div>
-                <div style="font-size:12px;color:#d7e4d6;margin-top:4px;">Bursa Orhangazi · Geleneksel aile tarifi</div>
               </td>
             </tr>
 
@@ -212,8 +211,7 @@ const customerOrderHtml = (order, orderNumber, bankTransfer = {}) => {
                     <br /><strong>Banka:</strong> ${bankTransfer.bankName ? esc(bankTransfer.bankName) : '<span style="color:#7a746b;">Bilgi yakında eklenecek</span>'}
                     <br /><strong>Hesap Sahibi:</strong> ${bankTransfer.accountName ? esc(bankTransfer.accountName) : '<span style="color:#7a746b;">Bilgi yakında eklenecek</span>'}
                     <br /><strong>IBAN:</strong> ${bankTransfer.iban ? esc(bankTransfer.iban) : '<span style="color:#7a746b;">Bilgi yakında eklenecek</span>'}
-                    <br /><span style="font-size:12px;color:#7a746b;">Açıklama alanına <strong>${esc(orderNumber)}</strong> yazarak dekontu satis@tarhanaterapi.com adresine iletebilirsiniz. Biz görünce hemen işleme alırız :)</span>
-                    ${bankTransfer.iban ? '' : '<br /><span style="font-size:12px;color:#7a746b;">Banka bilgileri netleşene kadar bu e-postayı yanıtlayabilir veya satis@tarhanaterapi.com adresine yazabilirsiniz.</span>'}
+                    <br /><span style="font-size:12px;color:#7a746b;">Açıklama alanına <strong>${esc(orderNumber)}</strong> yazarak dekontu satis@tarhanaterapi.com adresine iletebilirsiniz. Biz görünce de hemen işleme alırız :)</span>
                   ` : ''}
                 </p>
               </td>
@@ -232,8 +230,7 @@ const customerOrderHtml = (order, orderNumber, bankTransfer = {}) => {
                 <p style="margin:0;font-size:14px;line-height:1.65;color:#4a4a4a;">
                   Siparişinizle ilgili bir sorunuz olursa bu e-postayı yanıtlayabilir veya
                   <a href="mailto:satis@tarhanaterapi.com" style="color:#31523c;font-weight:bold;text-decoration:underline;">satis@tarhanaterapi.com</a>
-                  adresine yazabilirsiniz. Telefon / WhatsApp:
-                  <a href="tel:+908503028274" style="color:#31523c;font-weight:bold;text-decoration:none;">0850 302 82 74</a>
+                  adresine yazabilirsiniz.
                 </p>
               </td>
             </tr>
@@ -247,7 +244,7 @@ const customerOrderHtml = (order, orderNumber, bankTransfer = {}) => {
             <tr>
               <td style="background-color:#faf8f4;padding:18px 28px;border-top:1px solid #e8e2d9;">
                 <p style="margin:0;font-size:11px;line-height:1.6;color:#7a746b;">
-                  TarhanaTerapi · Gedelek Köyü Mevkii No: 28, Orhangazi / Bursa<br />
+                  TarhanaTerapi · Muradiye Mh., Orhangazi / Bursa<br />
                   Bu e-posta siparişinizle ilgili otomatik olarak gönderilmiştir. Kişisel verilerinizin
                   işlenmesi hakkında <a href="${SITE_URL}/kvkk" style="color:#31523c;text-decoration:underline;">KVKK Aydınlatma Metni</a>'ni inceleyebilirsiniz.
                 </p>

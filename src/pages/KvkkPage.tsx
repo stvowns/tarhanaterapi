@@ -106,7 +106,7 @@ export const KvkkPage: React.FC = () => {
           <a className="text-primary font-semibold hover:underline" href="mailto:satis@tarhanaterapi.com">
             satis@tarhanaterapi.com
           </a>{' '}
-          · 0850 302 82 74 · Gedelek Köyü Mevkii No: 28, Orhangazi / Bursa
+          · 0850 302 82 74 · Muradiye Mh., Orhangazi / Bursa
         </div>
       </div>
     </div>

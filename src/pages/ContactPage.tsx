@@ -114,7 +114,7 @@ export const ContactPage: React.FC<ContactPageProps> = ({ onShowToast }) => {
                   Bursa Orhangazi Doğal Üretim Çiftliği
                 </strong>
                 <p className="text-xs text-on-surface-variant mt-0.5">
-                  Gedelek Köyü Mevkii No: 28, Orhangazi / Bursa
+                  Muradiye Mh., Orhangazi / Bursa
                 </p>
               </div>
               <div>

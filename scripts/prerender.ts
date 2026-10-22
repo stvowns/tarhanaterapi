@@ -402,7 +402,7 @@ const storyContent = () => `
     <p class="static-definition">${esc(BRAND_DEFINITION)}</p>
     <p>
       TarhanaTerapi'nin tarifi, Orhangazi'de üç nesil boyunca kurulan sofralardan geliyor.
-      Üretim, Bursa Orhangazi'deki Gedelek Köyü Mevkii'ndeki aile atölyesinde yapılır. Hamur,
+      Üretim, Bursa Orhangazi'deki Muradiye Mh.'ndeki aile atölyesinde yapılır. Hamur,
       aile tarifine göre yoğrulur; ince açılır ve güneşte/hava akımında kurutulur.
     </p>
     <p>

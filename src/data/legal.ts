@@ -36,7 +36,7 @@ Son güncelleme: 21 Ekim 2026`;
 export const MESAFELI_SATIS = `MESAFELİ SATIŞ SÖZLEŞMESİ
 
 Madde 1 – Taraflar
-Satıcı: TarhanaTerapi (Bursa Orhangazi), iletişim: satis@tarhanaterapi.com
+Satıcı: TarhanaTerapi, Muradiye Mh., Orhangazi / Bursa. İletişim: satis@tarhanaterapi.com, 0850 302 82 74
 Alıcı: Sipariş veren müşteri (sipariş formunda belirtilen bilgiler).
 
 Madde 2 – Konu
@@ -71,7 +71,7 @@ export const KVKK_AYDINLATMA = `KVKK AYDINLATMA METNİ
 
 1. Veri Sorumlusunun Kimliği
 Veri sorumlusu: TarhanaTerapi
-Adres: Gedelek Köyü Mevkii No: 28, Orhangazi / Bursa
+Adres: Muradiye Mh., Orhangazi / Bursa
 E-posta: satis@tarhanaterapi.com
 Telefon: 0850 302 82 74
 Web sitesi: https://tarhanaterapi.com
@@ -141,7 +141,7 @@ Sitemiz, oturumun sürdürülmesi ve temel işlevlerin çalışması için zorun
 - Kanuna aykırı işleme nedeniyle zarara uğramanız halinde zararın giderilmesini talep etme.
 
 11. Başvuru Yolu
-Haklarınıza ilişkin taleplerinizi satis@tarhanaterapi.com adresine e-posta göndererek veya yazılı olarak Gedelek Köyü Mevkii No: 28, Orhangazi / Bursa adresine ileterek kullanabilirsiniz. Başvurunuz en geç 30 gün içinde ücretsiz olarak yanıtlanır. Talebin reddedilmesi halinde gerekçesi bildirilir; Kişisel Verileri Koruma Kurulu'na şikâyet hakkınız saklıdır.
+Haklarınıza ilişkin taleplerinizi satis@tarhanaterapi.com adresine e-posta göndererek veya yazılı olarak Muradiye Mh., Orhangazi / Bursa adresine ileterek kullanabilirsiniz. Başvurunuz en geç 30 gün içinde ücretsiz olarak yanıtlanır. Talebin reddedilmesi halinde gerekçesi bildirilir; Kişisel Verileri Koruma Kurulu'na şikâyet hakkınız saklıdır.
 
 12. Güncelleme
 Bu metin, mevzuat veya süreçlerdeki değişikliklere göre güncellenebilir. Güncel sürüm bu sayfada yayımlanır.
