@@ -587,8 +587,7 @@ const setActiveTab = useCallback(
 
     const { data: authSub } = supabase.auth.onAuthStateChange((_event, session) => {
       const user = session?.user;
-      if (!user) return;
-      setCurrentUser(buildUserFromSession(user));
+      setCurrentUser(user ? buildUserFromSession(user) : null);
     });
 
     return () => {

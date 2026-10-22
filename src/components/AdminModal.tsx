@@ -28,6 +28,18 @@ type NewsletterContact = {
   createdAt?: string;
 };
 
+type MfaFactorRow = {
+  id: string;
+  status: string;
+  friendlyName?: string | null;
+};
+
+type MfaEnrollState = {
+  factorId: string;
+  qrCode: string;
+  secret: string;
+};
+
 interface AdminModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -50,7 +62,7 @@ export const AdminModal: React.FC<AdminModalProps> = ({
   onClearNewOrderAlert,
 }) => {
   const [activeTab, setActiveTab] = useState<
-    'orders' | 'reviews' | 'subscribers' | 'newsletter' | 'database'
+    'orders' | 'reviews' | 'subscribers' | 'newsletter' | 'database' | 'security'
   >('orders');
   const [pendingReviews, setPendingReviews] = useState<AdminReview[]>([]);
   const [approvedReviews, setApprovedReviews] = useState<AdminReview[]>([]);
@@ -70,6 +82,12 @@ export const AdminModal: React.FC<AdminModalProps> = ({
   const [newsletterBusy, setNewsletterBusy] = useState(false);
   const [newsletterResult, setNewsletterResult] = useState('');
   const [newsletterError, setNewsletterError] = useState('');
+  const [mfaFactors, setMfaFactors] = useState<MfaFactorRow[]>([]);
+  const [mfaLoading, setMfaLoading] = useState(false);
+  const [mfaError, setMfaError] = useState('');
+  const [mfaSuccess, setMfaSuccess] = useState('');
+  const [mfaEnrollData, setMfaEnrollData] = useState<MfaEnrollState | null>(null);
+  const [mfaCode, setMfaCode] = useState('');
 
   const loadReviews = async () => {
     setReviewError('');
@@ -111,6 +129,109 @@ export const AdminModal: React.FC<AdminModalProps> = ({
   useEffect(() => {
     if (isOpen) loadReviews();
   }, [isOpen]);
+
+  const loadMfa = async () => {
+    setMfaLoading(true);
+    setMfaError('');
+    try {
+      const { data, error } = await supabase.auth.mfa.listFactors();
+      if (error) throw error;
+      const rows: MfaFactorRow[] = (data?.totp || []).map((factor) => ({
+        id: factor.id,
+        status: String(factor.status || 'unverified'),
+        friendlyName: factor.friendly_name || null,
+      }));
+      setMfaFactors(rows);
+    } catch {
+      setMfaError('İki adımlı doğrulama durumu alınamadı.');
+    } finally {
+      setMfaLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (isOpen && activeTab === 'security') loadMfa();
+  }, [isOpen, activeTab]);
+
+  const startMfaEnrollment = async () => {
+    setMfaError('');
+    setMfaSuccess('');
+    setMfaCode('');
+    setMfaLoading(true);
+    try {
+      // Önceki yarım kalmış doğrulanmamış kurulumları temizle.
+      for (const factor of mfaFactors) {
+        if (factor.status !== 'verified') {
+          await supabase.auth.mfa.unenroll({ factorId: factor.id }).catch(() => {});
+        }
+      }
+      const { data, error } = await supabase.auth.mfa.enroll({
+        factorType: 'totp',
+        friendlyName: `TarhanaTerapi Admin ${Date.now()}`,
+      });
+      if (error || !data) {
+        throw error || new Error('MFA kurulumu başlatılamadı.');
+      }
+      setMfaEnrollData({
+        factorId: data.id,
+        qrCode: data.totp.qr_code,
+        secret: data.totp.secret,
+      });
+    } catch (err) {
+      const message = err instanceof Error ? err.message : '';
+      setMfaError(
+        message.includes('already exists')
+          ? 'Bu hesapta zaten bir MFA kurulumu var. Önce mevcut kurulumu doğrulayın.'
+          : 'MFA kurulumu başlatılamadı. Supabase panelinde TOTP açık mı kontrol edin.'
+      );
+    } finally {
+      setMfaLoading(false);
+    }
+  };
+
+  const verifyMfaEnrollment = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setMfaError('');
+    setMfaSuccess('');
+    if (!mfaEnrollData || mfaCode.trim().length !== 6) {
+      setMfaError('Authenticator uygulamasındaki 6 haneli kodu girin.');
+      return;
+    }
+    setMfaLoading(true);
+    try {
+      const { error } = await supabase.auth.mfa.challengeAndVerify({
+        factorId: mfaEnrollData.factorId,
+        code: mfaCode.trim(),
+      });
+      if (error) {
+        setMfaError('Kod geçersiz veya süresi dolmuş. Yeni kodu deneyin.');
+        return;
+      }
+      await supabase.auth.refreshSession();
+      setMfaEnrollData(null);
+      setMfaCode('');
+      setMfaSuccess('İki adımlı doğrulama etkinleştirildi.');
+      await loadMfa();
+    } catch {
+      setMfaError('Doğrulama sırasında bir hata oluştu.');
+    } finally {
+      setMfaLoading(false);
+    }
+  };
+
+  const cancelMfaEnrollment = async () => {
+    if (mfaEnrollData) {
+      try {
+        await supabase.auth.mfa.unenroll({ factorId: mfaEnrollData.factorId });
+      } catch {
+        // Kurulum zaten iptal edilmiş olabilir.
+      }
+    }
+    setMfaEnrollData(null);
+    setMfaCode('');
+    setMfaError('');
+    await loadMfa();
+  };
 
   const handleReviewAction = async (id: string, action: 'approve' | 'delete') => {
     setReviewBusy(id);
@@ -279,6 +400,7 @@ export const AdminModal: React.FC<AdminModalProps> = ({
   const isAuthorized = Boolean(
     currentUser?.isAdmin || currentUser?.email === 'layeredstudio78@gmail.com'
   );
+  const hasVerifiedMfa = mfaFactors.some((factor) => factor.status === 'verified');
 
   if (!isOpen) return null;
 
@@ -549,6 +671,18 @@ CREATE TABLE subscribers (
             >
               <span className="material-symbols-outlined text-[18px]">database</span>
               <span>Veritabanı</span>
+            </button>
+
+            <button
+              onClick={() => setActiveTab('security')}
+              className={`py-3 px-3 text-xs font-semibold border-b-2 transition-all cursor-pointer flex items-center gap-2 whitespace-nowrap ${
+                activeTab === 'security'
+                  ? 'border-primary text-primary font-bold'
+                  : 'border-transparent text-outline hover:text-on-surface'
+              }`}
+            >
+              <span className="material-symbols-outlined text-[18px]">security</span>
+              <span>Güvenlik</span>
             </button>
           </div>
 
@@ -1276,6 +1410,165 @@ CREATE TABLE subscribers (
               <pre className="p-3 bg-inverse-surface text-inverse-on-surface text-[11px] font-mono rounded-xl overflow-x-auto max-h-48 leading-relaxed">
                 {sqlSchemaCode}
               </pre>
+            </div>
+          </div>
+        )}
+
+        {/* Tab: Security / MFA */}
+        {activeTab === 'security' && (
+          <div className="p-6 overflow-y-auto grow">
+            <div className="max-w-2xl flex flex-col gap-5">
+              <div className="flex items-start gap-3">
+                <div className="w-10 h-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center shrink-0">
+                  <span className="material-symbols-outlined text-[24px]">verified_user</span>
+                </div>
+                <div>
+                  <h4 className="font-title-md text-sm font-bold text-on-surface">
+                    İki Adımlı Doğrulama (MFA)
+                  </h4>
+                  <p className="text-xs text-outline leading-relaxed">
+                    Yönetici hesabına girişte şifreye ek olarak Google Authenticator, Authy veya
+                    benzeri bir uygulamadan 6 haneli kod istenir. Bu, hesap şifresi çalınsa bile
+                    panelin ele geçirilmesini engeller.
+                  </p>
+                </div>
+              </div>
+
+              {mfaError && (
+                <div className="p-3 rounded-lg bg-red-100 text-error text-xs font-medium">
+                  {mfaError}
+                </div>
+              )}
+              {mfaSuccess && (
+                <div className="p-3 rounded-lg bg-emerald-100 text-emerald-800 text-xs font-medium">
+                  {mfaSuccess}
+                </div>
+              )}
+
+              {mfaLoading && !mfaEnrollData ? (
+                <div className="p-6 rounded-xl bg-surface-container-low border border-outline-variant/30 text-center text-xs text-outline">
+                  MFA durumu yükleniyor...
+                </div>
+              ) : mfaEnrollData ? (
+                <div className="p-4 rounded-xl bg-surface-container-low border border-outline-variant/30 flex flex-col gap-4">
+                  <ol className="text-xs text-on-surface-variant leading-relaxed list-decimal pl-4 flex flex-col gap-1">
+                    <li>Telefonunuza Google Authenticator veya Authy uygulamasını kurun.</li>
+                    <li>Aşağıdaki QR kodu uygulamadan okutun.</li>
+                    <li>Uygulamanın gösterdiği 6 haneli kodu girip doğrulayın.</li>
+                  </ol>
+
+                  <div className="flex flex-col sm:flex-row items-center gap-4">
+                    {mfaEnrollData.qrCode ? (
+                      <img
+                        src={mfaEnrollData.qrCode}
+                        alt="MFA QR kodu"
+                        className="w-44 h-44 bg-white p-2 rounded-lg border border-outline-variant/30"
+                      />
+                    ) : (
+                      <span className="material-symbols-outlined text-[64px] text-outline">
+                        qr_code
+                      </span>
+                    )}
+                    <div className="min-w-0 flex-1">
+                      <p className="text-[11px] text-outline mb-1">
+                        QR okutamıyorsanız bu kodu elle girin:
+                      </p>
+                      <code className="block break-all text-xs font-mono bg-surface p-2 rounded border border-outline-variant/30">
+                        {mfaEnrollData.secret}
+                      </code>
+                    </div>
+                  </div>
+
+                  <form onSubmit={verifyMfaEnrollment} className="flex flex-col sm:flex-row gap-2">
+                    <input
+                      type="text"
+                      inputMode="numeric"
+                      autoComplete="one-time-code"
+                      maxLength={6}
+                      required
+                      value={mfaCode}
+                      onChange={(e) =>
+                        setMfaCode(e.target.value.replace(/\D/g, '').slice(0, 6))
+                      }
+                      placeholder="000000"
+                      className="flex-1 px-3.5 py-2.5 text-center text-base font-bold tracking-[0.4em] rounded-lg bg-surface border border-outline-variant/40"
+                    />
+                    <button
+                      type="submit"
+                      disabled={mfaLoading || mfaCode.length !== 6}
+                      className="px-4 py-2.5 bg-primary text-on-primary rounded-lg text-xs font-semibold hover:bg-primary-container transition-colors cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed"
+                    >
+                      {mfaLoading ? 'Doğrulanıyor...' : 'Doğrula ve Etkinleştir'}
+                    </button>
+                  </form>
+
+                  <button
+                    type="button"
+                    onClick={cancelMfaEnrollment}
+                    className="self-start text-xs text-outline hover:text-on-surface underline cursor-pointer"
+                  >
+                    Vazgeç
+                  </button>
+                </div>
+              ) : (
+                <div className="p-4 rounded-xl bg-surface-container-low border border-outline-variant/30 flex flex-col gap-3">
+                  <div className="flex items-center justify-between gap-3">
+                    <div>
+                      <p className="text-xs font-semibold text-on-surface">MFA durumu</p>
+                      <p className="text-[11px] text-outline">
+                        {hasVerifiedMfa
+                          ? 'Aktif — yönetici girişleri iki adımlı doğrulanıyor.'
+                          : 'Henüz kurulmadı. Yönetici hesabını korumak için kurun.'}
+                      </p>
+                    </div>
+                    <span
+                      className={`px-2.5 py-1 rounded-full text-[10px] font-bold whitespace-nowrap ${
+                        hasVerifiedMfa
+                          ? 'bg-emerald-100 text-emerald-800'
+                          : 'bg-amber-100 text-amber-800'
+                      }`}
+                    >
+                      {hasVerifiedMfa ? 'Aktif' : 'Pasif'}
+                    </span>
+                  </div>
+
+                  {mfaFactors.length > 0 && (
+                    <div className="flex flex-col gap-1.5">
+                      {mfaFactors.map((factor) => (
+                        <div
+                          key={factor.id}
+                          className="flex items-center justify-between gap-3 p-2 rounded-lg bg-surface border border-outline-variant/20 text-[11px]"
+                        >
+                          <span className="font-medium text-on-surface">
+                            {factor.friendlyName || 'Authenticator'}
+                          </span>
+                          <span className="text-outline">
+                            {factor.status === 'verified' ? 'Doğrulandı' : 'Doğrulanmadı'}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+
+                  {!hasVerifiedMfa && (
+                    <button
+                      onClick={startMfaEnrollment}
+                      disabled={mfaLoading}
+                      className="self-start px-4 py-2.5 bg-primary text-on-primary rounded-lg text-xs font-semibold hover:bg-primary-container transition-colors cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed"
+                    >
+                      {mfaLoading ? 'Hazırlanıyor...' : 'MFA Kur'}
+                    </button>
+                  )}
+
+                  {hasVerifiedMfa && (
+                    <p className="text-[11px] text-outline leading-relaxed">
+                      Yedek olarak authenticator uygulamanızın bulut yedeğini açık tutun. Telefon
+                      erişiminizi kaybederseniz panel girişi için yeni bir cihazdan kod
+                      üretmeniz gerekir.
+                    </p>
+                  )}
+                </div>
+              )}
             </div>
           </div>
         )}

@@ -45,6 +45,18 @@ const isValidEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email);
 
 const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
+function tokenAal(token) {
+  try {
+    const part = token.split('.')[1];
+    if (!part) return null;
+    const base64 = part.replace(/-/g, '+').replace(/_/g, '/');
+    const padded = base64 + '='.repeat((4 - (base64.length % 4)) % 4);
+    return JSON.parse(atob(padded))?.aal || null;
+  } catch {
+    return null;
+  }
+}
+
 async function getAdminEmail(env, authHeader) {
   if (!authHeader || !authHeader.startsWith('Bearer ')) return null;
   const token = authHeader.slice(7).trim();
@@ -61,6 +73,9 @@ async function getAdminEmail(env, authHeader) {
   if (!res.ok) return null;
   const user = await res.json();
   if (!user?.email_confirmed_at && !user?.confirmed_at) return null;
+  // ADMIN_MFA_REQUIRED=true iken yalnızca aal2 oturumları yönetici API'lerini kullanabilir.
+  if (env.ADMIN_MFA_REQUIRED === 'true' && tokenAal(token) !== 'aal2') return null;
+
   const email = String(user?.email || '').toLowerCase();
   return ADMIN_EMAILS.includes(email) ? email : null;
 }
