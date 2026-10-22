@@ -105,6 +105,16 @@ function buildUserFromSession(user: SessionUser): User {
     // Yerel önbellek yoksa devam et.
   }
 
+  const isAdmin =
+    user.email?.toLowerCase() === 'layeredstudio78@gmail.com' ||
+    user.email?.toLowerCase() === 'admin@tarhanaterapi.com';
+  const storedPoints = Number(user.user_metadata?.points ?? cached?.points);
+  const points = isAdmin
+    ? 999
+    : Number.isFinite(storedPoints) && storedPoints > 0
+      ? storedPoints
+      : 100;
+
   return {
     id: user.id,
     fullName: user.user_metadata?.full_name || user.email?.split('@')[0] || 'Kullanıcı',
@@ -113,10 +123,8 @@ function buildUserFromSession(user: SessionUser): User {
     city: user.user_metadata?.city || cached?.city,
     district: user.user_metadata?.district || cached?.district,
     address: user.user_metadata?.address || cached?.address,
-    points: Number(user.user_metadata?.points ?? cached?.points ?? 100),
-    isAdmin:
-      user.email?.toLowerCase() === 'layeredstudio78@gmail.com' ||
-      user.email?.toLowerCase() === 'admin@tarhanaterapi.com',
+    points,
+    isAdmin,
     createdAt: cached?.createdAt || new Date().toLocaleDateString('tr-TR'),
   };
 }
@@ -634,16 +642,25 @@ const setActiveTab = useCallback(
           });
 
           const latest = fetched[0];
-          if (latest && !currentUser.address && latest.customerAddress) {
+          const shouldFillAddress =
+            Boolean(latest?.customerAddress) && !currentUser.address;
+          const earnedPoints = 100 + fetched.length * 25;
+          const nextPoints = Math.max(currentUser.points, earnedPoints);
+
+          if (nextPoints !== currentUser.points || shouldFillAddress) {
             const updatedUser = {
               ...currentUser,
-              phone: currentUser.phone || latest.customerPhone,
-              city: currentUser.city || latest.customerCity,
-              district: currentUser.district || latest.customerDistrict,
-              address: currentUser.address || latest.customerAddress,
+              points: nextPoints,
+              phone: currentUser.phone || latest?.customerPhone,
+              city: currentUser.city || latest?.customerCity,
+              district: currentUser.district || latest?.customerDistrict,
+              address: currentUser.address || latest?.customerAddress,
             };
             setCurrentUser(updatedUser);
             localStorage.setItem('tt_current_user', JSON.stringify(updatedUser));
+            if (nextPoints !== currentUser.points) {
+              supabase.auth.updateUser({ data: { points: nextPoints } }).catch(() => {});
+            }
           }
         })
         .catch(() => {});
