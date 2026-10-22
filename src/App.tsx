@@ -615,7 +615,7 @@ const setActiveTab = useCallback(
     return () => {
       active = false;
     };
-  }, [currentUser?.isAdmin]);
+  }, [currentUser]);
 
   useEffect(() => {
     if (!currentUser?.email || currentUser.isAdmin) return;
