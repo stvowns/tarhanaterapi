@@ -18,13 +18,23 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({
 }) => {
   if (!isOpen || !user) return null;
 
+  const orderTime = (value: string) => {
+    const iso = Date.parse(value);
+    if (!Number.isNaN(iso)) return iso;
+    const parts = /^(\d{2})\.(\d{2})\.(\d{4})(?:[ ,]+(\d{2}):(\d{2}))?/.exec(value);
+    if (!parts) return 0;
+    return new Date(
+      Number(parts[3]),
+      Number(parts[2]) - 1,
+      Number(parts[1]),
+      Number(parts[4] || 0),
+      Number(parts[5] || 0)
+    ).getTime();
+  };
+
   const userOrders = orders
     .filter((o) => o.customerEmail.toLowerCase() === user.email.toLowerCase())
-    .sort((a, b) => {
-      const aNo = Number(a.orderNumber.replace(/\D/g, '')) || 0;
-      const bNo = Number(b.orderNumber.replace(/\D/g, '')) || 0;
-      return bNo - aNo;
-    });
+    .sort((a, b) => orderTime(b.createdAt) - orderTime(a.createdAt));
   const completedStatuses = ['Tamamlandı', 'Teslim Edildi', 'İptal Edildi', 'İptal'];
   const activeOrders = userOrders.filter((order) => !completedStatuses.includes(order.status));
   const lastOrder = userOrders[0];
