@@ -60,3 +60,10 @@ Doğrulama (public publishable anahtarıyla):
 - CSP'de `script-src 'unsafe-inline'` var; JSON-LD ve mevcut yapı nedeniyle korunuyor.
 - `netlify/functions` altındaki eski fonksiyonlar artık kullanılmıyor; ileride silinmeli.
 - `npm audit` (prod + dev) temiz; bilinen bağımlılık açığı yok.
+
+## İlgili dokümanlar
+
+- `docs/progress-and-security.md` — güncel durum ve doğrulama sonuçları
+- `docs/deployment-and-data.md` — Cloudflare/Supabase mimarisi ve env listesi
+- `docs/email-ve-yayin-mimarisi.md` — sipariş e-postası, bülten ve unsubscribe akışı
+- `docs/yapilacaklar-listesi.md` — açık operasyonel işler

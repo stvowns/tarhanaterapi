@@ -1,6 +1,6 @@
 # TarhanaTerapi — Yapılacaklar Listesi
 
-**Tarih:** 20 Ekim 2026
+**Tarih:** 22 Ekim 2026
 **Canlı site:** https://tarhanaterapi.com (Cloudflare Pages)
 **Repo:** https://github.com/stvowns/tarhanaterapi
 **Hedef:** AI/arama motorlarında görünürlük (GEO) + satış
@@ -11,8 +11,8 @@
 
 ## Özet
 
-Teknik GEO altyapısı ve hosting taşıması tamam. Şu an eksik olan üç şey var:
-**(1) e-posta altyapısı** (sipariş e-postası henüz gitmiyor), **(2) ölçüm** (Web Analytics + panel doğrulamaları), **(3) dış otorite** (yorum, Google Business, backlink).
+Teknik GEO altyapısı, hosting taşıması ve e-posta/bülten altyapısı tamam. Şu an öne çıkan işler:
+**(1) ölçüm** (Web Analytics + panel doğrulamaları), **(2) dış otorite** (yorum, Google Business, backlink), **(3) secret rotasyonu ve public form koruması**.
 
 ---
 
@@ -62,6 +62,24 @@ Teknik GEO altyapısı ve hosting taşıması tamam. Şu an eksik olan üç şey
 - [x] 11 AI/search botu × 6 sayfa canlı test: tamamı 200, challenge yok.
 - [x] Yayın/e-posta mimarisi dokümante edildi: `docs/email-ve-yayin-mimarisi.md`.
 
+### Güvenlik / e-posta / bülten (22 Ekim 2026)
+
+- [x] **Sipariş durum e-postası** yalnızca durum ilk kez `Kargoya Verildi` olduğunda gönderiliyor; aynı durumun tekrarı ve diğer geçişler mail atmıyor (`update-order-status.js`, `telegram-webhook.js`).
+- [x] **Bülten önizleme ve alt bilgisinden** `0850 302 82 74` kaldırıldı.
+- [x] **Abonelikten çıkma** gerçek uç noktaya taşındı: HMAC token'lı `GET/POST /api/unsubscribe`; geçerli `200`, geçersiz `400`; Supabase `unsubscribed_at` + Resend güncellemesi.
+- [x] Bülten gönderiminde **kişiye özel unsubscribe URL** ve `List-Unsubscribe` / `List-Unsubscribe-Post` başlıkları eklendi.
+- [x] **E-kitap PDF ilk sayfasından** `satis@tarhanaterapi.com` kaldırıldı.
+- [x] **E-kitap PDF son sayfasındaki adres** `Muradiye Mh., Orhangazi / Bursa` olarak düzeltildi; PDF yeniden üretildi.
+- [x] **Supabase RLS sertleştirmesi** uygulandı: `orders`, `order_items`, `subscribers`, `reviews` üzerinde anon INSERT kapalı; public `reviews` yalnızca `verified = true`.
+- [x] Public anahtarla geçersiz INSERT artık `42501` / HTTP `401`; public `orders` / `subscribers` SELECT boş.
+- [x] **Yönetici API'leri** doğrulanmış Supabase e-postası + allowlist istiyor.
+- [x] `create-order` alan/limit doğrulamaları ve **Kapıda Ödeme varsayılan kapalı** (`ALLOW_COD=true` ile açılır).
+- [x] **Telegram webhook fail-closed**: secret yoksa/yanlışsa `401`, admin chat ID kontrolü.
+- [x] Public **demo login** kaldırıldı.
+- [x] CSP/HSTS ve güvenlik başlıkları güncellendi (`public/_headers`).
+- [x] `npm run lint`, `node --check`, `npm audit` temiz; prod deploy `0b42380` ile canlıya alındı.
+- [x] Denetim kaydı: `docs/guvenlik-denetimi-2026-10-22.md`.
+
 ---
 
 ## 🔴 P0 — Bu hafta
@@ -99,6 +117,16 @@ Teknik GEO altyapısı ve hosting taşıması tamam. Şu an eksik olan üç şey
 - [ ] **Google Business Profile** (Orhangazi / Bursa) — **(Sen)**
   - Adres, telefon, saatler, ürünler, fotoğraflar; site ile birebir NAP tutarlılığı.
 
+- [ ] **Telegram webhook secret'ını rotate et** — **(Sen)**
+  - Eski `tarhana-secret-2026` değeri git geçmişinde duruyor. Cloudflare secret'ını yeni, yüksek entropili bir değerle değiştir; webhook'u `setWebhook` ile aynı secret'ı kullanacak şekilde güncelle.
+
+- [ ] **Resend API key'ini rotate et** — **(Sen)**
+  - Anahtar daha önce sohbet/panel üzerinden paylaşıldı. Yeni key oluştur, Cloudflare secret'ını güncelle, eski key'i iptal et.
+
+- [ ] **Supabase Auth doğrulaması** — **(Sen)**
+  - Auth → Providers → Email → “Confirm email” açık mı kontrol et.
+  - Yönetici hesaplarında MFA'yı etkinleştir.
+
 - [ ] **API token'ı revoke et** — **(Sen)**
   - Sohbete yazılan Cloudflare token'ı artık gereksiz; deploy'lar `wrangler` oturumuyla yapılıyor.
 
@@ -129,6 +157,12 @@ Teknik GEO altyapısı ve hosting taşıması tamam. Şu an eksik olan üç şey
 - [ ] **GitHub → Cloudflare otomatik deploy** — **(Ben)**
   - Şu an manuel `wrangler pages deploy`. Git entegrasyonu ile push'ta otomatik yayın kurulabilir.
 
+- [ ] **Public form koruması: Turnstile / kalıcı rate limit** — **(Birlikte)**
+  - Mevcut rate limit in-memory ve instance bazlı. Cloudflare Turnstile veya Supabase/Upstash tabanlı kalıcı limit eklenmeli.
+
+- [ ] **Banka/IBAN, Shopier ve kargo bilgileri** — **(Sen)**
+  - Gerçek banka adı, hesap sahibi ve IBAN; Shopier'den yazılı onay + çalışan ödeme linki; muhasebe onayı ve kargo teklifi netleştirilmeli.
+
 ---
 
 ## 🟡 P2 — Sonra
@@ -152,7 +186,9 @@ Teknik GEO altyapısı ve hosting taşıması tamam. Şu an eksik olan üç şey
 
 ## ⚠️ Riskler / Açık Sorunlar
 
-- **E-posta:** Gelen kutusu (`satis@`), manuel gönderim ve otomatik sipariş e-postası (Resend) çalışıyor. API key'ler sohbete yazıldı; ileride rotate edilmeli.
+- **E-posta:** Gelen kutusu (`satis@`), manuel gönderim ve otomatik sipariş e-postası (Resend) çalışıyor. **Resend API key'i rotate edilmeli.**
+- **Telegram:** Webhook fail-closed çalışıyor; ancak eski `tarhana-secret-2026` değeri git geçmişinde. **Secret rotate edilmeli.**
+- **Rate limit:** Public formlarda limit in-memory; instance yeniden başlayınca sıfırlanır. Turnstile veya kalıcı limit eklenmeli.
 - **Doğrulanmamış yorum sayıları:** 420/215/310/180/145/98. Gerçek yorumlarla değiştirilene kadar `AggregateRating` eklenmeyecek.
 - **Netlify:** Site silindi; `netlify/` ve `netlify.toml` yalnızca referans olarak repoda duruyor, canlıda kullanılmıyor.
 - **AI garantisi yok:** Altyapı tam olsa bile "önerme" trafiğe, atıflara ve zamana bağlı.
@@ -176,9 +212,9 @@ Teknik GEO altyapısı ve hosting taşıması tamam. Şu an eksik olan üç şey
 
 ## ▶️ Önerilen sıra
 
-1. **Cloudflare Web Analytics + Yandex doğrulama** (bugün, 15 dk)
-2. **API token revoke + Web Analytics**
+1. **Secret rotasyonu + Cloudflare Web Analytics + Yandex doğrulama** (bugün, 15 dk)
+2. **API token revoke + Supabase Auth/MFA kontrolü**
 3. **Google Business Profile + gerçek yorumlar**
-4. **Merchant Center + içerik/şema + dış atıf** (paralel, sürekli)
+4. **Turnstile/rate limit + Merchant Center + içerik/şema + dış atıf** (paralel, sürekli)
 
-> Her büyük değişiklikten sonra: `npm run build` → `npx wrangler pages deploy dist --project-name tarhanaterapi --branch main --commit-dirty=true` → `npm run indexnow` → canlı doğrulama.
+> Her büyük değişiklikten sonra: `npm run build` → `npx wrangler pages deploy dist --project-name tarhanaterapi --branch main --commit-hash <tam-sha>` → `npm run indexnow` → canlı doğrulama.

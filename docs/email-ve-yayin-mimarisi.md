@@ -1,6 +1,6 @@
 # TarhanaTerapi — Yayın, E-posta ve Veri Mimarisi
 
-**Son güncelleme:** 20 Ekim 2026
+**Son güncelleme:** 22 Ekim 2026
 
 ## 1. Değişiklikler canlıya nasıl çıkıyor?
 
@@ -8,11 +8,15 @@
 
 ```bash
 npm run build
-npx wrangler pages deploy dist --project-name tarhanaterapi --branch main --commit-dirty=true
+npx wrangler pages deploy dist \
+  --project-name tarhanaterapi \
+  --branch main \
+  --commit-hash <40-karakterlik-commit-sha>
 ```
 
 - `npm run build` → Vite + `scripts/prerender.ts` çalışır, `dist/` üretilir.
 - `wrangler pages deploy dist` → `dist/` içeriği ve `functions/` Cloudflare Pages'e yüklenir.
+- `--commit-hash` için **tam 40 karakterlik SHA** verilmelidir; kısa SHA veya `--commit-dirty=true` kullanılmamalı.
 - Yayın adresi: `https://tarhanaterapi.com` (ve `www` → apex 301).
 - Deploy çıktısındaki `*.pages.dev` adresi Türkiye'de DNS engeli nedeniyle açılmayabilir; testler her zaman özel alan adından yapılmalı.
 
@@ -21,7 +25,7 @@ npx wrangler pages deploy dist --project-name tarhanaterapi --branch main --comm
 - GitHub deposu: `https://github.com/stvowns/tarhanaterapi`
 - Cloudflare Pages projesinde **Git Provider: No** → GitHub bağlı değil.
 - Yani `git push` yapmak siteyi **otomatik yayınlamaz**. Canlıya çıkmak için yukarıdaki `wrangler` komutu gerekir.
-- 20 Ekim akşamı kargo, yorum, bülten ve animasyon değişiklikleri tamamlandı; canlı yayın `wrangler pages deploy` ile yapılır.
+- 22 Ekim 2026'da sipariş e-postası, bülten aboneliğinden çıkma ve Supabase RLS değişiklikleri `0b423805cf81f4ee136757ef8fd0d89f8f534350` commit'iyle canlıya alındı.
 
 ### GitHub'a bağlayıp otomatik deploy istersen
 
@@ -54,6 +58,16 @@ Bağlandıktan sonra `main` dalına push otomatik deploy tetikler. Alternatif ol
 5. **Yanıt**
    - Başarılıysa `{ orderNumber, id }` döner; site sipariş onay ekranını gösterir.
    - E-posta veya Telegram başarısız olsa bile sipariş Supabase'de kayıtlıdır; iki bildirim birbirinden bağımsızdır.
+
+### Durum değişikliği e-postası
+
+Sipariş durumu güncellenirken müşteriye **her değişiklikte** mail gitmez. Kural:
+
+- `functions/api/update-order-status.js` önce siparişin mevcut durumunu okur.
+- E-posta yalnızca yeni durum **`Kargoya Verildi`** ve önceki durum bundan farklıysa gönderilir.
+- Aynı durumun tekrar kaydedilmesi ve diğer durum geçişleri e-posta tetiklemez.
+- `functions/api/telegram-webhook.js` de aynı geçiş kuralını uygular; Telegram'dan verilen “Kargoya Verildi” komutu mükerrer mail atmaz.
+- Böylece panelde veya Telegram'da aynı işlemin tekrarlanması müşteriye birden fazla kargo e-postası göndermez.
 
 ### Hangi altyapı ne için?
 
@@ -120,12 +134,39 @@ Bu limitler içinde kalındığı sürece **ücret yansımaz**. Sipariş onaylar
   - Alıcılar tek tek seçilebilir; tek gönderimde en fazla **25 alıcı** desteklenir.
   - Konu, ön yazı, başlık, gövde, öne çıkanlar, buton ve alt not alanları düzenlenebilir.
   - Önizleme iframe içinde gösterilir; gönderim `POST /api/send-newsletter` üzerinden yapılır.
-  - E-postalar Resend `/emails` ile ayrı ayrı gönderilir; `List-Unsubscribe` mailto başlığı eklenir.
+  - E-postalar Resend `/emails` ile ayrı ayrı gönderilir.
+  - Her alıcı için **kişiye özel HMAC token'lı** abonelikten çıkma bağlantısı üretilir.
+  - `List-Unsubscribe` ve `List-Unsubscribe-Post` başlıkları eklenir; Gmail/Outlook'un yerleşik “Abonelikten çık” düğmesi de çalışır.
+- Yönetici bülten önizlemesi ve e-posta alt bilgisinde telefon numarası yoktur; **0850 302 82 74** 22 Ekim 2026'da kaldırıldı.
 - Daha büyük toplu gönderimler için Resend → **Broadcasts** → New Broadcast → segment seç → gönder akışı kullanılabilir.
 - 1.000 kişiye kadar ücretsiz; üzerinde Resend marketing planı gerekir.
 - Alternatif: CSV'yi Brevo'ya aktarıp ücretsiz 300/gün limitiyle göndermek.
 
-## 5. Yorum ve KVKK akışı
+## 5. Abonelikten çıkma mekanizması
+
+E-posta alt bilgisindeki “Abonelikten çıkmak için tıklayın” bağlantısı artık `mailto:` değil, gerçek bir uç noktaya gider:
+
+```
+GET/POST https://tarhanaterapi.com/api/unsubscribe?token=<imza>
+```
+
+- Token, e-posta adresi + `UNSUBSCRIBE_SECRET` ile üretilen HMAC imzasıdır; elle tahmin edilemez.
+- `functions/api/unsubscribe.js` token'ı doğrular:
+  - Geçerli → `200`, Supabase `subscribers.unsubscribed_at` doldurulur, Resend kontaktı güncellenir.
+  - Geçersiz/eksik → `400`; hiçbir kayıt değiştirilmez.
+- `send-newsletter.js` her alıcı için ayrı token üretir; bir alıcının bağlantısı başka adresi etkilemez.
+- E-posta istemcisinin tek tıkla çıkma isteği (`List-Unsubscribe-Post`) aynı uç noktaya `POST` edilir.
+- Aynı bağlantı tekrar açılırsa işlem hata vermez; bağlantı yine `200` döner ve kayıt çıkmış durumda kalır.
+
+## 6. E-kitap PDF iletişim bilgileri
+
+- Kaynak: `scripts/generate-ebook.ts`; üretim: `npm run ebook`.
+- Çıktı: `public/kadim-corba-rituelleri-ve-sifali-tarifler.pdf` (11 sayfa, 8 tarif).
+- İlk sayfa alt bilgisinden `satis@tarhanaterapi.com` kaldırıldı.
+- Son sayfadaki eski `Gedelek Köyü Mevkii No: 28` adresi **Muradiye Mh., Orhangazi / Bursa** olarak düzeltildi.
+- PDF değiştiğinde `npm run ebook` sonrası build + deploy yapılmalı; aksi halde canlı dosya eski kalır.
+
+## 7. Yorum ve KVKK akışı
 
 - Yorum → `/api/submit-review` → Supabase `reviews` (`verified=false`) + Telegram.
 - Yönetici paneli → **Yorumlar** → onay bekleyenleri onayla, yayındaki yorumları sil.

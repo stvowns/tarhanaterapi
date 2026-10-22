@@ -1,74 +1,142 @@
-# TarhanaTerapi — Güncel Durum, Güvenlik ve Operasyon (2026-10-21)
+# TarhanaTerapi — Güncel Durum, Güvenlik ve Operasyon (2026-10-22)
 
 ## Özet
-- Repo: https://github.com/stvowns/tarhanaterapi.git, branch `main`
-- İlk çalışan site: https://tarhanaterapi.netlify.app
+
+- Repo: `https://github.com/stvowns/tarhanaterapi`, branch `main`
+- Canlı site: **https://tarhanaterapi.com** (Cloudflare Pages; `www` → apex 301)
 - DB: Supabase ref `atrvalwnvruzsbpkgfrl`; sipariş tek kaynağı `public.orders`
-- Ödeme şu an yalnızca Havale/EFT; Kapıda Ödeme kartı görünür ama “Yakında!” etiketiyle devre dışı
-- Frontend payment provider henüz net olmadığı için credit-card akışı kapatılmıştır
+- Ödeme: yalnızca **Havale/EFT**. Kapıda Ödeme yalnızca `ALLOW_COD=true` ise kabul edilir; varsayılan kapalı.
+- Sipariş numarası: sıralı `TT-XXXXXX`.
+- Adres: **Muradiye Mh., Orhangazi / Bursa**
+- Prod code commit: `0b423805cf81f4ee136757ef8fd0d89f8f534350`
+- Docs commit: `bd88d18` (`Record Supabase RLS verification`)
 
-## Yapılanlar
-- SEO/GEO baseline (robots.txt, sitemap.xml, llms.txt, route-level SeoHead)
-- React Router + canonical/meta
-- Supabase Auth/DB + Netlify Functions gateway
-- DB-only checkout, localStorage demo sipariş akışı kaldırıldı
-- sipariş fiyat doğrulaması server-side (`PRODUCT_PRICES`)
-- admin panel DB siparişleri Realtime ile çekiyor
-- Telegram aktif sipariş/özet ve durum butonu
-- KVKK rıza checkbox — frontend + backend zorunlu
-- Admin order error mesajları generic (`Sipariş alınamadı` vb.)
-- CSV formula injection sanitize (`safeCsv`)
-- Contact form → Telegram + Resend email dispatch
-- Contact form rate-limited (5/dk/IP)
-- Security headers `netlify.toml` ile etkin
-- dead code (hardcoded parola, kart form/state) temizlendi
-- VITE_* env fallback'ları kaldırıldı, fail-fast
+## 22 Ekim 2026 tamamlananlar
 
-## Kritik Güvenlik / Test Sonuçları
-- `GET /.netlify/functions/list-orders` (token'sız) → 401
-- `GET /.netlify/functions/list-orders` admin JWT ile → 200
-- `POST /.netlify/functions/update-order-status` (token'sız) → 401
-- Sunucu formda client total yoksayılıyor ve yeniden hesplanıyor
-- Check: no repo `.env`, no frontend service role/secrets
-- `vite build` + `tsc --noEmit` PASS
+### Sipariş e-postası
 
-## Bilinen Sınırlamalar (non-kritik)
-- Rate limit in-memory instance bazlı; Supabase/Upstash ile kalıcı yapılabilir
-- `isAdmin` frontend'de e-posta string ve `app_metadata` server-side koruma ile birleşiyor — temel güvenli; e-postalar ilerde `app_metadata`'ya taşınacak
-- KVKK Aydınlatma link/policy sayfası eklenmedi; sadece checkbox
-- Payment gateway akışı açık değil (kart opsiyonu preview)
-- Resend email seçeneği env olmadan devre dışı
-- Vercel taşıma değerlendirildi; şimdilik geçilmedi.
+- `functions/api/update-order-status.js` artık siparişin **mevcut durumunu önce okuyor**.
+- Müşteriye e-posta **yalnızca durum `Kargoya Verildi` olduğunda ve bu geçiş ilk kez yapıldığında** gidiyor.
+- Aynı durumun tekrar kaydedilmesi, diğer durum değişiklikleri ve durum dışı alan güncellemeleri e-posta göndermiyor.
+- `functions/api/telegram-webhook.js` aynı davranışı uyguluyor; Telegram üzerinden verilen “Kargoya Verildi” komutu da yalnızca geçiş anında mail atıyor.
+- Böylece panelden veya Telegram'dan yapılan tekrar işlemlerde mükerrer kargo e-postası engellendi.
 
-## Operasyon / Env Checklist
-- `VITE_SITE_URL`
-- `VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY`
-- `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`
+### Bülten ve e-kitap
+
+- `src/lib/newsletterTemplate.ts`: yönetici bülten önizlemesi ve e-posta alt bilgisinden **0850 302 82 74** kaldırıldı.
+- Abonelikten çıkma artık gerçekten çalışıyor:
+  - `GET/POST /api/unsubscribe?token=...` HMAC imzalı token doğruluyor.
+  - Geçerli token → `200`, geçersiz/eksik token → `400`.
+  - Supabase `subscribers` kaydına `unsubscribed_at` yazılıyor ve Resend kontaktı güncelleniyor.
+  - Bülten gönderiminde her alıcıya kendi token'lı bağlantısı ve `List-Unsubscribe` / `List-Unsubscribe-Post` başlıkları ekleniyor.
+- E-kitap PDF kaynağı (`scripts/generate-ebook.ts`) düzeltildi ve `npm run ebook` ile yeniden üretildi:
+  - İlk sayfa alt bilgisinden `satis@tarhanaterapi.com` kaldırıldı.
+  - Son sayfadaki eski `Gedelek Köyü Mevkii No: 28` adresi **Muradiye Mh., Orhangazi / Bursa** olarak düzeltildi.
+  - Canlı PDF: `https://tarhanaterapi.com/kadim-corba-rituelleri-ve-sifali-tarifler.pdf` (200).
+
+### Supabase / RLS
+
+- `supabase/security-hardening.sql` uygulandı ve doğrulandı.
+- `orders`, `order_items`, `subscribers` ve `reviews` tablolarındaki **anon INSERT politikaları kaldırıldı**.
+- Public `reviews` okuması yalnızca `verified = true` kayıtlarla sınırlandı.
+- Public `orders` / `subscribers` SELECT denemeleri boş sonuç döndürüyor.
+- Public anahtarla geçersiz INSERT denemeleri artık `42501` (HTTP `401`) alıyor; önceki `23502` davranışı kapandı.
+- Onay bekleyen yorumlar public uçtan `401`, onaylı yorumlar `200` dönüyor.
+
+### API ve yönetici güvenliği
+
+- Tüm yönetici uçları (`list-orders`, `update-order-status`, `list-subscribers`, `list-reviews`, `moderate-review`, `send-newsletter`, `list-newsletter-contacts`) Supabase ile **e-posta doğrulaması yapılmış kullanıcı** istiyor.
+- Yönetici allowlist e-posta bazlı: `layeredstudio78@gmail.com`, `admin@tarhanaterapi.com`.
+- `create-order`: zorunlu alan, e-posta/telefon/adres uzunluğu, ürün adedi ve toplam tutar üst sınırı doğrulanıyor; fiyatlar sunucuda yeniden hesaplanıyor.
+- Kapıda Ödeme varsayılan olarak kapalı; yalnızca `ALLOW_COD=true` ile açılabiliyor.
+- Telegram webhook **fail-closed**: `TELEGRAM_WEBHOOK_SECRET` yoksa veya gelen secret eşleşmiyorsa `401`; admin chat ID kontrolü de yapılıyor.
+- Public demo login kaldırıldı.
+- `public/_headers` içinde CSP, HSTS ve diğer güvenlik başlıkları güncellendi.
+
+## Canlı doğrulama sonuçları
+
+| Kontrol | Sonuç |
+|---|---|
+| Ana sayfa | `200` |
+| E-kitap PDF | `200` |
+| `/api/my-orders` yetkisiz | `401` |
+| `/api/update-order-status` yetkisiz | `401` |
+| Geçersiz `/api/unsubscribe` | `400` |
+| Secret'sız Telegram webhook | `401` |
+| Geçersiz `create-order` | `400` |
+| Geçersiz `subscribe` | `400` |
+| Public `orders` / `subscribers` SELECT | boş |
+| Public geçersiz INSERT | `42501` / HTTP `401` |
+| Onay bekleyen yorum ucu | `401` |
+| Onaylı yorum ucu | `200` |
+
+## Kalite kontrolleri
+
+- `npm run lint` → PASS
+- `node --check` (değişen Functions) → PASS
+- `npm audit` → açık yok
+- Production build gerçek `VITE_*` değerleriyle alındı; dummy env ile build edilmiş `dist/` **yayınlanmadı**.
+
+## Deploy
+
+```bash
+npm run build
+npx wrangler pages deploy dist \
+  --project-name tarhanaterapi \
+  --branch main \
+  --commit-hash <40-karakterlik-commit-sha>
+```
+
+- `wrangler pages deploy` hem `dist/` hem `functions/` paketini yükler.
+- Cloudflare Pages projesinde Git Provider bağlı değil; `git push` otomatik deploy etmez.
+- `--commit-hash` için kısa SHA değil, **tam 40 karakterlik SHA** kullanılmalı.
+- Deploy sonrası `*.pages.dev` yerine özel alan adı test edilmeli.
+
+## Env / secret checklist (Cloudflare Pages)
+
+Frontend build:
+
+- `VITE_SITE_URL=https://tarhanaterapi.com`
+- `VITE_SUPABASE_URL=https://atrvalwnvruzsbpkgfrl.supabase.co`
+- `VITE_SUPABASE_ANON_KEY` (Supabase publishable/anon key)
+- `VITE_GOOGLE_CLIENT_ID`
+- `VITE_BANK_TRANSFER_BANK`, `VITE_BANK_TRANSFER_ACCOUNT_NAME`, `VITE_BANK_TRANSFER_IBAN` (yalnızca gerçek değerler)
+
+Server-side:
+
+- `SUPABASE_URL`
+- `SUPABASE_ANON_KEY` (veya `VITE_SUPABASE_ANON_KEY`)
+- `SUPABASE_SERVICE_ROLE_KEY` (yalnızca Functions)
+- `RESEND_API_KEY`, `RESEND_AUDIENCE_ID`
+- `NEWSLETTER_FROM_EMAIL`, `NEWSLETTER_REPLY_TO`
+- `UNSUBSCRIBE_SECRET`
 - `TELEGRAM_BOT_TOKEN`, `TELEGRAM_ADMIN_CHAT_ID`, `TELEGRAM_WEBHOOK_SECRET`
-- (Optional) `RESEND_API_KEY`
-- Telegram webhook URL (Cloudflare): `https://tarhanaterapi.com/api/telegram-webhook`
-- `TELEGRAM_WEBHOOK_SECRET` değeri yalnızca Cloudflare Secrets içinde tutulur; repoya yazılmaz.
+- `ALLOW_COD=true` (yalnızca gerçekten kapıda ödeme açılacaksa)
+- `BANK_TRANSFER_BANK`, `BANK_TRANSFER_ACCOUNT_NAME`, `BANK_TRANSFER_IBAN` (yalnızca gerçek değerler)
 
-## Yerel Çalıştırma
-- `npm install --legacy-peer-deps`
-- `npm run dev` (Vite) + `netlify dev --port 8888`
-- Ziyaret: http://localhost:8888
+> `SUPABASE_SERVICE_ROLE_KEY`, `RESEND_API_KEY`, `TELEGRAM_BOT_TOKEN` ve `UNSUBSCRIBE_SECRET` asla frontend'e veya repoya yazılmamalı.
 
-## Deploy Durumu
-- Latest code localde commit edildi (main)
-- Drag-and-drop/test için draft deploy her iki kabul aldı
-- Production deploy (`netlify deploy --prod`) 403 Limit sebebiyle blokelyy
-- Draft URL'ler:
-  - `https://6acd358101d16887aaeb1df4--tarhanaterapi.netlify.app`
-  - `https://6acd36c4e79443755886f9bd--tarhanaterapi.netlify.app`
-- Production'a geçiş için Netlify UI'dan `Publish deploy` kullanılabilir veya plan limit çözülince `netlify deploy --prod`
+## Bilinen sınırlamalar / açık işler
 
-## pending / next
-- Contact form Telegram notification test (real admin chat)
-- Telegram bot `/orders` ve status callback test aktif
-- CSV/CSV-export admin test
-- Payment provider provider entegrasyonu belirlenince kart seçeneği açılacak
-- Admin email allowlist -> Supabase app_metadata migration
+- **Telegram webhook secret'ı rotate edilmeli.** Eski `tarhana-secret-2026` değeri git geçmişinde duruyor.
+- **Resend API key'i rotate edilmeli.** Anahtar daha önce sohbet/panel üzerinden paylaşıldı.
+- Supabase Auth panelinde **“Confirm email”** açık mı ve yönetici hesaplarında MFA var mı, bir kez kontrol edilmeli.
+- Public formlar için Cloudflare Turnstile veya kalıcı (DB/Upstash) rate limit henüz yok; mevcut limit in-memory ve instance bazlı.
+- Yönetici allowlist koddaki e-posta listesiyle yönetiliyor; ileride Supabase `app_metadata` / rol tablosuna taşınabilir.
+- Banka/IBAN bilgileri, Shopier onayı ve ödeme linki, muhasebe onayı ve kargo teklifi hâlâ kullanıcı tarafından netleştirilmeli.
+- Cloudflare Web Analytics kurulumu ve Yandex Webmaster doğrulaması kullanıcı tarafında bekliyor.
 
-## Notes
-- Doküman sürekli kronolojik devam; yeni eklenti en altta eklenmeli.
+## Yerel çalıştırma
+
+```bash
+npm install --legacy-peer-deps
+npm run dev        # Vite
+npx wrangler pages dev dist --port 8788   # Functions + statik çıktı
+```
+
+Gerçek API ve Supabase testleri için gerekli secret'lar yerel `.dev.vars` dosyasında tutulmalı; `.dev.vars` repoya eklenmemeli.
+
+## Notlar
+
+- Bu doküman kronolojik olarak güncellenir; yeni işler en alta eklenir.
+- Ayrıntılı denetim kaydı: `docs/guvenlik-denetimi-2026-10-22.md`.

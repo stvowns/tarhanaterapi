@@ -1,59 +1,146 @@
-# TarhanaTerapi — ücretsiz canlıya geçiş, DB ve bildirim planı
+# TarhanaTerapi — Canlı Ortam, Veri ve Bildirim Mimarisi
 
-## 1) Ücretsiz dağıtım (önerilen: Vercel Hobby)
-1. GitHub repo'yu Vercel'e import et.
-2. Framework: Vite; build command `npm run build`; output `dist`.
-3. Deep link için `vercel.json` rewrites zaten repo'da.
-4. Frontend ücretsiz: Vercel Hobby (100GB/ay bant genişliği) yeterli.
-5. Resimler için Cloudinary ücretsiz tier veya Supabase Storage; Google remote asset'leri kendi depoya taşı.
-6. Domain: ücretsiz Vercel subdomain (`*.vercel.app`) ile başla; kendi alan adı sonra.
+**Son güncelleme:** 22 Ekim 2026
 
-Netlify alternatifi: repo'yu import et, build `npm run build`, publish `dist`; `public/_redirects` zaten eklendi.
+## 1. Canlı ortam
 
-## 2) DB seçimi (ücretsiz + RLS)
-Öneri: Supabase Free Postgres (500MB, RLS, Auth, Realtime, Storage).
-Alternatif: Neon (0.5GB) + ayrı auth.
+| Bileşen | Güncel durum |
+|---|---|
+| Hosting | **Cloudflare Pages** — proje adı `tarhanaterapi` |
+| Alan adı | `https://tarhanaterapi.com`; `www` → apex 301 |
+| API | Cloudflare Pages Functions (`functions/api/*`) |
+| Veritabanı | Supabase Postgres, proje ref `atrvalwnvruzsbpkgfrl` |
+| Otomatik e-posta | Resend (`satis@tarhanaterapi.com`, domain verified) |
+| Yönetici bildirimi | Telegram Bot API (`/api/telegram-webhook`) |
+| Gelen e-posta | Northwest Business Identity (`satis@tarhanaterapi.com`) |
+| DNS / SSL / CDN | Cloudflare (Universal SSL, HSTS) |
 
-RLS kuralı: müşteri kendi siparişini görür, admin her şeyi görür.
+- Eski Netlify sitesi silindi; `tarhanaterapi.netlify.app` artık 404 döner.
+- Repodaki `netlify/`, `netlify.toml` ve `vercel.json` yalnızca tarihsel referanstır; canlıda kullanılmaz.
+- Cloudflare Pages projesinde Git Provider bağlı değildir. `git push` otomatik deploy **etmez**.
 
-## 3) Önerilen şema
-`supabase/schema.sql` dosyasına taşındı. Tablolar:
-- products
-- customers
-- orders
-- order_items
-- subscribers
-- reviews
-- faq
+## 2. Build ve deploy
 
-## 4) Ödeme / bildirim akışı
-- Checkout submit → `/api/orders` serverless.
-- DB'ye sipariş + kalem yazılır.
-- Bildirimler:
-  - E-posta: Resend ücretsiz tier (3k/ay) ile müşteriye onay + admin'e alert.
-  - Telegram bot: env `TELEGRAM_BOT_TOKEN` + `TELEGRAM_ADMIN_CHAT_ID`; sipariş özetini ücretsiz webhook.
-  - İsteğe bağlı WhatsApp Business API (ücretli, 2. faz).
-- Admin panel: Supabase Realtime subscription ile yeni sipariş anlık düşer; tarayıcı notification chime mevcut.
+```bash
+npm run build
+npx wrangler pages deploy dist \
+  --project-name tarhanaterapi \
+  --branch main \
+  --commit-hash <40-karakterlik-commit-sha>
+```
 
-## 5) Gizli anahtarlar (Vercel env)
-- `SUPABASE_URL`
-- `SUPABASE_ANON_KEY`
-- `SUPABASE_SERVICE_ROLE_KEY` (sadece serverless)
-- `RESEND_API_KEY`
-- `TELEGRAM_BOT_TOKEN`
-- `TELEGRAM_ADMIN_CHAT_ID`
-- `VITE_SITE_URL=https://tarhanaterapi.com`
+- `npm run build`: Vite + `scripts/prerender.ts` → `dist/`.
+- `wrangler pages deploy dist`: statik çıktı + `functions/` paketini yükler.
+- `--commit-hash` tam 40 karakter olmalı; kısa SHA kullanılmamalı.
+- Build mutlaka **gerçek `VITE_*` değerleriyle** alınmalı. Dummy Supabase değerleriyle üretilmiş `dist/` asla deploy edilmemeli.
+- Deploy sonrası test özel alan adından yapılmalı; `*.pages.dev` Türkiye'de engelli olabilir.
+- Yalnızca doküman değiştiyse yeniden deploy gerekmez; kod/PDF değiştiyse deploy gerekir.
 
-## 6) Migrasyon sırası (ücretsiz)
-1. Sadece frontend'i Vercel'e deploy et (mevcut localStorage akışı).
-2. Supabase schema + seed products.
-3. `/api/orders` ve `/api/subscribers` ekle.
-4. Form'ları API'ye bağla.
-5. E-posta/Telegram bildirimi ekle.
-6. Ödeme sağlayıcı (iyzico/Stripe) sandbox, sonra canlı.
-7. Sitemap'i DB/products'tan üret.
+Son doğrulanan prod code commit: `0b423805cf81f4ee136757ef8fd0d89f8f534350`.
 
-## 7) Dikkat
-- localStorage şu an demo; canlı satışta tek kaynak DB olmalı.
-- Sahte yorum/FTC riski: aggregateRating sadece gerçek yorumlar için.
-- `revalidate`/cron ile stok ve fiyat gündelik senkronize edilmeli.
+## 3. Frontend build değişkenleri
+
+| Değişken | Açıklama |
+|---|---|
+| `VITE_SITE_URL` | `https://tarhanaterapi.com` |
+| `VITE_SUPABASE_URL` | `https://atrvalwnvruzsbpkgfrl.supabase.co` |
+| `VITE_SUPABASE_ANON_KEY` | Supabase publishable/anon key (public) |
+| `VITE_GOOGLE_CLIENT_ID` | Google OAuth client ID |
+| `VITE_BANK_TRANSFER_BANK` | Banka adı (yalnızca gerçek değer) |
+| `VITE_BANK_TRANSFER_ACCOUNT_NAME` | Hesap sahibi (yalnızca gerçek değer) |
+| `VITE_BANK_TRANSFER_IBAN` | IBAN (yalnızca gerçek değer) |
+
+## 4. Sunucu tarafı secret'lar (Cloudflare Pages)
+
+| Değişken | Kullanım |
+|---|---|
+| `SUPABASE_URL` | Supabase REST erişimi |
+| `SUPABASE_ANON_KEY` | Auth token doğrulama (frontend anahtarı da kullanılabilir) |
+| `SUPABASE_SERVICE_ROLE_KEY` | Yalnızca Functions; RLS bypass eden yazma/okuma |
+| `RESEND_API_KEY` | Sipariş, iletişim ve bülten e-postaları |
+| `RESEND_AUDIENCE_ID` | Bülten kontakt segmenti |
+| `NEWSLETTER_FROM_EMAIL` | Bülten gönderen adresi |
+| `NEWSLETTER_REPLY_TO` | Bülten yanıt adresi |
+| `UNSUBSCRIBE_SECRET` | Abonelikten çıkma HMAC imzası |
+| `TELEGRAM_BOT_TOKEN` | Bot API |
+| `TELEGRAM_ADMIN_CHAT_ID` | Yönetici sohbeti |
+| `TELEGRAM_WEBHOOK_SECRET` | Webhook doğrulama; yoksa webhook fail-closed |
+| `ALLOW_COD` | `true` değilse Kapıda Ödeme kabul edilmez |
+| `BANK_TRANSFER_BANK`, `BANK_TRANSFER_ACCOUNT_NAME`, `BANK_TRANSFER_IBAN` | Havale/EFT bilgileri (yalnızca gerçek değer) |
+
+> `SUPABASE_SERVICE_ROLE_KEY`, `RESEND_API_KEY`, `TELEGRAM_BOT_TOKEN`, `TELEGRAM_WEBHOOK_SECRET` ve `UNSUBSCRIBE_SECRET` frontend'e sızmamalı; repoya yazılmamalı.
+
+## 5. Veri modeli
+
+Supabase şeması `supabase/schema.sql` içinde; güvenlik sertleştirmesi `supabase/security-hardening.sql` ile uygulandı.
+
+Tablolar:
+
+- `products`
+- `customers`
+- `orders`
+- `order_items`
+- `subscribers`
+- `reviews`
+- `faq`
+
+### RLS / erişim kuralları (22 Ekim 2026)
+
+- `orders`, `order_items`, `subscribers` ve `reviews` üzerinde **anon INSERT politikası yok**.
+- Public `reviews` okuması yalnızca `verified = true` kayıtlarla sınırlı.
+- Public `orders` / `subscribers` SELECT denemeleri boş döner.
+- Sipariş oluşturma, durum güncelleme, abone ekleme ve yorum gönderme yalnızca server-side Functions üzerinden `service_role` ile yapılır.
+- Yönetici uçları ayrıca Supabase ile **doğrulanmış e-posta** ve e-posta allowlist'i kontrol eder.
+- Public anahtarla geçersiz INSERT denemesi `42501` (HTTP `401`) alır.
+
+Migration yeniden çalıştırılmamalı; yalnızca politikaların açık olduğu tespit edilirse `supabase/security-hardening.sql` uygulanır.
+
+## 6. Sipariş akışı
+
+1. Checkout → `POST /api/create-order`
+2. Function doğrulamaları:
+   - Zorunlu alanlar + KVKK onayı
+   - E-posta / telefon / adres format ve uzunluk kontrolü
+   - Ürün adedi ve toplam tutar üst sınırı
+   - Fiyatların sunucuda yeniden hesaplanması
+   - Kargo: 2000 TL üzeri ücretsiz, altı 150 TL
+   - Ödeme yöntemi: varsayılan `bank_transfer`; `cod` yalnızca `ALLOW_COD=true` ise
+3. Supabase `orders` + `order_items` yazımı (`service_role`)
+4. Paralel bildirimler:
+   - Telegram → yönetici sohbeti
+   - Resend → müşteriye sipariş onay e-postası
+5. Durum güncellemesi → `POST /api/update-order-status`
+   - Müşteriye e-posta **yalnızca** durum ilk kez `Kargoya Verildi` olduğunda gider.
+   - Aynı durumun tekrarı veya diğer durumlar mail göndermez.
+
+Sipariş numarası sıralı `TT-XXXXXX` formatındadır.
+
+## 7. Bülten ve abonelikten çıkma
+
+- Abone kaydı: `POST /api/subscribe` → Supabase `subscribers` + Resend contacts.
+- Gönderim: yönetici paneli → `POST /api/send-newsletter`.
+- Her alıcıya özel HMAC token'lı `GET/POST /api/unsubscribe?token=...` bağlantısı eklenir.
+- `List-Unsubscribe` / `List-Unsubscribe-Post` başlıkları e-posta istemcisinin tek tıkla çıkma özelliğini destekler.
+- Geçerli token `200` + `unsubscribed_at`; geçersiz token `400`.
+
+## 8. Doğrulama kontrol listesi
+
+Deploy sonrası en az şunlar kontrol edilmeli:
+
+- [ ] Ana sayfa `200`
+- [ ] `/kadim-corba-rituelleri-ve-sifali-tarifler.pdf` `200`
+- [ ] `/api/my-orders` yetkisiz `401`
+- [ ] `/api/update-order-status` yetkisiz `401`
+- [ ] Geçersiz `/api/unsubscribe` `400`
+- [ ] Secret'sız `/api/telegram-webhook` `401`
+- [ ] Geçersiz `create-order` / `subscribe` `400`
+- [ ] Public `orders` / `subscribers` SELECT boş
+- [ ] Public geçersiz INSERT `42501` / HTTP `401`
+
+## 9. Açık operasyon işleri
+
+- Telegram webhook secret'ını rotate et (eski değer git geçmişinde).
+- Resend API key'ini rotate et.
+- Supabase Auth “Confirm email” ve yönetici MFA ayarlarını doğrula.
+- Public formlar için Turnstile veya kalıcı rate limit ekle.
+- Gerçek banka/IBAN bilgilerini, Shopier onayını ve kargo teklifini netleştir.
