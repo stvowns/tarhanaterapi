@@ -19,6 +19,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
   const [fullName, setFullName] = useState('');
   const [phone, setPhone] = useState('');
   const [error, setError] = useState('');
+  const [notice, setNotice] = useState('');
   const googleBtnRef = useRef<HTMLDivElement>(null);
   const [googleReady, setGoogleReady] = useState(false);
   const [mfaPending, setMfaPending] = useState(false);
@@ -38,6 +39,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
   const completeLogin = (user: User) => {
     resetMfa();
     setError('');
+    setNotice('');
     onLoginSuccess(user);
     onClose();
   };
@@ -66,6 +68,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
     if (!isOpen) {
       resetMfa();
       setError('');
+      setNotice('');
     }
   }, [isOpen]);
 
@@ -125,6 +128,7 @@ const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
+    setNotice('');
     if (!email || !password) {
       setError('Lütfen tüm alanları doldurun.');
       return;
@@ -135,7 +139,12 @@ const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
         password,
       });
       if (loginError || !data.user) {
-        setError('E-posta veya şifre hatalı.');
+        const message = (loginError?.message || '').toLowerCase();
+        setError(
+          message.includes('email not confirmed')
+            ? 'E-posta adresiniz henüz onaylanmamış. Gelen kutunuzdaki onay bağlantısına tıklayın.'
+            : 'E-posta veya şifre hatalı.'
+        );
         return;
       }
       const u = data.user;
@@ -157,6 +166,7 @@ const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
+    setNotice('');
     if (!fullName || !email || !password) {
       setError('Lütfen gerekli alanları doldurun.');
       return;
@@ -171,6 +181,14 @@ const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
       });
       if (signUpError || !data.user) {
         setError(signUpError?.message || 'Kayıt başarısız.');
+        return;
+      }
+      if (!data.session) {
+        setNotice(
+          'Kayıt alındı. E-posta adresinize gelen onay bağlantısına tıklayarak giriş yapabilirsiniz.'
+        );
+        setMode('login');
+        setPassword('');
         return;
       }
       const u = data.user;
@@ -227,6 +245,7 @@ const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
     }
     resetMfa();
     setError('');
+    setNotice('');
     onClose();
   };
 
@@ -275,6 +294,7 @@ const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
               onClick={() => {
                 setMode('login');
                 setError('');
+                setNotice('');
               }}
               className={`flex-1 py-3 text-xs font-semibold border-b-2 transition-all cursor-pointer ${
                 mode === 'login'
@@ -288,6 +308,7 @@ const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
               onClick={() => {
                 setMode('register');
                 setError('');
+                setNotice('');
               }}
               className={`flex-1 py-3 text-xs font-semibold border-b-2 transition-all cursor-pointer ${
                 mode === 'register'
@@ -305,6 +326,11 @@ const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
           {error && (
             <div className="p-3 mb-4 rounded-lg bg-red-100 text-error text-xs font-medium">
               {error}
+            </div>
+          )}
+          {notice && (
+            <div className="p-3 mb-4 rounded-lg bg-emerald-100 text-emerald-800 text-xs font-medium">
+              {notice}
             </div>
           )}
 
