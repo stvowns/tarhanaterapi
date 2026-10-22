@@ -93,7 +93,7 @@ export const routeSeo: Record<SiteRoute, { title: string; description: string }>
   contact: {
     title: 'İletişim, Adres, Kargo ve SSS | TarhanaTerapi',
     description:
-      'TarhanaTerapi iletişim: 0850 302 82 74, satis@tarhanaterapi.com. Orhangazi atölyesi, İstanbul tadım noktası, kargo süresi ve sık sorulan sorular.',
+      'TarhanaTerapi iletişim: satis@tarhanaterapi.com. Orhangazi atölyesi, İstanbul tadım noktası, kargo süresi ve sık sorulan sorular.',
   },
   legal: {
     title: 'KVKK Aydınlatma Metni | TarhanaTerapi',
