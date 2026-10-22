@@ -43,9 +43,12 @@ if not data.get("ok"):
     print(json.dumps(data, indent=2, ensure_ascii=False))
     sys.exit(1)
 r = data["result"]
-print(f"  Bot adı     : {r.get(\"first_name\", \"\")}")
-print(f"  Kullanıcı adı: @{r.get(\"username\", \"\")}")
-print(f"  Bot ID      : {r.get(\"id\")}")
+name = r.get("first_name", "")
+username = r.get("username", "")
+bot_id = r.get("id")
+print("  Bot adı      : " + str(name))
+print("  Kullanıcı adı: @" + str(username))
+print("  Bot ID       : " + str(bot_id))
 '
 
 echo
@@ -57,11 +60,16 @@ if not data.get("ok"):
     print(json.dumps(data, indent=2, ensure_ascii=False))
     sys.exit(1)
 r = data["result"]
-print(f"  URL                 : {r.get(\"url\") or \"(boş)\"}")
-print(f"  Bekleyen güncelleme : {r.get(\"pending_update_count\", 0)}")
-print(f"  Son hata tarihi     : {r.get(\"last_error_date\") or \"(yok)\"}")
-print(f"  Son hata mesajı     : {r.get(\"last_error_message\") or \"(yok)\"}")
-print(f"  Son hata kaynağı    : {r.get(\"last_error_source\") or \"(yok)\"}")
+url = r.get("url") or "(boş)"
+pending = r.get("pending_update_count", 0)
+last_date = r.get("last_error_date") or "(yok)"
+last_message = r.get("last_error_message") or "(yok)"
+last_source = r.get("last_error_source") or "(yok)"
+print("  URL                 : " + str(url))
+print("  Bekleyen güncelleme : " + str(pending))
+print("  Son hata tarihi     : " + str(last_date))
+print("  Son hata mesajı     : " + str(last_message))
+print("  Son hata kaynağı    : " + str(last_source))
 '
 
 echo
