@@ -7,8 +7,8 @@
 # Sıra önemli: özel kurallar en üstte, SPA fallback en altta.
 [[redirects]]
   from = "/urunler"
-  to = "/urunler.html"
-  status = 200
+  to = "/urunler/tarhana-classic"
+  status = 301
 
 [[redirects]]
   from = "/urunler/:id"

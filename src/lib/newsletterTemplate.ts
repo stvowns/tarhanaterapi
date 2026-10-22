@@ -133,7 +133,7 @@ export const buildNewsletterHtml = (fields: NewsletterFields) => {
                 )}" style="display:inline-block;background:#b45f3c;color:#ffffff;text-decoration:none;font-size:14px;font-weight:700;padding:14px 24px;border-radius:10px;">${escapeHtml(
                   fields.ctaLabel
                 )}</a>
-                <p style="margin:18px 0 0;font-size:13px;line-height:1.6;color:#6b6458;">Ya da <a href="https://tarhanaterapi.com/urunler" style="color:#3f4a32;font-weight:700;text-decoration:underline;">geleneksel tarhanamızı keşfedin</a>.</p>
+                <p style="margin:18px 0 0;font-size:13px;line-height:1.6;color:#6b6458;">Ya da <a href="https://tarhanaterapi.com/urunler/tarhana-classic" style="color:#3f4a32;font-weight:700;text-decoration:underline;">geleneksel tarhanamızı keşfedin</a>.</p>
               </td>
             </tr>
             <tr>

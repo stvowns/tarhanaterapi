@@ -23,7 +23,7 @@ Son güncelleme: 21 Ekim 2026
 ## Sayfalar
 
 - [Ana Sayfa](https://tarhanaterapi.com/): Marka tanımı, ürün özeti, fiyat ve SSS.
-- [Ürünler ve Fiyatlar](https://tarhanaterapi.com/urunler): Güncel ürün, fiyat ve istek üzerine çeşitler.
+- [Ürün ve Güncel Fiyat](https://tarhanaterapi.com/urunler/tarhana-classic): 1 kg geleneksel tarhana, güncel fiyat ve istek üzerine çeşitler.
 - [İçindekiler ve Üretim](https://tarhanaterapi.com/icerik): Malzemeler, üretim adımları ve alerjen bilgisi.
 - [Hikayemiz](https://tarhanaterapi.com/hikaye): Orhangazi atölyesi ve üç nesillik aile tarifi.
 - [Yorumlar](https://tarhanaterapi.com/yorumlar): Müşteri deneyimleri.

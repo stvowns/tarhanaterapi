@@ -5,7 +5,7 @@
  * Bu script her rotayı (ürün sayfaları dahil) kendi HTML dosyasına yazar;
  * böylece botlar sayfa metnini, fiyatı, SSS'leri ve JSON-LD'yi kaynak HTML'de görür.
  *
- * Çıktı: dist/index.html, dist/urunler.html, dist/urunler/<id>.html, ...
+ * Çıktı: dist/index.html, dist/urunler/<id>.html, ...
  */
 import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
@@ -200,7 +200,7 @@ const nav = `
   <header>
     <a class="static-brand" href="/">TarhanaTerapi</a>
     <nav aria-label="Ana menü">
-      <a href="/urunler">Ürünler ve fiyatlar</a>
+      <a href="/urunler/tarhana-classic">Ürünler ve fiyatlar</a>
       <a href="/icerik">İçindekiler</a>
       <a href="/hikaye">Hikayemiz</a>
       <a href="/yorumlar">Yorumlar</a>
@@ -212,7 +212,7 @@ const footer = `
   <footer>
     <p>© 2026 TarhanaTerapi · Son içerik güncellemesi: ${CONTENT_UPDATED_LABEL}</p>
     <p>
-      <a href="/urunler">Ürünler</a> ·
+      <a href="/urunler/tarhana-classic">Ürünler</a> ·
       <a href="/iletisim">İletişim</a> ·
       <a href="/kvkk">KVKK</a> ·
       <a href="/llms.txt">llms.txt</a> ·
@@ -271,7 +271,7 @@ const productFaqs = [
 
 const productContent = (product: Product) => `
   <main>
-    <p><a href="/">Ana Sayfa</a> / <a href="/urunler">Ürünler</a> / ${esc(product.name)}</p>
+    <p><a href="/">Ana Sayfa</a> / ${esc(product.name)}</p>
     <h1>${esc(product.name)}</h1>
     <p class="static-definition">
       <strong>${esc(product.name)}</strong>, TarhanaTerapi'nin Bursa Orhangazi'deki aile
@@ -280,7 +280,7 @@ const productContent = (product: Product) => `
       )}
     </p>
     <p><strong>Fiyat: ${product.price} TL</strong> · ${esc(product.weight)} · Stokta</p>
-    <p><a class="static-cta" href="/urunler">Ürün sayfasına git</a></p>
+    <p><a class="static-cta" href="/iletisim">Sipariş ve stok için iletişime geç</a></p>
 
     <h2>Ürün detayı</h2>
     <p>${esc(product.details)}</p>
@@ -326,7 +326,7 @@ const homeContent = () => `
       BRAND_DEFINITION.replace(/^TarhanaTerapi,\s*/, '')
     )}</p>
     <p>${esc(SHORT_ANSWER)}</p>
-    <p><a class="static-cta" href="/urunler">Ürünü ve güncel fiyatı gör</a></p>
+    <p><a class="static-cta" href="/urunler/tarhana-classic">Ürünü ve güncel fiyatı gör</a></p>
 
     <h2>Ürün ve fiyat</h2>
     ${productTable()}
@@ -341,25 +341,6 @@ const homeContent = () => `
     </ul>
 
     ${faqBlock()}
-  </main>
-  ${contactBlock}`;
-
-const productsContent = () => `
-  <main>
-    <h1>Tarhana Ürünleri ve Fiyatları</h1>
-    <p class="static-definition">
-      TarhanaTerapi'nin geleneksel tarhanası Bursa Orhangazi'deki aile atölyesinde, aile tarifiyle
-      hazırlanır. Aşağıdaki fiyatlar ${CONTENT_UPDATED_LABEL} tarihinde doğrulanmıştır; 2000 TL
-      üzeri siparişlerde kargo ücretsizdir; 2000 TL altı siparişlerde 150 TL'dir.
-    </p>
-    ${productTable()}
-    <h2>Hangi tarhana kime uygun?</h2>
-    <ul>
-      <li><strong>Geleneksel tarhana:</strong> İlk kez alacaklar ve klasik tarhana lezzeti arayanlar.</li>
-      <li><strong>Acılı versiyon:</strong> Pul biber ve baharatlı sevenler için istek üzerine.</li>
-      <li><strong>Bebek/çocuk dostu versiyon:</strong> Tuzsuz ve acısız arayan aileler için istek üzerine.</li>
-    </ul>
-    ${faqBlock(6)}
   </main>
   ${contactBlock}`;
 
@@ -696,9 +677,8 @@ const legalContent = () => {
   </main>`;
 };
 
-const routeContent: Record<SiteRoute, () => string> = {
+const routeContent: Record<Exclude<SiteRoute, 'products'>, () => string> = {
   home: homeContent,
-  products: productsContent,
   ingredients: ingredientsContent,
   story: storyContent,
   reviews: reviewsContent,
@@ -706,7 +686,11 @@ const routeContent: Record<SiteRoute, () => string> = {
   legal: legalContent,
 };
 
-(Object.keys(routePaths) as SiteRoute[]).forEach((route) => {
+const prerenderRoutes = (Object.keys(routePaths) as SiteRoute[]).filter(
+  (route): route is Exclude<SiteRoute, 'products'> => route !== 'products'
+);
+
+prerenderRoutes.forEach((route) => {
   const seo = routeSeo[route];
   const path = routePaths[route];
   const canonical = path === '/' ? `${SITE_URL}/` : `${SITE_URL}${path}`;

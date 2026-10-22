@@ -1,10 +1,11 @@
 # Cloudflare Pages yönlendirmeleri
-# Not: Pages, /urunler isteğini urunler.html dosyasından otomatik servis eder
-# (iç içe yollar dâhil). Bu yüzden .html'e ayrı rewrite kuralı GEREKMEZ;
-# eklenirse 308 döngüsü oluşur.
+# /urunler koleksiyon sayfası kaldırıldı; tek ürün sayfasına kalıcı yönlendirilir.
+# Böylece eski liste URL'sinin SEO değeri korunur.
 # Bilinmeyen yollar için SPA fallback KULLANILMAZ.
 # Cloudflare Pages, public/404.html dosyasını gerçek 404 durum koduyla servis eder.
 # Bu, arama motorlarında soft-404 oluşmasını engeller.
+
+/urunler /urunler/tarhana-classic 301
 
 # Kaldırılan ürün URL'leri tek ürüne yönlendirilir.
 /urunler/tarhana-spicy /urunler/tarhana-classic 301

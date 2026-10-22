@@ -25,7 +25,7 @@ const BOTS = [
 
 const PATHS = [
   { path: '/', marker: 'TarhanaTerapi' },
-  { path: '/urunler', marker: 'Tarhana' },
+  { path: '/urunler/tarhana-classic', marker: 'Tarhana' },
   { path: '/rehber/tarhana-neden-eksir', marker: 'Tarhana' },
   { path: '/robots.txt', marker: 'OAI-SearchBot' },
   { path: '/sitemap.xml', marker: '<urlset' },

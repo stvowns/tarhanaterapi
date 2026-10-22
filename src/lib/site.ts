@@ -46,6 +46,12 @@ export const SHORT_ANSWER =
 export const productPath = (product: Pick<Product, 'id'>) => `/urunler/${product.id}`;
 export const productUrl = (product: Pick<Product, 'id'>) => `${SITE_URL}${productPath(product)}`;
 
+/**
+ * Tek ürünlü yapıda "Tarhanamız" ve benzeri ana gezinme bağlantıları
+ * koleksiyon sayfası yerine doğrudan ürün sayfasına gider.
+ */
+export const primaryProductPath = productPath(PRODUCTS[0]);
+
 /** Aynı sayfanın build sırasında üretilen Markdown kardeşi. */
 export const markdownUrl = (canonical: string) => {
   const pathPart = canonical.split(/[?#]/, 1)[0].replace(/\/+$/, '');
@@ -295,7 +301,6 @@ export function jsonLdForRoute(route: SiteRoute, product?: Product): Record<stri
         productSchema(product),
         breadcrumb([
           { name: 'Ana Sayfa', path: '/' },
-          { name: 'Ürünler', path: routePaths.products },
           { name: product.name, path: productPath(product) },
         ]),
       ],

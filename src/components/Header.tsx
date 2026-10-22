@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { ActiveTab, CartItem, User } from '../types';
 import { ASSETS } from '../data/mockData';
-import { routePaths } from '../lib/site';
+import { primaryProductPath, routePaths } from '../lib/site';
 
 interface HeaderProps {
   activeTab: ActiveTab;
@@ -37,6 +37,9 @@ export const Header: React.FC<HeaderProps> = ({
     { id: 'reviews', label: 'Yorumlar' },
     { id: 'contact', label: 'İletişim' },
   ];
+
+  const navHref = (tab: ActiveTab) =>
+    tab === 'products' ? primaryProductPath : routePaths[tab];
 
   const handleNavClick = (tab: ActiveTab) => {
     setActiveTab(tab);
@@ -76,7 +79,7 @@ export const Header: React.FC<HeaderProps> = ({
             return (
               <a
                 key={link.id}
-                href={routePaths[link.id]}
+                href={navHref(link.id)}
                 onClick={(e) => {
                   e.preventDefault();
                   handleNavClick(link.id);
@@ -185,7 +188,7 @@ export const Header: React.FC<HeaderProps> = ({
               return (
                 <a
                   key={link.id}
-                  href={routePaths[link.id]}
+                  href={navHref(link.id)}
                   onClick={(e) => {
                     e.preventDefault();
                     handleNavClick(link.id);

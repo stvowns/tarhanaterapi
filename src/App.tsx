@@ -32,7 +32,6 @@ import { UserProfileModal } from './components/UserProfileModal';
 import { AdminModal } from './components/AdminModal';
 
 // Specific screen pages
-import { ProductsPage } from './pages/ProductsPage';
 import { IngredientsPage } from './pages/IngredientsPage';
 import { StoryPage } from './pages/StoryPage';
 import { ReviewsPage } from './pages/ReviewsPage';
@@ -49,6 +48,7 @@ import {
   jsonLdForGuide,
   jsonLdForGuideIndex,
   jsonLdForRoute,
+  primaryProductPath,
   productSeoDescription,
   productUrl,
   routePaths,
@@ -133,7 +133,9 @@ const navigate = useNavigate();
 
 const pathToTab: Record<string, ActiveTab> = {
   '/': 'home',
+  // Eski liste adresi; sunucu 301 ile ürün sayfasına yönlendirir.
   '/urunler': 'products',
+  [primaryProductPath]: 'products',
   '/icerik': 'ingredients',
   '/hikaye': 'story',
   '/yorumlar': 'reviews',
@@ -144,7 +146,7 @@ const pathToTab: Record<string, ActiveTab> = {
 
 const tabToPath: Record<ActiveTab, string> = {
   home: '/',
-  products: '/urunler',
+  products: primaryProductPath,
   ingredients: '/icerik',
   story: '/hikaye',
   reviews: '/yorumlar',
@@ -171,6 +173,14 @@ const setActiveTab = useCallback(
   },
   [navigate]
 );
+
+// Cloudflare/Netlify 301 yönlendirmesinin yanında, yerel geliştirme ve
+// istemci içi eski bağlantılar için de koleksiyon adresini ürüne taşı.
+useEffect(() => {
+  if (normalizedPath === '/urunler') {
+    navigate(primaryProductPath, { replace: true });
+  }
+}, [normalizedPath, navigate]);
 
   // User Authentication State
   const [currentUser, setCurrentUser] = useState<User | null>(() => {
@@ -716,12 +726,13 @@ const setActiveTab = useCallback(
       };
     }
 
-    if (currentProduct) {
+    if (currentProduct || normalizedPath === '/urunler') {
+      const product = currentProduct ?? PRODUCTS[0];
       return {
-        title: `${currentProduct.name} — ${currentProduct.price} TL | TarhanaTerapi`,
-        description: productSeoDescription(currentProduct),
-        canonical: productUrl(currentProduct),
-        jsonLd: jsonLdForRoute('products', currentProduct),
+        title: `${product.name} — ${product.price} TL | TarhanaTerapi`,
+        description: productSeoDescription(product),
+        canonical: productUrl(product),
+        jsonLd: jsonLdForRoute('products', product),
       };
     }
 
@@ -826,18 +837,12 @@ const setActiveTab = useCallback(
           </div>
         )}
 
-        {activeTab === 'products' &&
-          (currentProduct ? (
-            <ProductPage
-              product={currentProduct}
-              onAddToCart={(p) => handleAddToCart(p, 1)}
-            />
-          ) : (
-            <ProductsPage
-              onAddToCart={(p) => handleAddToCart(p, 1)}
-              onSelectProduct={(p) => setSelectedProduct(p)}
-            />
-          ))}
+        {activeTab === 'products' && (
+          <ProductPage
+            product={currentProduct ?? PRODUCTS[0]}
+            onAddToCart={(p) => handleAddToCart(p, 1)}
+          />
+        )}
 
         {activeTab === 'ingredients' && (
           <IngredientsPage onGoToShop={() => setActiveTab('products')} />

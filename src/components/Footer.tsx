@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { ActiveTab } from '../types';
 import { ASSETS } from '../data/mockData';
 import { GIZLILIK_POLITIKASI, MESAFELI_SATIS } from '../data/legal';
-import { CONTENT_UPDATED_LABEL, routePaths } from '../lib/site';
+import { CONTENT_UPDATED_LABEL, primaryProductPath, routePaths } from '../lib/site';
 
 interface FooterProps {
   setActiveTab: (tab: ActiveTab) => void;
@@ -92,7 +92,7 @@ export const Footer: React.FC<FooterProps> = ({
             <span className="font-title-lg text-on-surface font-semibold">Keşfet</span>
             <nav className="flex flex-col gap-2">
               <a
-                href={routePaths.products}
+                href={primaryProductPath}
                 onClick={(e) => {
                   e.preventDefault();
                   handleNav('products');

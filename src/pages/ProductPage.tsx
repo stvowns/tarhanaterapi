@@ -57,8 +57,6 @@ export const ProductPage: React.FC<ProductPageProps> = ({ product, onAddToCart }
         <nav aria-label="Breadcrumb" className="text-xs text-on-surface-variant mb-6 flex flex-wrap items-center gap-1.5">
           <a href="/" className="hover:text-primary">Ana Sayfa</a>
           <span aria-hidden="true">/</span>
-          <a href="/urunler" className="hover:text-primary">Ürünler</a>
-          <span aria-hidden="true">/</span>
           <span className="text-on-surface font-medium">{product.name}</span>
         </nav>
 
