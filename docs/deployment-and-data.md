@@ -17,7 +17,17 @@
 
 - Eski Netlify sitesi silindi; `tarhanaterapi.netlify.app` artık 404 döner.
 - Repodaki `netlify/`, `netlify.toml` ve `vercel.json` yalnızca tarihsel referanstır; canlıda kullanılmaz.
-- Cloudflare Pages projesinde Git Provider bağlı değildir. `git push` otomatik deploy **etmez**.
+- Cloudflare Pages projesinde Git Provider **bağlıdır**; `git push` otomatik build/deploy tetikler. Manuel `wrangler pages deploy` da kullanılabilir.
+
+### Cloudflare WAF rate limiting
+
+- Kural adı: **`API POST abuse protection`**; durum **Active**.
+- Kural ID: `e68c5aebf5f24b0d93457338ba12893c`.
+- Eşleşme: `(http.request.method eq "POST" and starts_with(http.request.uri.path, "/api/"))`
+- Limit: **IP başına 5 istek / 10 saniye**; aşınca **Block**, **10 saniye** süreyle.
+- Yalnızca `/api/*` POST trafiğini etkiler; GET istekleri ve statik sayfalar etkilenmez.
+- Cloudflare Free planında **1 rate limiting kuralı** ve yalnızca **10 saniyelik** period/duration destekleniyor.
+- Kural, Wrangler token'ında WAF yazma yetkisi olmadığı için dashboard → Security → Security rules → Rate limiting rules üzerinden oluşturuldu.
 
 ## 2. Build ve deploy
 
@@ -34,9 +44,9 @@ npx wrangler pages deploy dist \
 - `--commit-hash` tam 40 karakter olmalı; kısa SHA kullanılmamalı.
 - Build mutlaka **gerçek `VITE_*` değerleriyle** alınmalı. Dummy Supabase değerleriyle üretilmiş `dist/` asla deploy edilmemeli.
 - Deploy sonrası test özel alan adından yapılmalı; `*.pages.dev` Türkiye'de engelli olabilir.
-- Yalnızca doküman değiştiyse yeniden deploy gerekmez; kod/PDF değiştiyse deploy gerekir.
+- Git entegrasyonu açık olduğu için push otomatik build/deploy tetikler. Yalnızca doküman değişikliği canlı siteyi etkilemez; yine de otomatik build çalışabilir.
 
-Son doğrulanan prod code commit: `0b423805cf81f4ee136757ef8fd0d89f8f534350`.
+Son doğrulanan prod code commit: `1176edcba0f5170de26fbb17ba14a20aa30972be`.
 
 ## 3. Frontend build değişkenleri
 
@@ -66,6 +76,7 @@ Son doğrulanan prod code commit: `0b423805cf81f4ee136757ef8fd0d89f8f534350`.
 | `TELEGRAM_ADMIN_CHAT_ID` | Yönetici sohbeti |
 | `TELEGRAM_WEBHOOK_SECRET` | Webhook doğrulama; yoksa webhook fail-closed |
 | `ALLOW_COD` | `true` değilse Kapıda Ödeme kabul edilmez |
+| `ADMIN_MFA_REQUIRED` | `on` ise yönetici API'leri `aal2` MFA oturumu ister; varsayılan kapalı |
 | `BANK_TRANSFER_BANK`, `BANK_TRANSFER_ACCOUNT_NAME`, `BANK_TRANSFER_IBAN` | Havale/EFT bilgileri (yalnızca gerçek değer) |
 
 > `SUPABASE_SERVICE_ROLE_KEY`, `RESEND_API_KEY`, `TELEGRAM_BOT_TOKEN`, `TELEGRAM_WEBHOOK_SECRET` ve `UNSUBSCRIBE_SECRET` frontend'e sızmamalı; repoya yazılmamalı.
@@ -134,13 +145,18 @@ Deploy sonrası en az şunlar kontrol edilmeli:
 - [ ] Geçersiz `/api/unsubscribe` `400`
 - [ ] Secret'sız `/api/telegram-webhook` `401`
 - [ ] Geçersiz `create-order` / `subscribe` `400`
+- [ ] `/urunler` `301` → `/urunler/tarhana-classic`
+- [ ] `/urunler/tarhana-classic` `200`
+- [ ] İletişim formu testi `200`; Resend e-postası teslim edildi
+- [ ] Cloudflare rate limit kuralı `1/1` ve **Active**
 - [ ] Public `orders` / `subscribers` SELECT boş
 - [ ] Public geçersiz INSERT `42501` / HTTP `401`
 
 ## 9. Açık operasyon işleri
 
-- Telegram webhook secret'ını rotate et (eski değer git geçmişinde).
-- Resend API key'ini rotate et.
-- Supabase Auth “Confirm email” ve yönetici MFA ayarlarını doğrula.
-- Public formlar için Turnstile veya kalıcı rate limit ekle.
+22 Ekim 2026 itibarıyla Telegram/Resend secret rotasyonları ve Cloudflare WAF rate limit tamamlandı. Kalanlar:
+
+- Supabase Auth “Confirm email”ı aç; admin hesabında TOTP enrollment yap; sonra `./set-admin-mfa.sh on` ve deploy.
 - Gerçek banka/IBAN bilgilerini, Shopier onayını ve kargo teklifini netleştir.
+- Cloudflare Web Analytics ve Yandex Webmaster doğrulamasını tamamla.
+- İsteğe bağlı: Turnstile ve bülten double opt-in ekle.

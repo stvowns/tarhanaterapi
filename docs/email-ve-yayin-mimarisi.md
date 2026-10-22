@@ -124,6 +124,13 @@ Bu limitler içinde kalındığı sürece **ücret yansımaz**. Sipariş onaylar
 
 > Ücret yansımaması için Resend panelinde **Billing → pay-as-you-go/overage kapalı** olmalı. Free plan kredi kartı gerektirmez; limit aşılırsa gönderim durur, otomatik ücret çıkmaz.
 
+### Resend API anahtarı
+
+- 22 Ekim 2026'da **`tarhanaterapi-prod-2026-10-22`** adlı Full access anahtar oluşturuldu ve Cloudflare Pages'ta `RESEND_API_KEY` olarak ayarlandı.
+- Test iletişim formu HTTP `200` döndü; test e-postası teslim edildi.
+- Resend API Keys ekranında **1/1 anahtar** görünüyor; eski anahtar artık listede yok.
+- Anahtar değeri repoya veya frontend'e yazılmaz. Rotasyon için `./rotate-resend-key.sh` kullanılır; yeni anahtar deploy edilip test edildikten sonra eski anahtar panelden iptal edilir.
+
 ## 4. Bülten kayıtları ve yönetici panelinden gönderim
 
 - Kayıtlar: Supabase `subscribers` tablosu.

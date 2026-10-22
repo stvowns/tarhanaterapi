@@ -4,6 +4,10 @@
 **Site:** https://tarhanaterapi.com  
 **Kapsam:** 19 prerender URL + robots.txt + llms.txt + PDF + 404 + yönlendirmeler + schema
 
+> **22 Ekim 2026 güncellemesi:** `/urunler` listeleme sayfası kaldırıldı; artık
+> `/urunler/tarhana-classic` adresine **301** yönlendiriyor. Aşağıdaki 20 Ekim tablosu
+> tarihsel kayıttır; güncel durum `docs/progress-and-security.md` içindedir.
+
 ## Özet
 
 - Sitemap: **HTTP 200**, **19 URL**

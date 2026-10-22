@@ -5,6 +5,10 @@
 **Kapsam:** Teknik GEO, AI bot erişimi, entity/schema, alıntılanabilir içerik, ölçüm planı
 **Durum:** Teknik değişiklikler canlıya alındı (production deploy tamamlandı)
 
+> **22 Ekim 2026 güncellemesi:** Site artık Cloudflare Pages üzerinde ve `/urunler`
+> listeleme sayfası kaldırıldı; `/urunler` → `/urunler/tarhana-classic` **301**.
+> Bu rapor 19 Ekim tarihli tarihsel kayıttır.
+
 ---
 
 ## 1. Kısa özet

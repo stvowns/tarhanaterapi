@@ -21,6 +21,29 @@
 - Güvenlik başlıklarına `frame-ancestors`, `form-action`, `upgrade-insecure-requests`,
   `X-Permitted-Cross-Domain-Policies` ve `Cross-Origin-Opener-Policy` eklendi.
 
+## Uygulanan ek kontroller (22 Ekim 2026)
+
+- **Cloudflare WAF rate limiting:** `API POST abuse protection` kuralı oluşturuldu.
+  Eşleşme `(http.request.method eq "POST" and starts_with(http.request.uri.path, "/api/"))`;
+  IP başına **5 istek / 10 saniye**, aşınca **Block / 10 saniye**, durum **Active**.
+  Kural ID: `e68c5aebf5f24b0d93457338ba12893c`. Free plan tek kural ve 10 saniyelik
+  period/duration ile sınırlıdır; GET ve statik trafik etkilenmez.
+- **Telegram webhook secret rotasyonu:** `./rotate-telegram-webhook.sh` ile yeni secret
+  üretildi, Cloudflare'a yazıldı ve webhook güncellendi. Bot canlıda yanıt veriyor.
+- **Resend API key rotasyonu:** `tarhanaterapi-prod-2026-10-22` (Full access) oluşturuldu;
+  Cloudflare `RESEND_API_KEY` güncellendi. Test iletişim formu `200` döndü ve test maili
+  teslim edildi. Resend panelinde 1/1 anahtar var; eski anahtar listede yok.
+- **`admin@tarhanaterapi.com` kaldırıldı:** canlı API allowlist'leri, eski Netlify
+  fonksiyonları, frontend admin kontrolleri, UI footer'ı ve dokümanlar temizlendi.
+- **MFA altyapısı:** Supabase TOTP challenge ve Admin → Güvenlik enrollment eklendi.
+  7 yönetici API'sinde `tokenAal` + `ADMIN_MFA_REQUIRED` kontrolü var. `./set-admin-mfa.sh`
+  ile enforcement açılıp kapatılabiliyor. Şu an enrollment yapılmadığı için
+  `ADMIN_MFA_REQUIRED` kapalı.
+- **Profil sipariş geçmişi:** ürün görseli/adı/gramajı/adet/birim fiyat/satır toplamı,
+  ara toplam/kargo/indirim/toplam, teslimat notu ve tarih+saat gösteriliyor.
+- **`/urunler`:** listeleme sayfası kaldırıldı; `/urunler` → `/urunler/tarhana-classic`
+  **301**. Sitemap, `llms.txt`, iç linkler, prerender ve redirect kuralları güncellendi.
+
 ## Supabase RLS sertleştirmesi — uygulandı (22 Ekim 2026)
 
 `supabase/security-hardening.sql` Supabase SQL Editor içinde çalıştırıldı. Bu dosya:
@@ -38,24 +61,25 @@ Doğrulama (public publishable anahtarıyla):
 - `orders` ve `subscribers` SELECT denemeleri boş liste döndürüyor; public erişim yok.
 - Onaylı yorum uç noktası çalışıyor; onay bekleyenler uç noktası yetkisiz `401` veriyor.
 
-## Acil operasyonel aksiyonlar
+## Kalan operasyonel aksiyonlar
 
-1. **Telegram webhook secret'ını rotate edin.** Eski `tarhana-secret-2026` değeri repo
-   dokümanında açık metin olarak duruyordu; dokümandan kaldırıldı ancak git geçmişinde vardır.
-   Bot API `setWebhook` çağrısında yeni `secret_token` belirleyin ve Cloudflare'de
-   `TELEGRAM_WEBHOOK_SECRET` değerini güncelleyin.
-2. **Resend API anahtarını rotate edin.** Anahtar daha önce paylaşıldıysa yeni anahtar oluşturun.
-3. Supabase Auth → Email sağlayıcısında **Confirm email** açık olsun. Admin hesaplarında MFA
-   etkinleştirin. Uzun vadede admin yetkisini `app_metadata.role = 'admin'` ile verin.
-4. Cloudflare'de `/api/create-order`, `/api/contact-message`, `/api/submit-review`,
-   `/api/subscribe` için kalıcı rate limiting (veya Turnstile) tanımlayın. Koddaki limitler
-   yalnızca tek bir Function instance'ı içinde tutulduğu için dağıtık spam'i tam durdurmaz.
+1. Supabase Auth → Email sağlayıcısında **Confirm email**ı açın; Site URL ve redirect
+   URL'lerini `https://tarhanaterapi.com` olarak ayarlayın. Admin hesabında TOTP enrollment
+   yapın, ardından `./set-admin-mfa.sh on` çalıştırıp deploy edin. Uzun vadede admin yetkisini
+   `app_metadata.role = 'admin'` ile verin.
+2. Gerçek banka/IBAN bilgilerini, Shopier onayını ve kargo teklifini netleştirin.
+3. Cloudflare Web Analytics ve Yandex Webmaster doğrulamasını tamamlayın.
+4. İsteğe bağlı: Turnstile ve bülten double opt-in ekleyin. Mevcut edge rate limit
+   `POST /api/*` için 5 istek/10 sn; Free plan nedeniyle daha uzun pencere yok.
 
 ## Kalan riskler
 
 - Admin yetkisi hâlâ e-posta allowlist'ine bağlı; e-posta hesabı ele geçirilirse admin paneline
   erişilebilir. MFA ve `app_metadata` geçişi önerilir.
-- Public formlarda CAPTCHA/Turnstile yok; in-memory rate limit aşılabiliyor.
+- Public formlarda CAPTCHA/Turnstile yok. Edge rate limit `POST /api/*` için 5 istek/10 sn,
+  ancak Free plan nedeniyle yalnızca 10 saniyelik pencere ve tek kural var.
+- MFA altyapısı hazır olsa da `ADMIN_MFA_REQUIRED` kapalı ve Supabase Confirm email kapalı;
+  enrollment yapılmadan admin paneli yalnızca e-posta+şifre ile korunuyor.
 - Bülten aboneliğinde double opt-in yok; biri başkasının e-postasını formdan ekleyebilir.
 - CSP'de `script-src 'unsafe-inline'` var; JSON-LD ve mevcut yapı nedeniyle korunuyor.
 - `netlify/functions` altındaki eski fonksiyonlar artık kullanılmıyor; ileride silinmeli.

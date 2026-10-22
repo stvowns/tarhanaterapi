@@ -11,8 +11,8 @@
 
 ## Özet
 
-Teknik GEO altyapısı, hosting taşıması ve e-posta/bülten altyapısı tamam. Şu an öne çıkan işler:
-**(1) ölçüm** (Web Analytics + panel doğrulamaları), **(2) dış otorite** (yorum, Google Business, backlink), **(3) secret rotasyonu ve public form koruması**.
+Teknik GEO altyapısı, hosting taşıması, e-posta/bülten altyapısı, secret rotasyonları ve edge rate limit tamam. Şu an öne çıkan işler:
+**(1) ölçüm** (Web Analytics + panel doğrulamaları), **(2) dış otorite** (yorum, Google Business, backlink), **(3) MFA enrollment ve Supabase Auth doğrulaması**.
 
 ---
 
@@ -79,6 +79,13 @@ Teknik GEO altyapısı, hosting taşıması ve e-posta/bülten altyapısı tamam
 - [x] CSP/HSTS ve güvenlik başlıkları güncellendi (`public/_headers`).
 - [x] `npm run lint`, `node --check`, `npm audit` temiz; prod deploy `0b42380` ile canlıya alındı.
 - [x] Denetim kaydı: `docs/guvenlik-denetimi-2026-10-22.md`.
+- [x] **Telegram webhook secret'ı rotate edildi**; yeni secret Cloudflare'a yazıldı, webhook güncellendi, bot yanıt veriyor.
+- [x] **Resend API key'i rotate edildi**: `tarhanaterapi-prod-2026-10-22` (Full access); Cloudflare secret güncellendi, test maili teslim edildi. Resend panelinde artık 1/1 anahtar var; eski anahtar listede yok.
+- [x] **Cloudflare WAF rate limiting**: `API POST abuse protection` kuralı oluşturuldu. `POST /api/*`, IP başına 5 istek/10 sn, Block/10 sn, Active.
+- [x] **`admin@tarhanaterapi.com` kaldırıldı**: canlı API allowlist'leri, eski Netlify fonksiyonları, frontend admin kontrolleri, UI footer ve dokümanlar.
+- [x] **MFA altyapısı** tamamlandı: TOTP challenge, Admin → Güvenlik enrollment, 7 yönetici API'sinde `tokenAal` + `ADMIN_MFA_REQUIRED`, `./set-admin-mfa.sh on|off`. Enrollment kullanıcı tarafından ertelendi; enforcement şu an kapalı.
+- [x] **Profil sipariş geçmişi** ürün detayları + tarih/saat gösterecek şekilde güncellendi; canlı `TT-48214` kartında doğrulandı.
+- [x] **`/urunler` listeleme sayfası kaldırıldı**; `/urunler` → `/urunler/tarhana-classic` 301, iç linkler/sitemap/llms/prerender/redirect kuralları güncellendi.
 
 ---
 
@@ -117,15 +124,16 @@ Teknik GEO altyapısı, hosting taşıması ve e-posta/bülten altyapısı tamam
 - [ ] **Google Business Profile** (Orhangazi / Bursa) — **(Sen)**
   - Adres, telefon, saatler, ürünler, fotoğraflar; site ile birebir NAP tutarlılığı.
 
-- [ ] **Telegram webhook secret'ını rotate et** — **(Sen)**
-  - Eski `tarhana-secret-2026` değeri git geçmişinde duruyor. Cloudflare secret'ını yeni, yüksek entropili bir değerle değiştir; webhook'u `setWebhook` ile aynı secret'ı kullanacak şekilde güncelle.
+- [x] **Telegram webhook secret'ını rotate et** — **(Birlikte)**
+  - Yeni secret Cloudflare'a yazıldı, webhook aynı secret ile güncellendi; bot yanıt veriyor ve sipariş bildirimi alındı.
 
-- [ ] **Resend API key'ini rotate et** — **(Sen)**
-  - Anahtar daha önce sohbet/panel üzerinden paylaşıldı. Yeni key oluştur, Cloudflare secret'ını güncelle, eski key'i iptal et.
+- [x] **Resend API key'ini rotate et** — **(Birlikte)**
+  - Yeni anahtar `tarhanaterapi-prod-2026-10-22` (Full access); Cloudflare `RESEND_API_KEY` güncellendi, test maili teslim edildi. Resend panelinde başka anahtar görünmüyor.
 
-- [ ] **Supabase Auth doğrulaması** — **(Sen)**
-  - Auth → Providers → Email → “Confirm email” açık mı kontrol et.
-  - Yönetici hesaplarında MFA'yı etkinleştir.
+- [ ] **Supabase Auth / MFA enrollment** — **(Sen + Ben)**
+  - Auth → Providers → Email → “Confirm email”ı aç; Site URL ve redirect URL'leri `https://tarhanaterapi.com` olarak ayarla.
+  - Supabase Auth → MFA → TOTP'yi etkinleştir; admin hesabında TOTP enrollment yap.
+  - Sonra `./set-admin-mfa.sh on` çalıştır ve deploy et; `ADMIN_MFA_REQUIRED=on` ile yönetici API'leri `aal2` istesin.
 
 - [ ] **API token'ı revoke et** — **(Sen)**
   - Sohbete yazılan Cloudflare token'ı artık gereksiz; deploy'lar `wrangler` oturumuyla yapılıyor.
@@ -157,8 +165,9 @@ Teknik GEO altyapısı, hosting taşıması ve e-posta/bülten altyapısı tamam
 - [ ] **GitHub → Cloudflare otomatik deploy** — **(Ben)**
   - Şu an manuel `wrangler pages deploy`. Git entegrasyonu ile push'ta otomatik yayın kurulabilir.
 
-- [ ] **Public form koruması: Turnstile / kalıcı rate limit** — **(Birlikte)**
-  - Mevcut rate limit in-memory ve instance bazlı. Cloudflare Turnstile veya Supabase/Upstash tabanlı kalıcı limit eklenmeli.
+- [x] **Public form koruması: Cloudflare WAF rate limit** — **(Birlikte)**
+  - `API POST abuse protection` kuralı: `POST /api/*`, IP başına 5 istek/10 sn, Block/10 sn, Active.
+  - Free plan tek kural ve 10 sn period/duration ile sınırlı. Daha ayrıntılı limit veya bot koruması için Turnstile/üst plan değerlendirilebilir.
 
 - [ ] **Banka/IBAN, Shopier ve kargo bilgileri** — **(Sen)**
   - Gerçek banka adı, hesap sahibi ve IBAN; Shopier'den yazılı onay + çalışan ödeme linki; muhasebe onayı ve kargo teklifi netleştirilmeli.
@@ -186,9 +195,10 @@ Teknik GEO altyapısı, hosting taşıması ve e-posta/bülten altyapısı tamam
 
 ## ⚠️ Riskler / Açık Sorunlar
 
-- **E-posta:** Gelen kutusu (`satis@`), manuel gönderim ve otomatik sipariş e-postası (Resend) çalışıyor. **Resend API key'i rotate edilmeli.**
-- **Telegram:** Webhook fail-closed çalışıyor; ancak eski `tarhana-secret-2026` değeri git geçmişinde. **Secret rotate edilmeli.**
-- **Rate limit:** Public formlarda limit in-memory; instance yeniden başlayınca sıfırlanır. Turnstile veya kalıcı limit eklenmeli.
+- **E-posta:** Gelen kutusu (`satis@`), manuel gönderim ve otomatik sipariş e-postası (Resend) çalışıyor. Yeni anahtar `tarhanaterapi-prod-2026-10-22`; eski anahtar listede yok.
+- **Telegram:** Webhook fail-closed çalışıyor; yeni secret aktif, eski `tarhana-secret-2026` kullanılmıyor.
+- **Rate limit:** Cloudflare WAF'ta `POST /api/*` için IP başına 5 istek/10 sn kuralı aktif. Free plan nedeniyle period/duration 10 sn; daha güçlü koruma için Turnstile veya üst plan gerekir.
+- **MFA:** Altyapı hazır ancak `ADMIN_MFA_REQUIRED` kapalı; Supabase Confirm email de kapalı. Enrollment yapılmadan admin paneli yalnızca e-posta+şifre ile korunuyor.
 - **Doğrulanmamış yorum sayıları:** 420/215/310/180/145/98. Gerçek yorumlarla değiştirilene kadar `AggregateRating` eklenmeyecek.
 - **Netlify:** Site silindi; `netlify/` ve `netlify.toml` yalnızca referans olarak repoda duruyor, canlıda kullanılmıyor.
 - **AI garantisi yok:** Altyapı tam olsa bile "önerme" trafiğe, atıflara ve zamana bağlı.
@@ -212,9 +222,9 @@ Teknik GEO altyapısı, hosting taşıması ve e-posta/bülten altyapısı tamam
 
 ## ▶️ Önerilen sıra
 
-1. **Secret rotasyonu + Cloudflare Web Analytics + Yandex doğrulama** (bugün, 15 dk)
-2. **API token revoke + Supabase Auth/MFA kontrolü**
+1. **Supabase Auth/MFA enrollment + `./set-admin-mfa.sh on` + deploy** (bugün)
+2. **Cloudflare Web Analytics + Yandex doğrulama + API token revoke**
 3. **Google Business Profile + gerçek yorumlar**
-4. **Turnstile/rate limit + Merchant Center + içerik/şema + dış atıf** (paralel, sürekli)
+4. **Merchant Center + içerik/şema + dış atıf** (paralel, sürekli)
 
 > Her büyük değişiklikten sonra: `npm run build` → `npx wrangler pages deploy dist --project-name tarhanaterapi --branch main --commit-hash <tam-sha>` → `npm run indexnow` → canlı doğrulama.

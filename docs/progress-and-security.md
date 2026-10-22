@@ -8,8 +8,9 @@
 - Ödeme: yalnızca **Havale/EFT**. Kapıda Ödeme yalnızca `ALLOW_COD=true` ise kabul edilir; varsayılan kapalı.
 - Sipariş numarası: sıralı `TT-XXXXXX`.
 - Adres: **Muradiye Mh., Orhangazi / Bursa**
-- Prod code commit: `0b423805cf81f4ee136757ef8fd0d89f8f534350`
-- Docs commit: `bd88d18` (`Record Supabase RLS verification`)
+- Prod code commit: `1176edcba0f5170de26fbb17ba14a20aa30972be`
+- Son manuel Cloudflare deployment: `7bacb531`
+- Docs: 22 Ekim 2026 operasyon notları güncel.
 
 ## 22 Ekim 2026 tamamlananlar
 
@@ -52,6 +53,49 @@
 - Telegram webhook **fail-closed**: `TELEGRAM_WEBHOOK_SECRET` yoksa veya gelen secret eşleşmiyorsa `401`; admin chat ID kontrolü de yapılıyor.
 - Public demo login kaldırıldı.
 - `public/_headers` içinde CSP, HSTS ve diğer güvenlik başlıkları güncellendi.
+- `admin@tarhanaterapi.com` tüm canlı API allowlist'lerinden, eski Netlify fonksiyonlarından, frontend admin kontrollerinden, UI footer'ından ve dokümanlardan kaldırıldı.
+
+### Cloudflare WAF rate limiting
+
+- 22 Ekim 2026'da Cloudflare dashboard → **Security → Security rules → Rate limiting rules** üzerinden **`API POST abuse protection`** kuralı oluşturuldu.
+- Kural ID: `e68c5aebf5f24b0d93457338ba12893c`; durum **Active**.
+- Eşleşme: `(http.request.method eq "POST" and starts_with(http.request.uri.path, "/api/"))`
+- Limit: **IP başına 5 istek / 10 saniye**; aşınca **Block**, **10 saniye** süreyle.
+- GET istekleri, statik sayfalar, ürün görselleri ve normal sayfa trafiği etkilenmez; yalnızca `/api/*` altındaki POST trafiği korunur.
+- Free plan sınırı: **1 kural** ve yalnızca **10 saniyelik** period/duration. Daha esnek limit gerekirse plan yükseltmesi veya Turnstile değerlendirilmeli.
+- Wrangler OAuth token'ında WAF/ruleset yazma yetkisi olmadığı için kural dashboard üzerinden oluşturuldu; token'a ek yetki verilmedi.
+- Not: Aynı IP'den 10 saniyede 5'ten fazla admin POST'u (örn. çok hızlı sipariş durum güncellemesi) bloklanabilir. Normal kullanımda bu sınıra ulaşılmıyor; gerekirse eşik artırılmalı veya admin yolları istisna tutulmalı.
+
+### Resend anahtar rotasyonu
+
+- Yeni anahtar: **`tarhanaterapi-prod-2026-10-22`** (Full access), 22 Ekim 2026'da oluşturuldu.
+- Cloudflare Pages `RESEND_API_KEY` bu anahtarla güncellendi; deploy sonrası iletişim formu testi HTTP `200` döndü ve test e-postası teslim edildi.
+- Resend API Keys ekranında **1/1 anahtar** görünüyor; eski anahtar listede yok. Dolayısıyla ayrıca iptal edilecek aktif eski anahtar kalmadı.
+- Anahtar değeri repoya veya frontend'e yazılmadı.
+
+### Telegram webhook secret
+
+- `./rotate-telegram-webhook.sh` ile yeni secret üretildi, Cloudflare'a yazıldı ve webhook aynı secret ile güncellendi.
+- Bot yanıt veriyor; canlı testte sipariş bildirimi alındı.
+- Eski `tarhana-secret-2026` artık kullanılmıyor.
+
+### Profil sipariş geçmişi
+
+- `src/components/UserProfileModal.tsx` sipariş kartında ürün görseli, adı, gramajı, adedi, birim fiyatı, satır toplamı, ara toplam, kargo, indirim, genel toplam, teslimat notu ve **tarih + saat** gösteriyor.
+- Canlıda `TT-48214` test siparişinde doğrulandı.
+
+### MFA
+
+- Supabase TOTP tabanlı MFA istemci tarafında tamamlandı: girişte TOTP challenge, Admin → **Güvenlik** sekmesinde enrollment.
+- 7 yönetici API'sinde `tokenAal` ve `ADMIN_MFA_REQUIRED` kontrolü var; `ADMIN_MFA_REQUIRED=on` iken `aal2` olmayan oturumlar reddediliyor.
+- `./set-admin-mfa.sh on|off` ile enforcement açılıp kapatılıyor.
+- Şu an `ADMIN_MFA_REQUIRED` ayarlı değil; Supabase'de Confirm email kapalı (`mailer_autoconfirm: true`) ve admin hesabında TOTP faktörü yok. Kullanıcı enrollment'ı erteledi; sırasıyla Supabase Confirm email/TOTP/URL ayarları, Admin → Güvenlik enrollment, `./set-admin-mfa.sh on`, deploy yapılmalı.
+
+### `/urunler` listeleme sayfası
+
+- Ayrı ürün listeleme sayfası (`ProductsPage`) kaldırıldı.
+- `/urunler` kalıcı olarak **301 → `/urunler/tarhana-classic`**; Header, Footer, Story CTA, ürün breadcrumb'ı, sitemap, `llms.txt`, `404.html`, `index.html`, prerender ve Netlify/Cloudflare redirect kuralları güncellendi.
+- Canlı doğrulama: `/urunler` `301`, `Location: /urunler/tarhana-classic`; tarayıcı ürün sayfasına düşüyor; sitemap'te tam `/urunler` yok; IndexNow 13 URL için `200`.
 
 ## Canlı doğrulama sonuçları
 
@@ -62,6 +106,10 @@
 | `/api/my-orders` yetkisiz | `401` |
 | `/api/update-order-status` yetkisiz | `401` |
 | Geçersiz `/api/unsubscribe` | `400` |
+| `/urunler` | `301` → `/urunler/tarhana-classic` |
+| `/urunler/tarhana-classic` | `200` |
+| İletişim formu (Resend testi) | `200`, e-posta teslim edildi |
+| Cloudflare rate limit rule | `1/1` Active |
 | Secret'sız Telegram webhook | `401` |
 | Geçersiz `create-order` | `400` |
 | Geçersiz `subscribe` | `400` |
@@ -88,7 +136,7 @@ npx wrangler pages deploy dist \
 ```
 
 - `wrangler pages deploy` hem `dist/` hem `functions/` paketini yükler.
-- Cloudflare Pages projesinde Git Provider bağlı değil; `git push` otomatik deploy etmez.
+- Cloudflare Pages projesinde Git Provider bağlıdır; `git push` otomatik build/deploy tetikler. Manuel `wrangler pages deploy` da kullanılabilir.
 - `--commit-hash` için kısa SHA değil, **tam 40 karakterlik SHA** kullanılmalı.
 - Deploy sonrası `*.pages.dev` yerine özel alan adı test edilmeli.
 
@@ -112,16 +160,16 @@ Server-side:
 - `UNSUBSCRIBE_SECRET`
 - `TELEGRAM_BOT_TOKEN`, `TELEGRAM_ADMIN_CHAT_ID`, `TELEGRAM_WEBHOOK_SECRET`
 - `ALLOW_COD=true` (yalnızca gerçekten kapıda ödeme açılacaksa)
+- `ADMIN_MFA_REQUIRED=on` (MFA zorunluluğu; varsayılan kapalı)
 - `BANK_TRANSFER_BANK`, `BANK_TRANSFER_ACCOUNT_NAME`, `BANK_TRANSFER_IBAN` (yalnızca gerçek değerler)
 
 > `SUPABASE_SERVICE_ROLE_KEY`, `RESEND_API_KEY`, `TELEGRAM_BOT_TOKEN` ve `UNSUBSCRIBE_SECRET` asla frontend'e veya repoya yazılmamalı.
 
 ## Bilinen sınırlamalar / açık işler
 
-- **Telegram webhook secret'ı rotate edilmeli.** Eski `tarhana-secret-2026` değeri git geçmişinde duruyor.
-- **Resend API key'i rotate edilmeli.** Anahtar daha önce sohbet/panel üzerinden paylaşıldı.
-- Supabase Auth panelinde **“Confirm email”** açık mı ve yönetici hesaplarında MFA var mı, bir kez kontrol edilmeli.
-- Public formlar için Cloudflare Turnstile veya kalıcı (DB/Upstash) rate limit henüz yok; mevcut limit in-memory ve instance bazlı.
+- **Supabase Auth / MFA:** Confirm email şu an kapalı (`mailer_autoconfirm: true`); admin hesabında TOTP faktörü yok. `ADMIN_MFA_REQUIRED` da ayarlı değil. Enrollment sonrası `./set-admin-mfa.sh on` ile enforcement açılmalı.
+- **Rate limit kapsamı:** Cloudflare Free planında tek kural ve yalnızca 10 saniyelik period/duration var. Daha ayrıntılı limit veya CAPTCHA gerekiyorsa Turnstile/üst plan değerlendirilmeli.
+- **Bülten:** Double opt-in yok; biri başkasının e-postasını formdan ekleyebilir.
 - Yönetici allowlist koddaki e-posta listesiyle yönetiliyor; ileride Supabase `app_metadata` / rol tablosuna taşınabilir.
 - Banka/IBAN bilgileri, Shopier onayı ve ödeme linki, muhasebe onayı ve kargo teklifi hâlâ kullanıcı tarafından netleştirilmeli.
 - Cloudflare Web Analytics kurulumu ve Yandex Webmaster doğrulaması kullanıcı tarafında bekliyor.

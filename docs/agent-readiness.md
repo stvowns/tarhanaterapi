@@ -55,11 +55,13 @@ edilmelidir; aksi hâlde sinyaller birbiriyle çelişir.
 Build sırasında her HTML sayfasının yanına bir `.md` kardeşi üretilir:
 
 - `/` → `/index.md`
-- `/urunler` → `/urunler.md`
 - `/urunler/tarhana-classic` → `/urunler/tarhana-classic.md`
 - `/rehber` → `/rehber.md`
 - `/rehber/<slug>` → `/rehber/<slug>.md`
 - `/kvkk` → `/kvkk.md`
+
+> 22 Ekim 2026: `/urunler` listeleme sayfası kaldırıldı; artık `/urunler/tarhana-classic`
+> adresine **301** yönlendiriyor ve ayrı bir `/urunler.md` üretilmiyor.
 
 `functions/_middleware.js` gelen `Accept` başlığını q değerleriyle ayrıştırır.
 `text/markdown` ağırlığı `text/html`'den düşük değilse aynı adreste
@@ -108,6 +110,7 @@ curl -sI https://tarhanaterapi.com/robots.txt | grep -i content-signal
 curl -sI -H 'Accept: text/markdown' https://tarhanaterapi.com/
 curl -s  -H 'Accept: text/markdown' https://tarhanaterapi.com/ | head -30
 curl -sI https://tarhanaterapi.com/ | grep -i '^link:'
+curl -sI https://tarhanaterapi.com/urunler | grep -iE '^HTTP/|^location:'
 curl -sI https://tarhanaterapi.com/urunler/tarhana-classic.md
 ```
 
