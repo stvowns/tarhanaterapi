@@ -177,6 +177,7 @@ const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
         password,
         options: {
           data: { full_name: fullName, phone, points: 100 },
+          emailRedirectTo: window.location.origin,
         },
       });
       if (signUpError || !data.user) {
