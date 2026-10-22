@@ -11,38 +11,19 @@ export const ReviewsSection: React.FC<ReviewsSectionProps> = ({ onViewAllReviews
   return (
     <section className="py-16 lg:py-28 bg-surface" id="yorumlar">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-12">
-        {/* Top Social Proof Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-16 text-center">
-          <div className="p-8 rounded-2xl bg-surface-container-low shadow-xs border border-outline-variant/10">
-            <span className="font-display-hero text-primary font-bold">420+</span>
-            <p className="font-title-lg text-on-surface mt-2">Doğrulanmış Yorum</p>
-            <p className="font-body-sm text-on-surface-variant">Gerçek alıcı deneyimleri</p>
-          </div>
-
-          <div className="p-8 rounded-2xl bg-surface-container-low shadow-xs border border-outline-variant/10">
-            <div className="flex items-center justify-center gap-1 text-secondary mb-1">
-              {[...Array(5)].map((_, i) => (
-                <span
-                  key={i}
-                  className="material-symbols-outlined text-[28px]"
-                  style={{ fontVariationSettings: "'FILL' 1" }}
-                >
-                  star
-                </span>
-              ))}
-            </div>
-            <span className="font-display-hero text-on-surface font-bold">4.9 / 5</span>
-            <p className="font-title-lg text-on-surface mt-1">Müşteri Memnuniyeti</p>
-          </div>
-
-          <div className="p-8 rounded-2xl bg-surface-container-low shadow-xs border border-outline-variant/10">
-            <span className="font-display-hero text-tertiary font-bold">1-3 Gün</span>
-            <p className="font-title-lg text-on-surface mt-2">Türkiye Geneli Kargo</p>
-            <p className="font-body-sm text-on-surface-variant">2000 TL üzeri ücretsiz</p>
-          </div>
+        <div className="text-center max-w-3xl mx-auto mb-12">
+          <span className="font-label-lg uppercase tracking-wider text-primary font-bold">
+            Sofralardan Yankılar
+          </span>
+          <h2 className="font-headline-lg text-on-surface mt-2 text-3xl sm:text-4xl">
+            Müşteri Yorumları
+          </h2>
+          <p className="font-body-lg text-on-surface-variant mt-2 leading-relaxed">
+            TarhanaTerapi sofralarından paylaşılan deneyimler.
+          </p>
         </div>
 
-        {/* Testimonials Mosaic */}
+        {/* Testimonials */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {topReviews.map((review) => (
             <div
@@ -83,7 +64,7 @@ export const ReviewsSection: React.FC<ReviewsSectionProps> = ({ onViewAllReviews
                     {review.author}
                   </p>
                   <p className="font-body-sm text-on-surface-variant text-xs">
-                    Doğrulanmış Alıcı • {review.location}
+                    {review.location}
                   </p>
                 </div>
               </div>
@@ -97,7 +78,7 @@ export const ReviewsSection: React.FC<ReviewsSectionProps> = ({ onViewAllReviews
             onClick={onViewAllReviews}
             className="inline-flex items-center gap-2 text-primary font-title-md hover:underline cursor-pointer group"
           >
-            <span>Tüm 420+ Gerçek Müşteri Yorumunu Gör ve Kendi Yorumunu Yaz</span>
+            <span>Tüm yorumları gör ve kendi yorumunu yaz</span>
             <span className="material-symbols-outlined text-[20px] group-hover:translate-x-1 transition-transform">
               arrow_forward
             </span>

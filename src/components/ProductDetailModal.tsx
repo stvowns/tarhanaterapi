@@ -62,22 +62,6 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
           {/* Details */}
           <div className="md:col-span-7 p-6 sm:p-8 flex flex-col justify-between max-h-[80vh] overflow-y-auto">
             <div>
-              {/* Rating */}
-              <div className="flex items-center gap-1.5 mb-2">
-                <span
-                  className="material-symbols-outlined text-secondary text-[18px]"
-                  style={{ fontVariationSettings: "'FILL' 1" }}
-                >
-                  star
-                </span>
-                <span className="font-semibold text-xs text-on-surface">
-                  {product.rating}
-                </span>
-                <span className="text-xs text-outline">
-                  ({product.reviewsCount}+ Müşteri Değerlendirmesi)
-                </span>
-              </div>
-
               {/* Title */}
               <h2 className="font-headline-sm text-2xl text-on-surface mb-2">
                 {product.name}

@@ -31,12 +31,12 @@ KVKK kapsamında; verilerinize erişme, düzeltilmesini isteme, silinmesini tale
 8. İletişim
 Gizlilik ile ilgili sorularınız için: satis@tarhanaterapi.com
 
-Son güncelleme: 21 Ekim 2026`;
+Son güncelleme: 22 Ekim 2026`;
 
 export const MESAFELI_SATIS = `MESAFELİ SATIŞ SÖZLEŞMESİ
 
 Madde 1 – Taraflar
-Satıcı: TarhanaTerapi, Muradiye Mh., Orhangazi / Bursa. İletişim: satis@tarhanaterapi.com, 0850 302 82 74
+Satıcı: TarhanaTerapi, Muradiye Mh., Orhangazi / Bursa. İletişim: satis@tarhanaterapi.com
 Alıcı: Sipariş veren müşteri (sipariş formunda belirtilen bilgiler).
 
 Madde 2 – Konu
@@ -63,7 +63,7 @@ Madde 8 – Uyuşmazlıkların Çözümü
 Madde 9 – Yürürlük
 Alıcının siparişi onaylamasıyla işbu sözleşme yürürlüğe girer ve her iki tarafı bağlar.
 
-Son güncelleme: 21 Ekim 2026`;
+Son güncelleme: 22 Ekim 2026`;
 
 export const KVKK_AYDINLATMA = `KVKK AYDINLATMA METNİ
 
@@ -73,7 +73,6 @@ export const KVKK_AYDINLATMA = `KVKK AYDINLATMA METNİ
 Veri sorumlusu: TarhanaTerapi
 Adres: Muradiye Mh., Orhangazi / Bursa
 E-posta: satis@tarhanaterapi.com
-Telefon: 0850 302 82 74
 Web sitesi: https://tarhanaterapi.com
 
 2. İşlenen Kişisel Veriler

@@ -2,18 +2,17 @@
 
 Canonical: https://tarhanaterapi.com/
 Dil: tr-TR
-Son güncelleme: 21 Ekim 2026
+Son güncelleme: 22 Ekim 2026
 
 ## Marka
 
 TarhanaTerapi, Bursa Orhangazi'de aile tarifiyle, katkısız geleneksel tarhana üreten bir aile işletmesidir. Üretim Muradiye Mh., Orhangazi / Bursa adresindedir.
 
-- Telefon: 0850 302 82 74
 - E-posta: satis@tarhanaterapi.com
 - Çalışma saatleri: Pazartesi–Cumartesi 09:00–18:30
 - Instagram: @tarhanaterapi
 
-## Ürün ve fiyat (21 Ekim 2026)
+## Ürün ve fiyat (22 Ekim 2026)
 
 | Ürün | Miktar | Fiyat | Öne çıkan özellik |
 |---|---|---:|---|
@@ -85,6 +84,10 @@ Bursa Orhangazi'deki Muradiye Mh. adresindeki aile atölyesinde.
 ## Ücretsiz e-kitap
 
 - [Kadim Çorba Ritüelleri ve Şifalı Tarifler (PDF)](https://tarhanaterapi.com/kadim-corba-rituelleri-ve-sifali-tarifler.pdf): 8 tarhana tarifi, pişirme ve saklama rehberi.
+
+## Yorumlar
+
+Sitede toplu yorum sayısı, ortalama puan veya “doğrulanmış alıcı” iddiası yayınlanmaz; yalnızca paylaşılan müşteri yorumları gösterilir. Yorumlar yönetici onayından sonra yayınlanır.
 
 ## AI kullanım notu
 

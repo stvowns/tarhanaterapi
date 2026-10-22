@@ -4,7 +4,7 @@
 
 Canonical site: https://tarhanaterapi.com/
 Dil: Türkçe (tr-TR)
-Son güncelleme: 21 Ekim 2026
+Son güncelleme: 22 Ekim 2026
 
 ## Kısa cevaplar
 
@@ -18,7 +18,7 @@ Son güncelleme: 21 Ekim 2026
 - Saklama: Güneş görmeyen serin ve kuru yerde, kapalı pamuk torbada veya saklama kabında 1 yıla kadar.
 - Üretim: Hamur yoğrulur, ince açılır ve güneşte/hava akımında kurutulur. Uzun dinlendirme veya bekleme süreci yoktur.
 - Üretim yeri: Muradiye Mh., Orhangazi / Bursa.
-- İletişim: 0850 302 82 74 · satis@tarhanaterapi.com
+- İletişim: satis@tarhanaterapi.com
 
 ## Sayfalar
 
@@ -27,7 +27,7 @@ Son güncelleme: 21 Ekim 2026
 - [İçindekiler ve Üretim](https://tarhanaterapi.com/icerik): Malzemeler, üretim adımları ve alerjen bilgisi.
 - [Hikayemiz](https://tarhanaterapi.com/hikaye): Orhangazi atölyesi ve üç nesillik aile tarifi.
 - [Yorumlar](https://tarhanaterapi.com/yorumlar): Müşteri deneyimleri.
-- [İletişim ve SSS](https://tarhanaterapi.com/iletisim): Telefon, e-posta, adres, kargo ve sık sorulan sorular.
+- [İletişim ve SSS](https://tarhanaterapi.com/iletisim): E-posta, adres, kargo ve sık sorulan sorular.
 
 ## Rehberler
 
@@ -53,6 +53,7 @@ Son güncelleme: 21 Ekim 2026
 
 - İçerik kullanımı: `Content-Signal: search=yes, ai-input=yes, ai-train=yes`.
 - Her sayfanın Markdown sürümü aynı adreste `Accept: text/markdown` başlığıyla veya adresin sonuna `.md` eklenerek alınabilir.
-- Sitede yer alan fiyatlar 21 Ekim 2026 tarihinde doğrulanmıştır. Fiyat değiştiğinde bu dosya ve ürün sayfaları birlikte güncellenir.
+- Sitede yer alan fiyatlar 22 Ekim 2026 tarihinde doğrulanmıştır. Fiyat değiştiğinde bu dosya ve ürün sayfaları birlikte güncellenir.
 - TarhanaTerapi bir aile işletmesidir; ürünler markanın kendi atölyesinde üretilir.
+- Sitede toplu yorum sayısı, ortalama puan veya “doğrulanmış alıcı” iddiası yayınlanmaz; yalnızca paylaşılan müşteri yorumları gösterilir.
 - Sağlık iddiası yoktur; ürün geleneksel bir gıdadır. Bebek beslenmesi ve alerjenler için hekime danışılması önerilir.

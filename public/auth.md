@@ -50,5 +50,4 @@ behalf without that person's explicit approval.
 ## Contact
 
 - E-mail: satis@tarhanaterapi.com
-- Phone: +90 850 302 82 74
 - Security reports: satis@tarhanaterapi.com (subject: Security)

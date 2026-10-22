@@ -19,14 +19,12 @@ const envUrl = (() => {
 export const SITE_URL = (envUrl || 'https://tarhanaterapi.com').replace(/\/+$/, '');
 export const SITE_NAME = 'TarhanaTerapi';
 export const SITE_LANG = 'tr-TR';
-export const CONTENT_UPDATED = '2026-10-21';
-export const CONTENT_UPDATED_LABEL = '21 Ekim 2026';
+export const CONTENT_UPDATED = '2026-10-22';
+export const CONTENT_UPDATED_LABEL = '22 Ekim 2026';
 export const OG_IMAGE = `${SITE_URL}/og-image-2026.jpg`;
 export const LOGO_URL = `${SITE_URL}/logo.svg`;
 
 export const CONTACT = {
-  phone: '+90 850 302 82 74',
-  phoneHref: '+908503028274',
   email: 'satis@tarhanaterapi.com',
   address: {
     street: 'Muradiye Mh.',
@@ -144,12 +142,10 @@ const organization = () => ({
     "Bursa Orhangazi'de aile tarifiyle katkısız geleneksel tarhana üreten aile işletmesi.",
   slogan: 'Bir kasede saklı çocukluk ve şifa.',
   email: CONTACT.email,
-  telephone: CONTACT.phone,
   address,
   areaServed: { '@type': 'Country', name: 'Türkiye' },
   contactPoint: {
     '@type': 'ContactPoint',
-    telephone: CONTACT.phone,
     email: CONTACT.email,
     contactType: 'customer service',
     availableLanguage: ['Turkish'],
@@ -180,7 +176,6 @@ const localBusiness = () => ({
   url: `${SITE_URL}/`,
   image: OG_IMAGE,
   logo: LOGO_URL,
-  telephone: CONTACT.phone,
   email: CONTACT.email,
   priceRange: '₺₺',
   currenciesAccepted: 'TRY',

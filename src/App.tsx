@@ -566,7 +566,6 @@ useEffect(() => {
             ? new Date(row.createdAt).toLocaleDateString('tr-TR')
             : 'Az önce',
           content: row.content,
-          verified: true,
           productName: row.productName || 'TarhanaTerapi',
           avatarColor: colors[index % colors.length],
         }));

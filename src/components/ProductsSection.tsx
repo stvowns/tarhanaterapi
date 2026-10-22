@@ -99,19 +99,6 @@ export const ProductsSection: React.FC<ProductsSectionProps> = ({
                   </div>
                 </div>
 
-                {/* Rating */}
-                <div className="flex items-center gap-1.5 mb-1">
-                  <span
-                    className="material-symbols-outlined text-secondary text-[16px]"
-                    style={{ fontVariationSettings: "'FILL' 1" }}
-                  >
-                    grade
-                  </span>
-                  <span className="font-label-sm text-on-surface-variant">
-                    {product.rating} ({product.reviewsCount}+ Değerlendirme)
-                  </span>
-                </div>
-
                 {/* Title */}
                 <h3 className="font-title-lg text-on-surface line-clamp-1 group-hover:text-primary transition-colors">
                   {product.name}

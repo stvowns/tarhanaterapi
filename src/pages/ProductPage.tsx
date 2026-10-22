@@ -99,12 +99,13 @@ export const ProductPage: React.FC<ProductPageProps> = ({ product, onAddToCart }
               <span className="text-xs text-on-surface-variant pb-1">{product.weight}</span>
             </div>
 
-            <div className="flex items-center gap-2 text-sm text-on-surface-variant">
-              <span className="material-symbols-outlined text-secondary text-[18px]">star</span>
-              <span>
-                {product.rating} / 5 · {product.reviewsCount} değerlendirme
-              </span>
-            </div>
+            <a
+              href="/yorumlar"
+              className="inline-flex items-center gap-2 text-sm text-primary font-semibold hover:underline"
+            >
+              Müşteri yorumlarını oku
+              <span className="material-symbols-outlined text-[18px]">arrow_forward</span>
+            </a>
 
             <button
               onClick={handleAddToCart}

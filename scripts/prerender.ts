@@ -411,7 +411,7 @@ const reviewsContent = () => `
       <p>${esc(review.content)}</p>
       <p><small>${esc(review.productName)} · ${esc(review.date)} · ${esc(
           review.location
-        )}${review.verified ? ' · Doğrulanmış alışveriş' : ''}</small></p>`
+        )}</small></p>`
       )
       .join('\n')}
     ${faqBlock(5)}

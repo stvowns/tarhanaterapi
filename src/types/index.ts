@@ -3,8 +3,6 @@ export interface Product {
   name: string;
   tag?: string;
   tagColor?: 'primary' | 'secondary' | 'tertiary' | 'primary-container';
-  rating: number;
-  reviewsCount: number;
   description: string;
   details: string;
   price: number;
@@ -88,7 +86,6 @@ export interface Review {
   rating: number;
   date: string;
   content: string;
-  verified: boolean;
   productName: string;
   avatarColor: 'primary' | 'secondary' | 'tertiary';
 }

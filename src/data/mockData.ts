@@ -14,8 +14,6 @@ export const PRODUCTS: Product[] = [
     name: 'Geleneksel Tarhana',
     tag: 'Tek Çeşit · 1 kg',
     tagColor: 'primary',
-    rating: 4.9,
-    reviewsCount: 420,
     description: '1 kg pamuk torba. Klasik, katkısız, güneşte kurutulmuş geleneksel tarhana.',
     details:
       'Taş değirmen buğday unu, köy yoğurdu, tarla domatesi, közlenmiş kapya biber, az miktarda nohut unu ve kaya tuzuyla hazırlanır. Hamur yoğrulup ince açılır; güneşte ve hava akımında kurutulur. Koruyucu, renklendirici veya aroma verici içermez.',
@@ -162,7 +160,6 @@ export const REVIEWS: Review[] = [
     date: '2 gün önce',
     productName: 'Geleneksel Tarhana',
     content: 'Kapağını açtığım an ev buram buram çocukluğumun geçtiği Ege köyü gibi koktu. Kıvamı ve baharat dengesi harika.',
-    verified: true,
     avatarColor: 'primary'
   },
   {
@@ -174,7 +171,6 @@ export const REVIEWS: Review[] = [
     date: '1 hafta önce',
     productName: 'Geleneksel Tarhana',
     content: 'Kış aylarında hastalandığımda tek ilacım bu çorba oldu. Hazmı çok hafif, yoğurdun hafif ekşiliği tam ayarında. 3 paket daha sipariş verdim bile.',
-    verified: true,
     avatarColor: 'secondary'
   },
   {
@@ -186,7 +182,6 @@ export const REVIEWS: Review[] = [
     date: '2 hafta önce',
     productName: 'Bebek Tarhanası (istek üzerine)',
     content: 'Kızım için tuzsuz hazırlanan versiyonu istedim, bayılarak içiyor. İçinde katkı maddesi olmaması anne olarak içimi çok rahatlatıyor.',
-    verified: true,
     avatarColor: 'tertiary'
   },
   {
@@ -198,7 +193,6 @@ export const REVIEWS: Review[] = [
     date: '3 hafta önce',
     productName: 'Geleneksel Tarhana',
     content: 'Paketi açarken hissettiğiniz özen ve nostalji paha biçilemez. Pamuk torba sayesinde tazeliğini koruyor; hediye olarak da aldım.',
-    verified: true,
     avatarColor: 'primary'
   },
   {
@@ -210,7 +204,6 @@ export const REVIEWS: Review[] = [
     date: '1 ay önce',
     productName: 'Geleneksel Tarhana',
     content: 'Bir hekim ve anne olarak katkısız ve içeriği şeffaf gıdaları önemsiyorum. İçindekilerin açık olması ve tuz dengesi beni memnun etti.',
-    verified: true,
     avatarColor: 'secondary'
   },
   {
@@ -222,7 +215,6 @@ export const REVIEWS: Review[] = [
     date: '1 ay önce',
     productName: 'Geleneksel Tarhana',
     content: 'Tereyağında nane ve pul biberle taçlandırmak çorbayı bambaşka bir noktaya taşıyor. Sıcacık, baharatlı ve tam kıvamında.',
-    verified: true,
     avatarColor: 'tertiary'
   }
 ];

@@ -208,7 +208,6 @@ const html = `<!DOCTYPE html>
     <div class="contact">
       <h3>TarhanaTerapi'ye Ulaşın</h3>
       <p>
-        Telefon / WhatsApp: 0850 302 82 74<br>
         E-posta: satis@tarhanaterapi.com<br>
         Adres: Muradiye Mh., Orhangazi / Bursa<br>
         Web: tarhanaterapi.com
