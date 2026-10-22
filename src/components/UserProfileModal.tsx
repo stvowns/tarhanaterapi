@@ -128,7 +128,7 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({
                     </span>
                   </div>
                   <span className="text-[10px] text-outline mt-1 block truncate">
-                    {lastOrder.status} · {formatOrderDate(lastOrder.createdAt)}
+                    {lastOrder.status}
                   </span>
                 </>
               ) : (
