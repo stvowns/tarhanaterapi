@@ -77,6 +77,9 @@
 - Free plan sınırı: **1 kural** ve yalnızca **10 saniyelik** period/duration. Daha esnek limit gerekirse plan yükseltmesi veya Turnstile değerlendirilmeli.
 - Wrangler OAuth token'ında WAF/ruleset yazma yetkisi olmadığı için kural dashboard üzerinden oluşturuldu; token'a ek yetki verilmedi.
 - Not: Aynı IP'den 10 saniyede 5'ten fazla admin POST'u (örn. çok hızlı sipariş durum güncellemesi) bloklanabilir. Normal kullanımda bu sınıra ulaşılmıyor; gerekirse eşik artırılmalı veya admin yolları istisna tutulmalı.
+- **23 Ekim 2026 — uygulama katmanı:** Supabase `rate_limit_buckets` tablosu ve `consume_rate_limit` RPC'si eklendi. `create-order` (5/60 sn), `subscribe` (10/60 sn), `contact-message` (5/60 sn) ve `submit-review` (3/600 sn) bu katmanı kullanıyor; RPC erişilemezse in-memory fallback çalışıyor.
+  - RPC yalnızca `service_role` tarafından çalıştırılabilir; `anon`/`authenticated` yetkisi yok.
+  - Canlı testte `create-order` bucket sayacı arttı; Cloudflare kuralı aşıldığında istek fonksiyona ulaşmadan `429` döndü.
 
 ### Resend anahtar rotasyonu
 
@@ -95,13 +98,16 @@
 
 - `src/components/UserProfileModal.tsx` sipariş kartında ürün görseli, adı, gramajı, adedi, birim fiyatı, satır toplamı, ara toplam, kargo, indirim, genel toplam, teslimat notu ve **tarih + saat** gösteriyor.
 - Canlıda `TT-48214` test siparişinde doğrulandı.
-- **23 Ekim 2026:** `my-orders` sahiplik açığı nedeniyle geçici olarak kapatıldı. Endpoint `410 Gone` döndürüyor, `App.tsx` artık çağırmıyor; e-posta + oturum, `mailer_autoconfirm: true` altında sahiplik kanıtı değil. Token/magic-link akışı gelene kadar profil sipariş geçmişi kapalı.
-- **23 Ekim 2026 — tek sipariş erişimi:** Yeni siparişlerin onay e-postasına 180 gün geçerli, rastgele bir `?siparis=<token>` bağlantısı eklendi.
+- **23 Ekim 2026:** `my-orders` sahiplik açığı nedeniyle geçici olarak kapatıldı. Endpoint `410 Gone` döndürüyordu; e-posta + oturum, `mailer_autoconfirm: true` altında sahiplik kanıtı değil.
+- **23 Ekim 2026 — kalıcı sahiplik:** `orders.auth_user_id` eklendi; `create-order` Supabase tarafından doğrulanmış Bearer token'dan gelen kullanıcı kimliğini kaydediyor. `/api/my-orders` yalnızca `auth_user_id = auth.uid()` eşleşen siparişleri `no-store` ile döndürüyor; e-posta ile arama yok.
+  - Canlı RLS politikası `customer_email = auth.jwt()->>'email'` yerine `auth_user_id = auth.uid()` olarak değiştirildi. `anon`/`authenticated` için `INSERT/UPDATE/DELETE` yetkileri kaldırıldı.
+  - Test: aynı e-postaya ait iki siparişten yalnızca `auth_user_id` eşleşen göründü; doğrudan `PATCH` `403`; `/api/my-orders` kimliksiz `401`, geçerli oturumla `200` + yalnızca kendi siparişi. Sentetik kayıtlar ve test kullanıcısı silindi.
+  - **Sınır:** 23 Ekim 2026 öncesi siparişlerde `auth_user_id` ve token yok; bu siparişler profil listesinde görünmez. Yeni siparişler onay e-postasındaki tek kullanımlık bağlantıyla da açılabilir.
+- **Tek sipariş erişimi:** Yeni siparişlerin onay e-postasına 180 gün geçerli, rastgele bir `?siparis=<token>` bağlantısı eklendi.
   - `functions/api/create-order.js` 32 baytlık token üretiyor; `orders.access_token_hash` içinde yalnızca SHA-256 özeti tutuluyor.
   - `functions/api/order-access.js` token'ı doğrulayıp yalnızca ilgili siparişi, `Cache-Control: no-store` ile döndürüyor.
   - `src/components/OrderAccessModal.tsx` bağlantı açıldığında sipariş detayını gösteriyor; token URL'den temizleniyor.
   - Test: geçerli token `200`, geçersiz `400`, bilinmeyen `404`; sentetik `TT-00001` kaydı ile uçtan uca doğrulandı ve kayıt silindi.
-  - **Sınır:** 23 Ekim 2026 öncesi siparişlerde token yok; yalnızca yeni siparişler bu bağlantıyı alır. Profil içi liste hâlâ kapalı.
 
 ### MFA
 
@@ -122,7 +128,11 @@
 |---|---|
 | Ana sayfa | `200` |
 | E-kitap PDF | `200` |
-| `/api/my-orders` (geçici kapalı) | `410` |
+| `/api/my-orders` kimliksiz | `401`, `Cache-Control: no-store` |
+| `/api/my-orders` geçerli oturum | `200`, yalnızca `auth_user_id` eşleşen siparişler |
+| `orders` doğrudan okuma (RLS) | Yalnızca kendi `auth_user_id`; e-posta eşleşen başka sipariş görünmez |
+| `orders` doğrudan yazma (RLS) | `403` |
+| Uygulama rate limit RPC | `service_role` çalışır; `anon`/`authenticated` yetkisiz |
 | `/api/order-access` geçerli token | `200`, yalnızca tek sipariş |
 | `/api/order-access` geçersiz token | `400` |
 | `/api/order-access` bilinmeyen token | `404` |
@@ -136,7 +146,7 @@
 | Secret'sız Telegram webhook | `401` |
 | Geçersiz `create-order` | `400` |
 | Geçersiz `subscribe` | `400` |
-| Public `orders` / `subscribers` SELECT | boş |
+| Public (anon) `orders` / `subscribers` SELECT | boş |
 | Public geçersiz INSERT | `42501` / HTTP `401` |
 | Onay bekleyen yorum ucu | `401` |
 | Onaylı yorum ucu | `200` |
@@ -147,6 +157,7 @@
 - `node --check` (değişen Functions) → PASS
 - `npm audit` → açık yok
 - Production build gerçek `VITE_*` değerleriyle alındı; dummy env ile build edilmiş `dist/` **yayınlanmadı**.
+- **23 Ekim 2026 — bundle:** Vite/Rolldown `codeSplitting` ile React, Supabase ve router ayrı vendor chunk'larına alındı. Ana uygulama chunk'ı ~232,47 KB (gzip ~56,11 KB); 500 KB üstü tek parça uyarısı kalmadı. Toplam ilk yük benzer, vendor chunk'ları uzun süre cache'lenebilir.
 
 ## Deploy
 

@@ -7,7 +7,7 @@
 
 **İşaretler:** `[ ]` yapılacak · `[x]` bitti · **(Ben)** asistan · **(Sen)** kullanıcı · **(Birlikte)**
 
-> **Güncel sıra (23 Ekim 2026):** Bu dosyadaki eski P0/P1 sıralaması yerine `docs/uygulama-plani-2026-10-23.md` esas alınır. Özellikle MFA artık ilk madde değil; önce `my-orders` sahiplik açığı kapatılıyor.
+> **Güncel sıra (23 Ekim 2026):** Bu dosyadaki eski P0/P1 sıralaması yerine `docs/uygulama-plani-2026-10-23.md` esas alınır. `my-orders` sahiplik açığı 23 Ekim 2026'da `auth_user_id` + düzeltilmiş RLS ile kapatıldı; kalan işler için plan dosyası geçerli.
 
 ---
 

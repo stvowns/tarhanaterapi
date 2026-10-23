@@ -2,6 +2,9 @@
  * Cloudflare Pages Function — POST /api/create-order
  */
 
+import { consumeRateLimit } from '../_lib/rate-limit.js';
+import { getAuthenticatedUser } from '../_lib/auth.js';
+
 const RATE_LIMIT = new Map();
 
 const PRODUCT_PRICES = {
@@ -407,7 +410,8 @@ export async function onRequestPost({ request, env }) {
   )
     .split(',')[0]
     .trim();
-  if (rateLimited(ip)) {
+  const durableLimit = await consumeRateLimit(env, `create-order:${ip}`, 5, 60);
+  if (durableLimit === false || (durableLimit === null && rateLimited(ip))) {
     return json({ error: 'Too many requests' }, 429);
   }
 
@@ -424,6 +428,22 @@ export async function onRequestPost({ request, env }) {
       },
       400
     );
+  }
+
+  // Giriş yapmış kullanıcıda siparişi hesaba bağla. Başlık gönderilmiş ama
+  // geçersizse sessizce misafir siparişi oluşturmak yerine oturumu reddet.
+  let authUser = null;
+  if (request.headers.get('authorization')) {
+    authUser = await getAuthenticatedUser(request, env);
+    if (!authUser) {
+      return json(
+        {
+          error: 'Oturumunuz doğrulanamadı. Lütfen tekrar giriş yapın.',
+          code: 'AUTH_INVALID',
+        },
+        401
+      );
+    }
   }
 
   const rawItems = Array.isArray(payload.items) ? payload.items : [];
@@ -475,6 +495,7 @@ export async function onRequestPost({ request, env }) {
     discount,
     total,
     status: 'Yeni Sipariş',
+    ...(authUser ? { auth_user_id: authUser.id } : {}),
   };
 
   const accessToken = randomAccessToken();

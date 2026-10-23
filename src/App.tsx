@@ -216,6 +216,10 @@ useEffect(() => {
 
   // Orders State (DB'de saklanır; yerel cache yok)
   const [orders, setOrders] = useState<Order[]>(() => []);
+  // Profil sipariş geçmişi yalnızca auth_user_id eşleşen kayıtlardan gelir.
+  const [profileOrders, setProfileOrders] = useState<Order[]>([]);
+  const [profileOrdersLoading, setProfileOrdersLoading] = useState(false);
+  const [profileOrdersError, setProfileOrdersError] = useState('');
 
   // Collected Email Leads (Newsletter & E-book)
   const [subscribers, setSubscribers] = useState<SubscriberLead[]>(() => {
@@ -706,10 +710,65 @@ useEffect(() => {
     };
   }, [currentUser]);
 
-  // Sipariş geçmişi ve gerçek zamanlı sipariş aboneliği, my-orders için
-  // token/magic-link sahiplik doğrulaması eklenene kadar kapalı.
-  // E-posta + oturum, autoconfirm altında yeterli değil; e-posta bazlı
-  // Realtime aboneliği de aynı sahiplik sorununu taşır.
+  // Sipariş geçmişi: yalnızca Supabase oturumu ve auth_user_id sahipliğiyle.
+  useEffect(() => {
+    if (!isProfileModalOpen) return;
+    let active = true;
+
+    setProfileOrders([]);
+    setProfileOrdersError('');
+    setProfileOrdersLoading(true);
+
+    supabase.auth
+      .getSession()
+      .then(({ data }) => {
+        const token = data.session?.access_token;
+        if (!token) {
+          if (active) {
+            setProfileOrdersLoading(false);
+            setProfileOrdersError(
+              'Sipariş geçmişi için e-posta ile giriş yapmalısınız. Misafir siparişlerinizi e-postanızdaki bağlantıdan açabilirsiniz.'
+            );
+          }
+          return null;
+        }
+
+        return fetch('/api/my-orders', {
+          headers: { Authorization: `Bearer ${token}` },
+        })
+          .then(async (res) => {
+            const data = await res.json().catch(() => null);
+            if (!res.ok) throw new Error(data?.error || 'Siparişler yüklenemedi');
+            return data;
+          })
+          .then((data) => {
+            if (active) {
+              setProfileOrders(Array.isArray(data?.orders) ? data.orders : []);
+            }
+          })
+          .catch(() => {
+            if (active) {
+              setProfileOrders([]);
+              setProfileOrdersError(
+                'Sipariş geçmişi şu anda yüklenemedi. Lütfen tekrar deneyin.'
+              );
+            }
+          })
+          .finally(() => {
+            if (active) setProfileOrdersLoading(false);
+          });
+      })
+      .catch(() => {
+        if (active) {
+          setProfileOrdersLoading(false);
+          setProfileOrdersError('Sipariş geçmişi şu anda yüklenemedi. Lütfen tekrar deneyin.');
+        }
+      });
+
+    return () => {
+      active = false;
+    };
+  }, [isProfileModalOpen, currentUser?.email]);
 
   const seo = useMemo(() => {
     if (currentGuide) {
@@ -945,8 +1004,9 @@ useEffect(() => {
         isOpen={isProfileModalOpen}
         onClose={() => setIsProfileModalOpen(false)}
         user={currentUser}
-        orders={orders}
-        ordersUnavailable
+        orders={profileOrders}
+        ordersLoading={profileOrdersLoading}
+        ordersError={profileOrdersError}
         onLogout={handleLogout}
       />
 

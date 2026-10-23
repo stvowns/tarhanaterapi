@@ -3,6 +3,8 @@
  * Yorumları "onay bekliyor" olarak Supabase'e kaydeder ve Telegram'a bildirir.
  */
 
+import { consumeRateLimit } from '../_lib/rate-limit.js';
+
 const RATE_LIMIT = new Map();
 
 const json = (body, status = 200) =>
@@ -56,7 +58,8 @@ export async function onRequestPost({ request, env }) {
     .split(',')[0]
     .trim();
 
-  if (rateLimited(ip)) {
+  const durableLimit = await consumeRateLimit(env, `submit-review:${ip}`, 3, 600);
+  if (durableLimit === false || (durableLimit === null && rateLimited(ip))) {
     return json({ error: 'Çok fazla yorum gönderildi. Lütfen biraz sonra tekrar deneyin.' }, 429);
   }
 

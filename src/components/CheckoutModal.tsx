@@ -6,6 +6,7 @@ import {
   STANDARD_SHIPPING_FEE,
 } from '../lib/commerce';
 import { CartItem, Order, User } from '../types';
+import { supabase } from '../lib/supabase';
 
 interface CheckoutModalProps {
   isOpen: boolean;
@@ -133,9 +134,14 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
     };
 
     try {
+      const { data: sessionData } = await supabase.auth.getSession();
+      const accessToken = sessionData.session?.access_token;
       const response = await fetch('/api/create-order', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
+        },
         body: JSON.stringify(payload),
       });
       const data = await response.json();

@@ -7,6 +7,8 @@
  * e-kitap için isteğe bağlıdır. Resend'e yalnızca pazarlama onayı varsa eklenir.
  */
 
+import { consumeRateLimit } from '../_lib/rate-limit.js';
+
 const RATE_LIMIT = new Map();
 const CONSENT_VERSION = '2026-10-23-v1';
 
@@ -67,7 +69,8 @@ export async function onRequestPost({ request, env }) {
     .split(',')[0]
     .trim();
 
-  if (rateLimited(ip)) {
+  const durableLimit = await consumeRateLimit(env, `subscribe:${ip}`, 10, 60);
+  if (durableLimit === false || (durableLimit === null && rateLimited(ip))) {
     return json({ error: 'Too many requests' }, 429, { 'Retry-After': '60' });
   }
 

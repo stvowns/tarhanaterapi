@@ -2,6 +2,8 @@
  * Cloudflare Pages Function — POST /api/contact-message
  */
 
+import { consumeRateLimit } from '../_lib/rate-limit.js';
+
 const rateLimit = new Map();
 
 const json = (body, status = 200, headers = {}) =>
@@ -65,7 +67,8 @@ export async function onRequestPost({ request, env }) {
     .split(',')[0]
     .trim();
 
-  if (!checkRateLimit(ip)) {
+  const durableLimit = await consumeRateLimit(env, `contact-message:${ip}`, 5, 60);
+  if (durableLimit === false || (durableLimit === null && !checkRateLimit(ip))) {
     return json({ error: 'Too many requests' }, 429, { 'Retry-After': '60' });
   }
 

@@ -1,6 +1,6 @@
 # TarhanaTerapi — Canlı Ortam, Veri ve Bildirim Mimarisi
 
-**Son güncelleme:** 22 Ekim 2026
+**Son güncelleme:** 23 Ekim 2026
 
 ## 1. Canlı ortam
 
@@ -154,7 +154,9 @@ Deploy sonrası en az şunlar kontrol edilmeli:
 
 - [ ] Ana sayfa `200`
 - [ ] `/kadim-corba-rituelleri-ve-sifali-tarifler.pdf` `200`
-- [ ] `/api/my-orders` (geçici kapalı) `410`
+- [ ] `/api/my-orders` kimliksiz `401` + `no-store`; geçerli oturumda yalnızca kendi `auth_user_id` siparişleri `200`
+- [ ] `orders` doğrudan RLS okuması yalnızca kendi `auth_user_id` kayıtlarını döndürüyor; e-posta eşleşen başka sipariş görünmüyor; doğrudan `PATCH` `403`
+- [ ] `consume_rate_limit` RPC yalnızca `service_role` tarafından çalışıyor; canlı `create-order` bucket sayacı artıyor
 - [ ] `/api/order-access?token=...`: geçerli `200`, geçersiz `400`, bilinmeyen `404`
 - [ ] Yeni sipariş onay e-postasında “Sipariş Detayını Gör” bağlantısı var
 - [ ] `/api/update-order-status` yetkisiz `401`
@@ -166,15 +168,15 @@ Deploy sonrası en az şunlar kontrol edilmeli:
 - [ ] `/urunler` `301` → `/urunler/tarhana-classic`
 - [ ] `/urunler/tarhana-classic` `200`
 - [ ] İletişim formu testi `200`; Resend e-postası teslim edildi
-- [ ] Cloudflare rate limit kuralı `1/1` ve **Active**
-- [ ] Public `orders` / `subscribers` SELECT boş
+- [ ] Cloudflare rate limit kuralı `1/1` ve **Active**; uygulama katmanı `rate_limit_buckets` migration'ı uygulanmış
+- [ ] Public `orders` / `subscribers` SELECT boş; oturum açmış kullanıcı yalnızca kendi `auth_user_id` siparişini okuyabiliyor
 - [ ] Public geçersiz INSERT `42501` / HTTP `401`
 
 ## 9. Açık operasyon işleri
 
 22 Ekim 2026 itibarıyla Telegram/Resend secret rotasyonları ve Cloudflare WAF rate limit tamamlandı. Kalanlar:
 
-- Supabase Auth “Confirm email”ı aç; admin hesabında TOTP enrollment yap; sonra `./set-admin-mfa.sh on` ve deploy.
+- Supabase Auth “Confirm email” bilinçli olarak kapalı (`mailer_autoconfirm: true`). Admin hesabında TOTP enrollment yap; sonra `./set-admin-mfa.sh on` ve deploy.
 - Gerçek banka/IBAN bilgilerini, Shopier onayını ve kargo teklifini netleştir.
-- Cloudflare Web Analytics ve Yandex Webmaster doğrulamasını tamamla.
+- Yandex Webmaster doğrulamasını tamamla (Yandex tarafındaki kesinti sonrası).
 - İsteğe bağlı: Turnstile ve bülten double opt-in ekle.

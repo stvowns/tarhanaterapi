@@ -17,8 +17,10 @@
   - E-posta ve sipariş numarası ile arama yok.
 - [x] **Test:** Token'sız/geçersiz istek `400`; bilinmeyen token `404`; geçerli token yalnızca kendi siparişini `200` döndürüyor; süresi dolmuş token `410`.
 - [x] **`Cache-Control: no-store`** sipariş döndüren endpoint'lerde.
-- [ ] **Eski siparişler:** 23 Ekim 2026 öncesi siparişlerde token yok; profil içi liste için ayrıca `customer_id`/oturum sahipliği veya destek üzerinden yeniden gönderim akışı gerekir.
-- [ ] **Profil içi sipariş listesi:** `my-orders` yalnızca `customer_id = auth.uid()` veya magic-link doğrulaması ile yeniden açılmalı; e-posta ile arama yapılmamalı.
+- [ ] **Eski siparişler:** 23 Ekim 2026 öncesi siparişlerde token ve `auth_user_id` yok; profil listesinde görünmez. Destek üzerinden yeniden gönderim veya gelecekteki bir sahiplik akışı gerekir.
+- [x] **Profil içi sipariş listesi (yeni siparişler):** `orders.auth_user_id` eklendi; `create-order` yalnızca Supabase tarafından doğrulanmış Bearer token'dan gelen kullanıcı kimliğini yazıyor. `/api/my-orders` yalnızca `auth_user_id = auth.uid()` eşleşen siparişleri döndürüyor; e-posta ile arama yok.
+- [x] **RLS sahiplik açığı:** Canlıdaki `users can read own orders` politikası `customer_email = auth.jwt()->>'email'` yerine `auth_user_id = auth.uid()` olarak değiştirildi. `anon`/`authenticated` için `INSERT/UPDATE/DELETE` yetkileri kaldırıldı; yazma yalnızca `service_role` üzerinden.
+  - Test: aynı e-postaya ait iki siparişten yalnızca `auth_user_id` eşleşen göründü; doğrudan `PATCH` `403` döndü; sentetik kayıtlar ve test kullanıcısı silindi.
 
 > **Not:** “Sipariş no + e-posta” nihai çözüm değil. Sipariş numaraları sıralı (`TT-#####`) ve endpoint'te kalıcı rate limit yok; bu ikisi birlikte sahiplik kanıtı sayılmaz.
 
@@ -43,7 +45,10 @@
 - [x] `AdminModal` ve `OrderAccessModal` `React.lazy` / dinamik import ile bölündü.
   - Ana paket: ~760,21 KB → ~702,46 KB (gzip ~203,49 → ~191,61 KB).
   - `AdminModal` ayrı chunk ~52,81 KB; `OrderAccessModal` ~5,32 KB.
-- [ ] Ana paket hâlâ 500 KB üzeri; ağır alt bileşenler/route'lar için ek code-splitting değerlendir.
+- [x] Ana paket code-splitting: Vite/Rolldown `codeSplitting` ile React, Supabase ve router ayrı vendor chunk'larına alındı. Uyarı veren 500 KB üstü tek parça kalmadı.
+  - Uygulama chunk'ı ~232,47 KB (gzip ~56,11 KB); `react-vendor` ~218,76 KB (gzip ~68,27 KB); `supabase-vendor` ~214,04 KB (gzip ~55,06 KB); `router-vendor` ~37,50 KB (gzip ~13,55 KB).
+  - `AdminModal` ~52,91 KB ve `OrderAccessModal` ~5,37 KB ayrı, isteğe bağlı yükleniyor.
+  - Toplam ilk yük benzer; kazanç, vendor chunk'larının uzun süre cache'lenmesi ve tek dev dosya yerine paralel indirme.
 - [x] `update-order-status` ve Telegram durum geçişini atomik yap.
   - “Kargoya Verildi” için `PATCH ...&status=neq.Kargoya Verildi` kullanılıyor; yalnızca satırı güncelleyen istek e-posta gönderiyor.
   - İkinci/paralel istek `200` dönse de `notified: false` oluyor.
@@ -52,12 +57,14 @@
   - `?limit=` (varsayılan 500, üst sınır 500) ve `?offset=`; yanıtta `hasMore`.
   - `select=*` yerine yalnızca gerekli alanlar seçiliyor; token hash'i dönmüyor.
   - `list-subscribers` ve diğer PII endpoint'lerinde `Cache-Control: no-store` mevcut.
-- [ ] Rate limit'leri kalıcılaştır (Cloudflare Rate Limiting / KV / Durable Object); in-memory `Map` temizliği.
+- [x] **Rate limit'leri kalıcılaştır:** Cloudflare WAF kuralı birincil katman; Supabase `rate_limit_buckets` + `consume_rate_limit` RPC ikinci katman. `create-order`, `subscribe`, `contact-message` ve `submit-review` bu RPC'yi kullanıyor; Supabase erişilemezse in-memory fallback devreye giriyor. Migration canlıya uygulandı; `create-order` testinde bucket sayaçları doğrulandı.
+  - Fonksiyon yalnızca `service_role` tarafından çalıştırılabilir; `anon`/`authenticated` yetkisi yok.
+  - Eski bucket'lar %1 olasılıkla 1 günden eski olacak şekilde temizleniyor.
 - [x] `subscribe.js` Resend contact/segment için 429/5xx retry eklendi; kalıcı hata loglanıyor.
 - [x] `./reconcile-resend.sh` / `npm run reconcile:resend`: `marketing_consent=true` ve `unsubscribed_at` boş aboneleri Resend contacts + segmente idempotent şekilde ekler. Anahtarlar ortam değişkeninden okunur, sohbette istenmez.
 - [x] CSP `img-src` daraltıldı: `https:` → `'self' data:`. Harici görsel yok; tüm ürün/OG görselleri kendi domaininde.
 - [ ] `style-src 'unsafe-inline'` kaldırmak için React inline `style` kullanımları nonce/hash veya CSS sınıflarına taşınmalı; şimdilik bırakıldı.
-- [ ] Realtime toast'ı email bazlı RLS ile düzeltme; önce `user_id`/token sahiplik modeli kur.
+- [x] Realtime toast: e-posta bazlı güvensiz abonelik kaldırıldı. Profil açıldığında siparişler `/api/my-orders` üzerinden tazeleniyor. Yeni Realtime aboneliği ancak `auth_user_id` filtresi ve düzeltilmiş RLS ile eklenmeli.
 
 ### Ölçüm — GA4 kararı
 
@@ -89,6 +96,7 @@ curl -i https://tarhanaterapi.com/api/my-orders
 curl -I https://tarhanaterapi.com/
 ```
 
-- `/api/my-orders` kimlik doğrulanmış istekte dahi PII döndürmemeli.
+- `/api/my-orders` kimlik doğrulanmamış istekte `401` + `no-store`; yalnızca `auth_user_id` eşleşen siparişleri `200` ile döndürmeli.
+- Supabase `orders` tablosunda `anon` okuma boş; `authenticated` yalnızca kendi `auth_user_id` kayıtlarını okuyabilmeli; doğrudan yazma `403` olmalı.
 - Ana sayfa, ürün, KVKK ve sitemap `200` dönmeli.
 - Yeni CSP/analitik değişikliği varsa console'da CSP hatası olmamalı.
