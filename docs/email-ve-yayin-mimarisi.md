@@ -52,9 +52,10 @@ Bağlandıktan sonra `main` dalına push otomatik deploy tetikler. Alternatif ol
    - `TT-XXXXXX` sipariş numarası üretir.
 3. **Supabase PostgreSQL** (`orders` tablosu)
    - Sipariş, service-role anahtarıyla kalıcı olarak yazılır.
+   - 32 baytlık rastgele erişim token'ı üretilir; `orders.access_token_hash` içinde yalnızca SHA-256 özeti saklanır.
 4. **Paralel iki bildirim** (`Promise.allSettled`)
    - **Telegram Bot API** → yönetici sohbetine yeni sipariş özeti.
-   - **Resend API** (`POST /emails`) → müşteriye zengin HTML sipariş onay e-postası.
+   - **Resend API** (`POST /emails`) → müşteriye zengin HTML sipariş onay e-postası; içinde 180 gün geçerli `?siparis=<token>` bağlantısı.
 5. **Yanıt**
    - Başarılıysa `{ orderNumber, id }` döner; site sipariş onay ekranını gösterir.
    - E-posta veya Telegram başarısız olsa bile sipariş Supabase'de kayıtlıdır; iki bildirim birbirinden bağımsızdır.

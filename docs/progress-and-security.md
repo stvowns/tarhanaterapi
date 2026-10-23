@@ -93,6 +93,12 @@
 - `src/components/UserProfileModal.tsx` sipariş kartında ürün görseli, adı, gramajı, adedi, birim fiyatı, satır toplamı, ara toplam, kargo, indirim, genel toplam, teslimat notu ve **tarih + saat** gösteriyor.
 - Canlıda `TT-48214` test siparişinde doğrulandı.
 - **23 Ekim 2026:** `my-orders` sahiplik açığı nedeniyle geçici olarak kapatıldı. Endpoint `410 Gone` döndürüyor, `App.tsx` artık çağırmıyor; e-posta + oturum, `mailer_autoconfirm: true` altında sahiplik kanıtı değil. Token/magic-link akışı gelene kadar profil sipariş geçmişi kapalı.
+- **23 Ekim 2026 — tek sipariş erişimi:** Yeni siparişlerin onay e-postasına 180 gün geçerli, rastgele bir `?siparis=<token>` bağlantısı eklendi.
+  - `functions/api/create-order.js` 32 baytlık token üretiyor; `orders.access_token_hash` içinde yalnızca SHA-256 özeti tutuluyor.
+  - `functions/api/order-access.js` token'ı doğrulayıp yalnızca ilgili siparişi, `Cache-Control: no-store` ile döndürüyor.
+  - `src/components/OrderAccessModal.tsx` bağlantı açıldığında sipariş detayını gösteriyor; token URL'den temizleniyor.
+  - Test: geçerli token `200`, geçersiz `400`, bilinmeyen `404`; sentetik `TT-00001` kaydı ile uçtan uca doğrulandı ve kayıt silindi.
+  - **Sınır:** 23 Ekim 2026 öncesi siparişlerde token yok; yalnızca yeni siparişler bu bağlantıyı alır. Profil içi liste hâlâ kapalı.
 
 ### MFA
 
@@ -114,6 +120,9 @@
 | Ana sayfa | `200` |
 | E-kitap PDF | `200` |
 | `/api/my-orders` (geçici kapalı) | `410` |
+| `/api/order-access` geçerli token | `200`, yalnızca tek sipariş |
+| `/api/order-access` geçersiz token | `400` |
+| `/api/order-access` bilinmeyen token | `404` |
 | `/api/update-order-status` yetkisiz | `401` |
 | Geçersiz `/api/unsubscribe` | `400` |
 | `/urunler` | `301` → `/urunler/tarhana-classic` |

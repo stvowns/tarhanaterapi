@@ -11,12 +11,14 @@
 - [x] **Acil hotfix:** `/api/my-orders` geçici olarak `410 Gone` döndürüyor; `App.tsx` artık bu endpoint'i çağırmıyor.
   - E-posta + oturum, `mailer_autoconfirm: true` altında sahiplik kanıtı değil.
   - Sipariş durum e-postaları ve admin `list-orders` etkilenmiyor.
-- [ ] **Kalıcı çözüm:** Sipariş onay e-postasına rastgele, tek kullanımlık, süreli erişim token'ı ekle.
-  - Token'ın yalnızca hash'i saklanacak; link yalnızca ilgili siparişi döndürecek.
-  - Token doğrulanmadan adres/telefon gibi PII gösterilmeyecek.
-  - Alternatif: e-posta magic link'i ile sipariş listesi.
-- [ ] **Test:** Token'sız istek `401/410`; geçerli token yalnızca kendi siparişini döndürüyor; süresi dolmuş/tekrar kullanılmış token reddediliyor.
-- [ ] **`Cache-Control: no-store`** sipariş döndüren tüm endpoint'lerde.
+- [x] **Kalıcı çözüm (yeni siparişler):** Sipariş onay e-postasına rastgele, süreli erişim token'ı eklendi.
+  - `orders.access_token_hash` yalnızca SHA-256 özetini saklıyor; ham token e-postada.
+  - Token 180 gün geçerli; `/api/order-access?token=...` yalnızca o siparişi döndürüyor.
+  - E-posta ve sipariş numarası ile arama yok.
+- [x] **Test:** Token'sız/geçersiz istek `400`; bilinmeyen token `404`; geçerli token yalnızca kendi siparişini `200` döndürüyor; süresi dolmuş token `410`.
+- [x] **`Cache-Control: no-store`** sipariş döndüren endpoint'lerde.
+- [ ] **Eski siparişler:** 23 Ekim 2026 öncesi siparişlerde token yok; profil içi liste için ayrıca `customer_id`/oturum sahipliği veya destek üzerinden yeniden gönderim akışı gerekir.
+- [ ] **Profil içi sipariş listesi:** `my-orders` yalnızca `customer_id = auth.uid()` veya magic-link doğrulaması ile yeniden açılmalı; e-posta ile arama yapılmamalı.
 
 > **Not:** “Sipariş no + e-posta” nihai çözüm değil. Sipariş numaraları sıralı (`TT-#####`) ve endpoint'te kalıcı rate limit yok; bu ikisi birlikte sahiplik kanıtı sayılmaz.
 

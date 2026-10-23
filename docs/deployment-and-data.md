@@ -127,10 +127,14 @@ Migration yeniden çalıştırılmamalı; yalnızca politikaların açık olduğ
 3. Supabase `orders` + `order_items` yazımı (`service_role`)
 4. Paralel bildirimler:
    - Telegram → yönetici sohbeti
-   - Resend → müşteriye sipariş onay e-postası
+   - Resend → müşteriye sipariş onay e-postası (içinde `?siparis=<token>` bağlantısı)
 5. Durum güncellemesi → `POST /api/update-order-status`
    - Müşteriye e-posta **yalnızca** durum ilk kez `Kargoya Verildi` olduğunda gider.
    - Aynı durumun tekrarı veya diğer durumlar mail göndermez.
+6. Sipariş takibi → `GET /api/order-access?token=...`
+   - 32 baytlık rastgele token; veritabanında yalnızca SHA-256 özeti (`orders.access_token_hash`).
+   - 180 gün geçerli; yalnızca tek sipariş döner, `Cache-Control: no-store`.
+   - 23 Ekim 2026 öncesi siparişlerde token yoktur.
 
 Sipariş numarası sıralı `TT-XXXXXX` formatındadır.
 
@@ -150,6 +154,8 @@ Deploy sonrası en az şunlar kontrol edilmeli:
 - [ ] Ana sayfa `200`
 - [ ] `/kadim-corba-rituelleri-ve-sifali-tarifler.pdf` `200`
 - [ ] `/api/my-orders` (geçici kapalı) `410`
+- [ ] `/api/order-access?token=...`: geçerli `200`, geçersiz `400`, bilinmeyen `404`
+- [ ] Yeni sipariş onay e-postasında “Sipariş Detayını Gör” bağlantısı var
 - [ ] `/api/update-order-status` yetkisiz `401`
 - [ ] Geçersiz `/api/unsubscribe` `400`
 - [ ] Secret'sız `/api/telegram-webhook` `401`
