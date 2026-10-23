@@ -1,4 +1,5 @@
 import { getAdmin } from '../_lib/admin.js';
+import { orderShippedHtml, orderShippedText } from '../_lib/order-email.js';
 
 const ALLOWED_STATUSES = ['Yeni Sipariş', 'Hazırlanıyor', 'Kargoya Verildi', 'Tamamlandı'];
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
@@ -9,23 +10,7 @@ const json = (body, status = 200) =>
     headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' },
   });
 
-const escapeHtml = (value) =>
-  String(value ?? '').replace(/[&<>"']/g, (char) => {
-    switch (char) {
-      case '&':
-        return '&amp;';
-      case '<':
-        return '&lt;';
-      case '>':
-        return '&gt;';
-      case '"':
-        return '&quot;';
-      default:
-        return '&#39;';
-    }
-  });
-
-const notifyEmail = async (env, to, subject, html) => {
+const notifyEmail = async (env, to, subject, html, text = '') => {
   if (!env.RESEND_API_KEY || !to) return false;
   try {
     const res = await fetch('https://api.resend.com/emails', {
@@ -34,8 +19,10 @@ const notifyEmail = async (env, to, subject, html) => {
       body: JSON.stringify({
         from: 'TarhanaTerapi <satis@tarhanaterapi.com>',
         to: [to],
+        reply_to: 'satis@tarhanaterapi.com',
         subject,
         html,
+        ...(text ? { text } : {}),
       }),
     });
     if (!res.ok) {
@@ -76,7 +63,7 @@ export async function onRequestPost({ request, env }) {
   // E-postayı yalnızca gerçek bir "Kargoya Verildi" geçişinde göndermek için
   // mevcut durumu ve alıcı bilgilerini güncellemeden önce okuyoruz.
   const currentRes = await fetch(
-    `${env.SUPABASE_URL}/rest/v1/orders?id=eq.${orderId}&select=id,status,order_number,customer_name,customer_email`,
+    `${env.SUPABASE_URL}/rest/v1/orders?id=eq.${orderId}&select=*`,
     { headers: authHeaders }
   );
 
@@ -120,16 +107,14 @@ export async function onRequestPost({ request, env }) {
 
   let notified = false;
   if (transitionedToShipped) {
-    const customerName = String(current.customer_name || 'Müşteri');
     const orderNumber = String(current.order_number || '');
+    const shippedAt = new Date();
     notified = await notifyEmail(
       env,
       String(current.customer_email || ''),
       `Siparişiniz Kargoya Verildi: ${orderNumber}`,
-      `<p>Sayın ${escapeHtml(customerName)},</p>
-       <p><strong>${escapeHtml(orderNumber)}</strong> numaralı siparişiniz kargoya verildi.</p>
-       <p>TarhanaTerapi'yi tercih ettiğiniz için teşekkür ederiz.</p>
-       <p>Sevgiler,<br>TarhanaTerapi</p>`
+      orderShippedHtml(current, orderNumber, shippedAt),
+      orderShippedText(current, orderNumber)
     );
   }
 

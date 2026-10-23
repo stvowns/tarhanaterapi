@@ -3,6 +3,8 @@
  * Telegram botu üzerinden sipariş görüntüleme ve durum güncelleme.
  */
 
+import { orderShippedHtml, orderShippedText } from '../_lib/order-email.js';
+
 const ALLOWED_STATUSES = ['Yeni Sipariş', 'Hazırlanıyor', 'Kargoya Verildi', 'Tamamlandı'];
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 
@@ -36,36 +38,20 @@ const supabase = async (env, path, options = {}) => {
   }
 };
 
-const esc = (value) =>
-  String(value ?? '').replace(/[&<>"']/g, (char) => {
-    switch (char) {
-      case '&':
-        return '&amp;';
-      case '<':
-        return '&lt;';
-      case '>':
-        return '&gt;';
-      case '"':
-        return '&quot;';
-      default:
-        return '&#39;';
-    }
-  });
-
 const notifyShippedEmail = async (env, order) => {
   if (!env.RESEND_API_KEY || !order?.customer_email) return;
   const orderNumber = String(order.order_number || '');
+  const shippedAt = new Date();
   const res = await fetch('https://api.resend.com/emails', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${env.RESEND_API_KEY}` },
     body: JSON.stringify({
       from: 'TarhanaTerapi <satis@tarhanaterapi.com>',
       to: [order.customer_email],
+      reply_to: 'satis@tarhanaterapi.com',
       subject: `Siparişiniz Kargoya Verildi: ${orderNumber}`,
-      html: `<p>Sayın ${esc(order.customer_name || 'Müşteri')},</p>
-             <p><strong>${esc(orderNumber)}</strong> numaralı siparişiniz kargoya verildi.</p>
-             <p>TarhanaTerapi'yi tercih ettiğiniz için teşekkür ederiz.</p>
-             <p>Sevgiler,<br>TarhanaTerapi</p>`,
+      html: orderShippedHtml(order, orderNumber, shippedAt),
+      text: orderShippedText(order, orderNumber),
     }),
   });
   if (!res.ok) {
@@ -270,10 +256,7 @@ export async function onRequestPost({ request, env }) {
         if (!UUID_RE.test(id) || !ALLOWED_STATUSES.includes(status)) {
           return text('invalid status', 400);
         }
-        const current = await supabase(
-          env,
-          `orders?id=eq.${id}&select=status,order_number,customer_name,customer_email`
-        );
+        const current = await supabase(env, `orders?id=eq.${id}&select=*`);
         const patchPath =
           status === 'Kargoya Verildi'
             ? `orders?id=eq.${id}&status=neq.${encodeURIComponent('Kargoya Verildi')}`
