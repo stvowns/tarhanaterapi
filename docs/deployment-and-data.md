@@ -46,7 +46,7 @@ npx wrangler pages deploy dist \
 - Deploy sonrası test özel alan adından yapılmalı; `*.pages.dev` Türkiye'de engelli olabilir.
 - Git entegrasyonu açık olduğu için push otomatik build/deploy tetikler. Yalnızca doküman değişikliği canlı siteyi etkilemez; yine de otomatik build çalışabilir.
 
-Son doğrulanan prod code commit: `1176edcba0f5170de26fbb17ba14a20aa30972be`.
+Son doğrulanan prod code commit: `5f64cefefd939bfba5778045bb1a842e95bc4274`.
 
 ## 3. Frontend build değişkenleri
 
