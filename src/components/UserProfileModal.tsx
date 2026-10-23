@@ -41,6 +41,7 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({
   const userOrders = [...orders].sort((a, b) => orderTime(b.createdAt) - orderTime(a.createdAt));
   const completedStatuses = ['Tamamlandı', 'Teslim Edildi', 'İptal Edildi', 'İptal'];
   const activeOrders = userOrders.filter((order) => !completedStatuses.includes(order.status));
+  const pastOrders = userOrders.filter((order) => completedStatuses.includes(order.status));
   const lastOrder = userOrders[0];
 
   const formatOrderDate = (value: string) => {
@@ -75,6 +76,104 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({
       default:
         return 'bg-surface-container text-on-surface-variant';
     }
+  };
+
+  const renderOrderCard = (ord: Order) => {
+    const items = Array.isArray(ord.items) ? ord.items : [];
+    return (
+      <div
+        key={ord.id}
+        className="p-4 rounded-xl bg-surface-container-lowest border border-outline-variant/30 flex flex-col gap-3"
+      >
+        <div className="flex justify-between items-center gap-2 text-xs">
+          <span className="font-bold text-on-surface">{ord.orderNumber}</span>
+          <span
+            className={`px-2 py-0.5 rounded-full text-[11px] font-semibold whitespace-nowrap ${statusClass(
+              ord.status
+            )}`}
+          >
+            {ord.status}
+          </span>
+        </div>
+
+        <div className="text-xs text-outline flex items-center justify-between gap-2">
+          <span>{formatOrderDate(ord.createdAt)}</span>
+          <span className="font-bold text-primary text-sm whitespace-nowrap">
+            ₺{ord.total}
+          </span>
+        </div>
+
+        <div className="flex flex-col gap-2">
+          {items.length === 0 ? (
+            <p className="text-[11px] text-outline italic">
+              Sipariş içeriği görüntülenemiyor.
+            </p>
+          ) : (
+            items.map((it, idx) => (
+              <div
+                key={`${ord.id}-${idx}`}
+                className="flex items-center gap-3 rounded-lg bg-surface-container-low p-2"
+              >
+                {it.image ? (
+                  <img
+                    src={it.image}
+                    alt={it.name}
+                    className="w-10 h-10 rounded-md object-cover shrink-0"
+                    loading="lazy"
+                  />
+                ) : (
+                  <span className="material-symbols-outlined text-[20px] text-primary shrink-0">
+                    inventory_2
+                  </span>
+                )}
+                <div className="min-w-0 flex-1">
+                  <p className="text-xs font-semibold text-on-surface truncate">
+                    {it.name}
+                  </p>
+                  {it.weight && (
+                    <p className="text-[10px] text-outline">{it.weight}</p>
+                  )}
+                </div>
+                <div className="text-right shrink-0">
+                  <p className="text-[10px] text-outline whitespace-nowrap">
+                    {it.quantity} x ₺{it.price}
+                  </p>
+                  <p className="text-xs font-bold text-on-surface whitespace-nowrap">
+                    ₺{it.price * it.quantity}
+                  </p>
+                </div>
+              </div>
+            ))
+          )}
+        </div>
+
+        {items.length > 0 && (
+          <div className="pt-2 border-t border-outline-variant/20 grid grid-cols-2 gap-x-4 gap-y-1 text-[11px] text-on-surface-variant">
+            <span>Ara toplam</span>
+            <span className="text-right">₺{ord.subtotal}</span>
+            <span>Kargo</span>
+            <span className="text-right">
+              {ord.shippingFee > 0 ? `₺${ord.shippingFee}` : 'Ücretsiz'}
+            </span>
+            {ord.discount > 0 && (
+              <>
+                <span>İndirim</span>
+                <span className="text-right">-₺{ord.discount}</span>
+              </>
+            )}
+            <span className="font-bold text-on-surface">Toplam</span>
+            <span className="text-right font-bold text-primary">₺{ord.total}</span>
+          </div>
+        )}
+
+        {ord.deliveryNote && (
+          <p className="text-[11px] text-outline">
+            <span className="font-semibold text-on-surface-variant">Not:</span>{' '}
+            {ord.deliveryNote}
+          </p>
+        )}
+      </div>
+    );
   };
 
   return (
@@ -191,13 +290,13 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({
             </p>
           </div>
 
-          {/* Orders History */}
+          {/* Orders */}
           <div>
             <h3 className="text-xs font-bold uppercase tracking-wider text-on-surface mb-3 flex items-center gap-1.5">
               <span className="material-symbols-outlined text-[16px] text-primary">
                 receipt_long
               </span>
-              Geçmiş Siparişlerim
+              Siparişlerim
               {userOrders.length > 0 && (
                 <span className="ml-1 text-[10px] font-semibold text-outline">
                   ({userOrders.length})
@@ -224,104 +323,50 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({
                 </p>
               </div>
             ) : (
-              <div className="flex flex-col gap-3">
-                {userOrders.map((ord) => {
-                  const items = Array.isArray(ord.items) ? ord.items : [];
-                  return (
-                    <div
-                      key={ord.id}
-                      className="p-4 rounded-xl bg-surface-container-lowest border border-outline-variant/30 flex flex-col gap-3"
-                    >
-                      <div className="flex justify-between items-center gap-2 text-xs">
-                        <span className="font-bold text-on-surface">{ord.orderNumber}</span>
-                        <span
-                          className={`px-2 py-0.5 rounded-full text-[11px] font-semibold whitespace-nowrap ${statusClass(
-                            ord.status
-                          )}`}
-                        >
-                          {ord.status}
-                        </span>
-                      </div>
-
-                      <div className="text-xs text-outline flex items-center justify-between gap-2">
-                        <span>{formatOrderDate(ord.createdAt)}</span>
-                        <span className="font-bold text-primary text-sm whitespace-nowrap">
-                          ₺{ord.total}
-                        </span>
-                      </div>
-
-                      <div className="flex flex-col gap-2">
-                        {items.length === 0 ? (
-                          <p className="text-[11px] text-outline italic">
-                            Sipariş içeriği görüntülenemiyor.
-                          </p>
-                        ) : (
-                          items.map((it, idx) => (
-                            <div
-                              key={`${ord.id}-${idx}`}
-                              className="flex items-center gap-3 rounded-lg bg-surface-container-low p-2"
-                            >
-                              {it.image ? (
-                                <img
-                                  src={it.image}
-                                  alt={it.name}
-                                  className="w-10 h-10 rounded-md object-cover shrink-0"
-                                  loading="lazy"
-                                />
-                              ) : (
-                                <span className="material-symbols-outlined text-[20px] text-primary shrink-0">
-                                  inventory_2
-                                </span>
-                              )}
-                              <div className="min-w-0 flex-1">
-                                <p className="text-xs font-semibold text-on-surface truncate">
-                                  {it.name}
-                                </p>
-                                {it.weight && (
-                                  <p className="text-[10px] text-outline">{it.weight}</p>
-                                )}
-                              </div>
-                              <div className="text-right shrink-0">
-                                <p className="text-[10px] text-outline whitespace-nowrap">
-                                  {it.quantity} x ₺{it.price}
-                                </p>
-                                <p className="text-xs font-bold text-on-surface whitespace-nowrap">
-                                  ₺{it.price * it.quantity}
-                                </p>
-                              </div>
-                            </div>
-                          ))
-                        )}
-                      </div>
-
-                      {items.length > 0 && (
-                        <div className="pt-2 border-t border-outline-variant/20 grid grid-cols-2 gap-x-4 gap-y-1 text-[11px] text-on-surface-variant">
-                          <span>Ara toplam</span>
-                          <span className="text-right">₺{ord.subtotal}</span>
-                          <span>Kargo</span>
-                          <span className="text-right">
-                            {ord.shippingFee > 0 ? `₺${ord.shippingFee}` : 'Ücretsiz'}
-                          </span>
-                          {ord.discount > 0 && (
-                            <>
-                              <span>İndirim</span>
-                              <span className="text-right">-₺{ord.discount}</span>
-                            </>
-                          )}
-                          <span className="font-bold text-on-surface">Toplam</span>
-                          <span className="text-right font-bold text-primary">₺{ord.total}</span>
-                        </div>
-                      )}
-
-                      {ord.deliveryNote && (
-                        <p className="text-[11px] text-outline">
-                          <span className="font-semibold text-on-surface-variant">Not:</span>{' '}
-                          {ord.deliveryNote}
-                        </p>
-                      )}
+              <div className="flex flex-col gap-6">
+                <section>
+                  <h4 className="text-[11px] font-bold uppercase tracking-wider text-on-surface mb-2 flex items-center gap-1.5">
+                    <span className="material-symbols-outlined text-[16px] text-primary">
+                      local_shipping
+                    </span>
+                    Aktif Siparişler
+                    <span className="ml-1 text-[10px] font-semibold text-outline">
+                      ({activeOrders.length})
+                    </span>
+                  </h4>
+                  {activeOrders.length === 0 ? (
+                    <div className="text-center py-5 border border-dashed border-outline-variant/40 rounded-xl">
+                      <p className="text-xs text-outline">Şu an aktif siparişiniz bulunmuyor.</p>
                     </div>
-                  );
-                })}
+                  ) : (
+                    <div className="flex flex-col gap-3">
+                      {activeOrders.map(renderOrderCard)}
+                    </div>
+                  )}
+                </section>
+
+                <section>
+                  <h4 className="text-[11px] font-bold uppercase tracking-wider text-on-surface mb-2 flex items-center gap-1.5">
+                    <span className="material-symbols-outlined text-[16px] text-primary">
+                      history
+                    </span>
+                    Geçmiş Siparişlerim
+                    <span className="ml-1 text-[10px] font-semibold text-outline">
+                      ({pastOrders.length})
+                    </span>
+                  </h4>
+                  {pastOrders.length === 0 ? (
+                    <div className="text-center py-5 border border-dashed border-outline-variant/40 rounded-xl">
+                      <p className="text-xs text-outline">
+                        Tamamlanmış siparişiniz bulunmuyor. Siparişiniz tamamlandığında burada görünecek.
+                      </p>
+                    </div>
+                  ) : (
+                    <div className="flex flex-col gap-3">
+                      {pastOrders.map(renderOrderCard)}
+                    </div>
+                  )}
+                </section>
               </div>
             )}
           </div>
