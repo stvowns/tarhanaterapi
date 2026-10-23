@@ -11,7 +11,9 @@
   **12 KB**.
 - Google Fonts'a giden `preconnect`, CSS ve font istekleri kaldırıldı.
 - CSP `font-src 'self'` olarak sıkılaştırıldı; `style-src` içinden
-  `fonts.googleapis.com` çıkarıldı.
+  `fonts.googleapis.com` çıkarıldı. `script-src` içinden de `'unsafe-inline'`
+  kaldırıldı; yalnızca `style-src` için React'in inline stilleri ve statik
+  kabuk nedeniyle `'unsafe-inline'` kaldı.
 - `/fonts/*` için 1 yıl `immutable` cache eklendi.
 
 > Yeni bir Material ikonu eklenirse `public/fonts/material-symbols-outlined.woff2`
@@ -50,20 +52,23 @@ throttling, 23 Ekim 2026:
 
 | Kategori | Skor |
 |---|---:|
-| Performans | 89 |
+| Performans | 87 |
 | Erişilebilirlik | 100 |
 | En İyi Uygulamalar | 100 |
 | SEO | 100 |
 
 Ölçülenler:
 
-- Toplam sayfa ağırlığı: **597 KiB** (önceki tam fontlu sürümde yaklaşık
+- Toplam sayfa ağırlığı: **594 KiB** (önceki tam fontlu sürümde yaklaşık
   4,5 MB)
-- FCP: 2,5 s
-- LCP: 3,2 s
-- CLS: 0,006
-- TBT: 40 ms
+- FCP: 2,0 s
+- LCP: 3,8 s
+- CLS: 0,002
+- TBT: 10 ms
 - Konsol hatası: **0**
+
+Ardışık canlı ölçümlerde performans 87–89 arasında geldi; ağ koşullarına ve
+mobil throttling varyasyonuna göre birkaç puan oynayabilir.
 
 İlk canlı denemede `VITE_SUPABASE_URL` / `VITE_SUPABASE_ANON_KEY` build
 sırasında tanımlı olmadığı için uygulama açılışta hata veriyordu. Değerler
