@@ -1,10 +1,10 @@
 # Admin Yetkisi, MFA ve Yedekleme — 23 Ekim 2026
 
-## 1. Yönetici yetkisi artık rol tabanlı
+## 1. Yönetici yetkisi rol tabanlı
 
-Sunucu tarafındaki tüm yönetici API'leri artık önce Supabase
-`app_metadata.role === 'admin'` kontrolünü yapar. Eski e-posta allowlist'i
-(`layeredstudio78@gmail.com`) yalnızca geçiş dönemi için yedek olarak durur.
+Sunucu tarafındaki tüm yönetici API'leri Supabase
+`app_metadata.role === 'admin'` kontrolünü yapar. `layeredstudio78@gmail.com`
+hesabına 23 Ekim 2026'da bu rol atandı ve eski e-posta allowlist'i kaldırıldı.
 
 İlgili dosyalar:
 
@@ -28,11 +28,14 @@ Supabase panelinde:
 
 4. Kaydet. Kullanıcı yeniden giriş yaptığında `isAdmin` rolü otomatik gelir.
 
-Rol atandıktan sonra bir süre eski allowlist de çalışmaya devam eder. Sorunsuz
-çalıştığı doğrulandıktan sonra `functions/_lib/admin.js` içindeki
-`LEGACY_ADMIN_EMAILS` ve `src/lib/admin.ts` içindeki `LEGACY_ADMIN_EMAIL`
-kaldırılabilir. Bu, e-posta ele geçirilse bile yönetici yetkisinin yalnızca
-sunucu tarafından atanan role bağlı kalmasını sağlar.
+Rol atandıktan sonra e-posta allowlist'i kaldırıldı. Böylece e-posta ele
+geçirilse bile yönetici yetkisi yalnızca sunucu tarafından atanan role bağlı
+kalır. Mevcut oturum eski JWT'yi taşıyorsa çıkış yapıp tekrar giriş yapılması
+gerekir.
+
+23 Ekim 2026 doğrulaması: Google hesabıyla alınan yeni JWT'de
+`app_metadata.role = "admin"` görüldü ve `/api/list-orders` yetkili istekle
+`200`, yetkisiz istekle `401` döndü.
 
 ## 2. MFA her sayfada sorulmaz
 

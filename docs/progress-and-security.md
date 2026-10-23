@@ -47,7 +47,7 @@
 ### API ve yönetici güvenliği
 
 - Tüm yönetici uçları (`list-orders`, `update-order-status`, `list-subscribers`, `list-reviews`, `moderate-review`, `send-newsletter`, `list-newsletter-contacts`) Supabase ile **e-posta doğrulaması yapılmış kullanıcı** istiyor.
-- Yönetici allowlist e-posta bazlı: `layeredstudio78@gmail.com`.
+- Yönetici yetkisi Supabase `app_metadata.role = 'admin'` ile rol tabanlı.
 - `create-order`: zorunlu alan, e-posta/telefon/adres uzunluğu, ürün adedi ve toplam tutar üst sınırı doğrulanıyor; fiyatlar sunucuda yeniden hesaplanıyor.
 - Kapıda Ödeme varsayılan olarak kapalı; yalnızca `ALLOW_COD=true` ile açılabiliyor.
 - Telegram webhook **fail-closed**: `TELEGRAM_WEBHOOK_SECRET` yoksa veya gelen secret eşleşmiyorsa `401`; admin chat ID kontrolü de yapılıyor.
@@ -170,7 +170,7 @@ Server-side:
 - **Supabase Auth / MFA:** Confirm email şu an kapalı (`mailer_autoconfirm: true`); admin hesabında TOTP faktörü yok. `ADMIN_MFA_REQUIRED` da ayarlı değil. Enrollment sonrası `./set-admin-mfa.sh on` ile enforcement açılmalı.
 - **Rate limit kapsamı:** Cloudflare Free planında tek kural ve yalnızca 10 saniyelik period/duration var. Daha ayrıntılı limit veya CAPTCHA gerekiyorsa Turnstile/üst plan değerlendirilmeli.
 - **Bülten:** Double opt-in yok; biri başkasının e-postasını formdan ekleyebilir.
-- Yönetici allowlist koddaki e-posta listesiyle yönetiliyor; ileride Supabase `app_metadata` / rol tablosuna taşınabilir.
+- Yönetici yetkisi Supabase `app_metadata.role = 'admin'` ile yönetiliyor; e-posta allowlist'i kaldırıldı.
 - Banka/IBAN bilgileri, Shopier onayı ve ödeme linki, muhasebe onayı ve kargo teklifi hâlâ kullanıcı tarafından netleştirilmeli.
 - Cloudflare Web Analytics kurulumu ve Yandex Webmaster doğrulaması kullanıcı tarafında bekliyor.
 

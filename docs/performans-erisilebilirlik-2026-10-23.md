@@ -39,7 +39,7 @@
 ### 4. Yönetici paneli ve yedek
 
 - Yönetici API'leri artık `app_metadata.role === 'admin'` kontrolünü
-  kullanıyor; eski e-posta allowlist'i geçiş için yedekte.
+  kullanıyor; e-posta allowlist'i kaldırıldı.
 - Panel JSON dışa aktarmasına yorumlar eklendi.
 - “Tam Veritabanı Yedeği” ifadesi “Veri Dışa Aktarma (JSON)” olarak
   düzeltildi; auth kullanıcıları, şifreler ve şemanın dahil olmadığı açıkça

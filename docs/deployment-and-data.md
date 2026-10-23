@@ -101,7 +101,7 @@ Tablolar:
 - Public `reviews` okuması yalnızca `verified = true` kayıtlarla sınırlı.
 - Public `orders` / `subscribers` SELECT denemeleri boş döner.
 - Sipariş oluşturma, durum güncelleme, abone ekleme ve yorum gönderme yalnızca server-side Functions üzerinden `service_role` ile yapılır.
-- Yönetici uçları ayrıca Supabase ile **doğrulanmış e-posta** ve e-posta allowlist'i kontrol eder.
+- Yönetici uçları ayrıca Supabase ile **doğrulanmış e-posta** ve `app_metadata.role = 'admin'` kontrolü yapar.
 - Public anahtarla geçersiz INSERT denemesi `42501` (HTTP `401`) alır.
 
 Migration yeniden çalıştırılmamalı; yalnızca politikaların açık olduğu tespit edilirse `supabase/security-hardening.sql` uygulanır.

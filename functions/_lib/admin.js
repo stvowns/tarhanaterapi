@@ -1,15 +1,10 @@
 /**
  * Ortak yönetici yetkilendirmesi.
  *
- * Birincil kaynak: Supabase `app_metadata.role === 'admin'`.
- * Geçiş dönemi: rol atanana kadar eski e-posta allowlist'i çalışmaya devam eder.
- *
- * Not: E-posta allowlist'i yalnızca geçiş içindir. Supabase panelinden
- * Authentication > Users > kullanıcı > Raw App Meta Data alanına
- * `{"role":"admin"}` eklendikten sonra bu fallback kaldırılabilir.
+ * Tek kaynak: Supabase `app_metadata.role === 'admin'`.
+ * E-posta allowlist'i kaldırıldı; yönetici yetkisi yalnızca sunucu tarafından
+ * atanan uygulama meta verisiyle verilir.
  */
-
-const LEGACY_ADMIN_EMAILS = ['layeredstudio78@gmail.com'];
 
 function tokenAal(token) {
   try {
@@ -26,7 +21,7 @@ function tokenAal(token) {
 /**
  * @param {Request} request
  * @param {Record<string, string | undefined>} env
- * @returns {Promise<{ email: string, user: any, role: 'admin' | 'legacy-allowlist' } | null>}
+ * @returns {Promise<{ email: string, user: any, role: 'admin' } | null>}
  */
 export async function getAdmin(request, env) {
   const authHeader = request.headers.get('authorization');
@@ -58,10 +53,6 @@ export async function getAdmin(request, env) {
 
   if (role === 'admin') {
     return { email, user, role: 'admin' };
-  }
-
-  if (LEGACY_ADMIN_EMAILS.includes(email)) {
-    return { email, user, role: 'legacy-allowlist' };
   }
 
   return null;

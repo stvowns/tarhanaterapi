@@ -72,7 +72,7 @@ Teknik GEO altyapısı, hosting taşıması, e-posta/bülten altyapısı, secret
 - [x] **E-kitap PDF son sayfasındaki adres** `Muradiye Mh., Orhangazi / Bursa` olarak düzeltildi; PDF yeniden üretildi.
 - [x] **Supabase RLS sertleştirmesi** uygulandı: `orders`, `order_items`, `subscribers`, `reviews` üzerinde anon INSERT kapalı; public `reviews` yalnızca `verified = true`.
 - [x] Public anahtarla geçersiz INSERT artık `42501` / HTTP `401`; public `orders` / `subscribers` SELECT boş.
-- [x] **Yönetici API'leri** doğrulanmış Supabase e-postası + allowlist istiyor.
+- [x] **Yönetici API'leri** doğrulanmış Supabase e-postası + `app_metadata.role = 'admin'` istiyor.
 - [x] `create-order` alan/limit doğrulamaları ve **Kapıda Ödeme varsayılan kapalı** (`ALLOW_COD=true` ile açılır).
 - [x] **Telegram webhook fail-closed**: secret yoksa/yanlışsa `401`, admin chat ID kontrolü.
 - [x] Public **demo login** kaldırıldı.
