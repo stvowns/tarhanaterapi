@@ -22,7 +22,7 @@
 - [x] **RLS sahiplik açığı:** Canlıdaki `users can read own orders` politikası `customer_email = auth.jwt()->>'email'` yerine `auth_user_id = auth.uid()` olarak değiştirildi. `anon`/`authenticated` için `INSERT/UPDATE/DELETE` yetkileri kaldırıldı; yazma yalnızca `service_role` üzerinden.
   - Test: aynı e-postaya ait iki siparişten yalnızca `auth_user_id` eşleşen göründü; doğrudan `PATCH` `403` döndü; sentetik kayıtlar ve test kullanıcısı silindi.
 
-> **Not:** “Sipariş no + e-posta” nihai çözüm değil. Sipariş numaraları sıralı (`TT-#####`) ve endpoint'te kalıcı rate limit yok; bu ikisi birlikte sahiplik kanıtı sayılmaz.
+> **Not:** “Sipariş no + e-posta” nihai çözüm değil. Kalıcı rate limit artık olsa da bu ikisi birlikte sahiplik kanıtı sayılmaz; sipariş erişimi `auth_user_id` veya tek kullanımlık token ile yapılır.
 
 ### P1-B — KVKK açık rıza (aynı sprint)
 
