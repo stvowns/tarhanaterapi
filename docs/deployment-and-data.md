@@ -146,6 +146,7 @@ Sipariş numarası sıralı `TT-XXXXXX` formatındadır.
 - Her alıcıya özel HMAC token'lı `GET/POST /api/unsubscribe?token=...` bağlantısı eklenir.
 - `List-Unsubscribe` / `List-Unsubscribe-Post` başlıkları e-posta istemcisinin tek tıkla çıkma özelliğini destekler.
 - Geçerli token `200` + `unsubscribed_at`; geçersiz token `400`.
+- Resend ile uzlaştırma: `./reconcile-resend.sh` veya `npm run reconcile:resend`; `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`, `RESEND_API_KEY` ortam değişkenlerini kullanır. Yalnızca `marketing_consent=true` ve `unsubscribed_at` boş aboneleri ekler.
 
 ## 8. Doğrulama kontrol listesi
 

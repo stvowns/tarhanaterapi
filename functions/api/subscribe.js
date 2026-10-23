@@ -39,6 +39,25 @@ const supabaseHeaders = (env, extra = {}) => ({
   ...extra,
 });
 
+const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+// Resend 429/5xx hatalarında kısa aralıklarla tekrar dene; kalıcı hatayı logla.
+const resendRequest = async (url, options, attempts = 3) => {
+  let res;
+  for (let attempt = 0; attempt < attempts; attempt += 1) {
+    res = await fetch(url, options);
+    if (
+      res.ok ||
+      ![429, 500, 502, 503, 504].includes(res.status) ||
+      attempt === attempts - 1
+    ) {
+      return res;
+    }
+    await sleep(250 * (attempt + 1));
+  }
+  return res;
+};
+
 export async function onRequestPost({ request, env }) {
   const ip = (
     request.headers.get('cf-connecting-ip') ||
@@ -158,7 +177,7 @@ export async function onRequestPost({ request, env }) {
         env.RESEND_AUDIENCE_ID || 'decff556-906f-4dd1-93c1-3009796ab097';
 
       if (env.RESEND_API_KEY && segmentId) {
-        const contact = await fetch('https://api.resend.com/contacts', {
+        const contact = await resendRequest('https://api.resend.com/contacts', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -175,7 +194,7 @@ export async function onRequestPost({ request, env }) {
           }
         }
 
-        const segment = await fetch(
+        const segment = await resendRequest(
           `https://api.resend.com/contacts/${encodeURIComponent(email)}/segments/${segmentId}`,
           {
             method: 'POST',

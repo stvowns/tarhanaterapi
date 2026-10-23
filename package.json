@@ -14,7 +14,8 @@
     "indexnow": "tsx scripts/indexnow.ts",
     "ebook": "tsx scripts/generate-ebook.ts",
     "check:ai": "node scripts/check-ai-access.mjs",
-    "check:build-env": "node scripts/check-build-env.mjs"
+    "check:build-env": "node scripts/check-build-env.mjs",
+    "reconcile:resend": "node scripts/reconcile-resend.mjs"
   },
   "dependencies": {
     "@google/genai": "^2.4.0",

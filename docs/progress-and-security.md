@@ -45,6 +45,7 @@
 - Supabase `subscribers` tablosuna `marketing_consent`, `consent_at`, `consent_version`, `consent_source` eklendi; migration canlıya uygulandı.
 - Resend contacts/segmentine yalnızca pazarlama onayı olan kayıtlar ekleniyor.
 - **Dikkat:** Eski abonelerde `marketing_consent = false`. Yeni bülten gönderiminden önce yeniden onay alınmalı veya Resend segmenti ayrıştırılmalı.
+- **Resend dayanıklılığı:** `subscribe.js` contact/segment için 429/5xx retry yapıyor; kalıcı hata loglanıyor. `./reconcile-resend.sh` (veya `npm run reconcile:resend`) pazarlama onaylı aboneleri Resend ile idempotent şekilde uzlaştırır. Anahtarlar ortam değişkeninden okunur.
 
 ### Supabase / RLS
 
