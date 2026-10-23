@@ -152,6 +152,13 @@ Teknik GEO altyapısı, hosting taşıması, e-posta/bülten altyapısı, secret
   - Hedef sorgular: "tarhana nasıl seçilir", "toz mu granül mü", "bebek tarhanası kaç aylıkken", "katkısız tarhana nasıl anlaşılır", tarif sayfaları.
   - Her sayfaya FAQ + `HowTo`/`Recipe` şeması + iç bağlantı.
 
+- [ ] **Ürün URL'si dil/SEO kararı** — **(Birlikte)**
+  - Mevcut URL: `/urunler/tarhana-classic`. `classic` İngilizce; ürün adı ise “Geleneksel Tarhana”.
+  - **Şimdilik değiştirme:** canonical, sitemap, 301’ler ve GSC indexleme bu URL’ye bağlı.
+  - Index durumu oturduktan sonra (2–4 hafta) gerekirse `/urunler/geleneksel-tarhana`ya planlı **301** yap.
+  - `klasik-tarhana` yerine **`geleneksel-tarhana`** tercih edilmeli.
+  - Taşıma yapılırsa tek adımda yönlendir; sitemap, schema, `llms.txt`, prerender, `_redirects` ve GSC URL listesi birlikte güncellenmeli.
+
 - [ ] **Dış atıf / backlink (en kritik GEO işi)** — **(Sen + Ben)**
   - Forum/blog/YouTube/Instagram, yerel basın, influencer, tarif siteleri, ürün inceleme videoları.
   - AI'lar üçüncü taraf bahisleri özetliyor; kendi siten tek başına yetmiyor.

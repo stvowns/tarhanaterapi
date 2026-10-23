@@ -229,6 +229,7 @@ Kaldırılacaklar:
 
 ## H. Sonraki içerik işleri (P1)
 
+- [ ] Ürün URL'si: `/urunler/tarhana-classic` şimdilik kalsın; index oturduktan sonra (2–4 hafta) gerekirse `/urunler/geleneksel-tarhana`ya planlı 301.
 - [ ] Ürün sayfasına rehber linkleri.
 - [ ] Bebek/gıda güvenliği rehberlerine kaynakça.
 - [ ] “Orhangazi tarhana” yerel sayfası.
