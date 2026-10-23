@@ -125,6 +125,7 @@
 | `/api/order-access` geçerli token | `200`, yalnızca tek sipariş |
 | `/api/order-access` geçersiz token | `400` |
 | `/api/order-access` bilinmeyen token | `404` |
+| `/api/list-orders` yetkisiz | `401`, `Cache-Control: no-store` |
 | `/api/update-order-status` yetkisiz | `401` |
 | Geçersiz `/api/unsubscribe` | `400` |
 | `/urunler` | `301` → `/urunler/tarhana-classic` |

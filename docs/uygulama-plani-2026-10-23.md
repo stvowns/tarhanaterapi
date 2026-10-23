@@ -48,7 +48,10 @@
   - “Kargoya Verildi” için `PATCH ...&status=neq.Kargoya Verildi` kullanılıyor; yalnızca satırı güncelleyen istek e-posta gönderiyor.
   - İkinci/paralel istek `200` dönse de `notified: false` oluyor.
   - SQL düzeyinde ilk koşullu güncelleme satır döndürdü, ikinci güncelleme boş döndü; sentetik `TT-00002` kaydı silindi.
-- [ ] `list-orders` sayfalama ekle; PII döndüren endpoint'lere `no-store`.
+- [x] `list-orders` sayfalama + `no-store`.
+  - `?limit=` (varsayılan 500, üst sınır 500) ve `?offset=`; yanıtta `hasMore`.
+  - `select=*` yerine yalnızca gerekli alanlar seçiliyor; token hash'i dönmüyor.
+  - `list-subscribers` ve diğer PII endpoint'lerinde `Cache-Control: no-store` mevcut.
 - [ ] Rate limit'leri kalıcılaştır (Cloudflare Rate Limiting / KV / Durable Object); in-memory `Map` temizliği.
 - [ ] `subscribe.js` Resend contact/segment hatasını sessizce yutma; Supabase ile Resend arasında uzlaştırma/retry ekle.
 - [ ] CSP'yi sıkılaştır: `style-src 'unsafe-inline'` ve `img-src https:` alanlarını daralt.
