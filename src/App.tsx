@@ -29,6 +29,7 @@ import { Toast } from './components/Toast';
 import { SeoHead } from './components/SeoHead';
 import { FaqSection } from './components/FaqSection';
 import { AuthModal } from './components/AuthModal';
+import { OrderAccessModal } from './components/OrderAccessModal';
 import { UserProfileModal } from './components/UserProfileModal';
 import { AdminModal } from './components/AdminModal';
 
@@ -234,6 +235,12 @@ useEffect(() => {
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
   const [isAdminModalOpen, setIsAdminModalOpen] = useState(false);
+  const [orderAccess, setOrderAccess] = useState<{
+    isOpen: boolean;
+    order: Order | null;
+    loading: boolean;
+    error: string;
+  }>({ isOpen: false, order: null, loading: false, error: '' });
 
   const [legalModal, setLegalModal] = useState<{
     isOpen: boolean;
@@ -249,6 +256,57 @@ useEffect(() => {
   const [toastMessage, setToastMessage] = useState<string | null>(null);
 
   // Orders State DB'de; localStorage'a yazılmaz.
+
+  // Sipariş onay e-postasındaki tek kullanımlık bağlantı: ?siparis=<token>
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const hashMatch = /(?:^#|&)siparis=([A-Za-z0-9_-]{40,128})/.exec(
+      window.location.hash
+    );
+    const token = params.get('siparis') || hashMatch?.[1] || '';
+    if (!token) return;
+
+    let active = true;
+    setOrderAccess({ isOpen: true, order: null, loading: true, error: '' });
+
+    fetch(`/api/order-access?token=${encodeURIComponent(token)}`)
+      .then(async (res) => {
+        const body = await res.json().catch(() => ({}));
+        if (!res.ok) throw new Error(body?.error || 'Sipariş getirilemedi.');
+        return body;
+      })
+      .then((body) => {
+        if (!active) return;
+        setOrderAccess({
+          isOpen: true,
+          order: body.order as Order,
+          loading: false,
+          error: '',
+        });
+
+        const url = new URL(window.location.href);
+        url.searchParams.delete('siparis');
+        url.hash = url.hash.replace(
+          /(?:^#|&)siparis=[A-Za-z0-9_-]+/,
+          ''
+        );
+        window.history.replaceState({}, '', url.pathname + url.search + url.hash);
+      })
+      .catch((err) => {
+        if (!active) return;
+        setOrderAccess({
+          isOpen: true,
+          order: null,
+          loading: false,
+          error:
+            err instanceof Error ? err.message : 'Sipariş bilgileri getirilemedi.',
+        });
+      });
+
+    return () => {
+      active = false;
+    };
+  }, []);
 
   useEffect(() => {
     try {
@@ -846,6 +904,16 @@ useEffect(() => {
         onCollectEmail={(email, marketingConsent) =>
           handleCollectEmail(email, 'ebook', marketingConsent)
         }
+      />
+
+      <OrderAccessModal
+        isOpen={orderAccess.isOpen}
+        onClose={() =>
+          setOrderAccess((prev) => ({ ...prev, isOpen: false }))
+        }
+        order={orderAccess.order}
+        loading={orderAccess.loading}
+        error={orderAccess.error}
       />
 
       <IngredientsModal

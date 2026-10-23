@@ -49,6 +49,24 @@ const ORDER_SEQUENCE_START = 48210;
 // Eski TT-###### siparişleriyle karışmaması için yalnızca bu andan sonra oluşan
 // siparişler sayaç hesabına dahil edilir. İlk yeni sipariş TT-48210 olur.
 const ORDER_SEQUENCE_STARTED_AT = '2026-10-21T16:08:00.000Z';
+const ORDER_ACCESS_TTL_DAYS = 180;
+
+const randomAccessToken = () => {
+  const bytes = crypto.getRandomValues(new Uint8Array(32));
+  let binary = '';
+  for (const byte of bytes) binary += String.fromCharCode(byte);
+  return btoa(binary).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/g, '');
+};
+
+const sha256Hex = async (value) => {
+  const digest = await crypto.subtle.digest(
+    'SHA-256',
+    new TextEncoder().encode(value)
+  );
+  return Array.from(new Uint8Array(digest))
+    .map((byte) => byte.toString(16).padStart(2, '0'))
+    .join('');
+};
 
 const nextOrderNumber = async (env) => {
   const res = await fetch(
@@ -97,7 +115,7 @@ const bankTransferDetails = (env) => ({
   ).trim(),
 });
 
-const customerOrderHtml = (order, orderNumber, bankTransfer = {}) => {
+const customerOrderHtml = (order, orderNumber, bankTransfer = {}, accessToken = '') => {
   const paymentLabel =
     order.payment_method === 'cod'
       ? 'Kapıda Ödeme'
@@ -165,6 +183,18 @@ const customerOrderHtml = (order, orderNumber, bankTransfer = {}) => {
                 </table>
               </td>
             </tr>
+
+            ${accessToken ? `
+            <tr>
+              <td style="padding:20px 28px 0 28px;">
+                <h2 style="margin:0 0 8px 0;font-size:16px;color:#31523c;">Sipariş durumunuzu takip edin</h2>
+                <p style="margin:0 0 12px 0;font-size:14px;line-height:1.6;color:#4a4a4a;">
+                  Bu bağlantı yalnızca bu siparişi görüntülemeniz için oluşturuldu.
+                  Bağlantıyı başkalarıyla paylaşmayın.
+                </p>
+                <a href="${SITE_URL}/?siparis=${encodeURIComponent(accessToken)}" style="display:inline-block;background-color:#31523c;color:#ffffff;text-decoration:none;font-size:14px;font-weight:bold;padding:12px 22px;border-radius:8px;">Sipariş Detayını Gör</a>
+              </td>
+            </tr>` : ''}
 
             <tr>
               <td style="padding:24px 28px 0 28px;">
@@ -447,6 +477,13 @@ export async function onRequestPost({ request, env }) {
     status: 'Yeni Sipariş',
   };
 
+  const accessToken = randomAccessToken();
+  const accessTokenHash = await sha256Hex(accessToken);
+  const accessTokenCreatedAt = new Date();
+  const accessTokenExpiresAt = new Date(
+    accessTokenCreatedAt.getTime() + ORDER_ACCESS_TTL_DAYS * 24 * 60 * 60 * 1000
+  );
+
   try {
     let created = null;
     let order = null;
@@ -456,7 +493,13 @@ export async function onRequestPost({ request, env }) {
     // bir sonraki numarayla tekrar denenir.
     for (let attempt = 0; attempt < 5; attempt += 1) {
       orderNumber = await nextOrderNumber(env);
-      order = { order_number: orderNumber, ...baseOrder };
+      order = {
+        order_number: orderNumber,
+        ...baseOrder,
+        access_token_hash: accessTokenHash,
+        access_token_created_at: accessTokenCreatedAt.toISOString(),
+        access_token_expires_at: accessTokenExpiresAt.toISOString(),
+      };
       try {
         created = await insertOrder(env, order);
         break;
@@ -478,7 +521,7 @@ export async function onRequestPost({ request, env }) {
         env,
         customerEmail,
         `Siparişiniz alındı: ${orderNumber}`,
-        customerOrderHtml(order, orderNumber, bankTransferDetails(env))
+        customerOrderHtml(order, orderNumber, bankTransferDetails(env), accessToken)
       ),
     ]);
 

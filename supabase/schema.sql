@@ -40,8 +40,20 @@ create table if not exists orders (
   discount numeric default 0,
   total numeric not null,
   status text not null default 'Yeni Sipariş',
+  items jsonb default '[]'::jsonb,
+  delivery_note text,
+  payment_status text default 'Bekliyor',
+  payment_provider text,
+  access_token_hash text,
+  access_token_created_at timestamptz,
+  access_token_expires_at timestamptz,
+  updated_at timestamptz default now(),
   created_at timestamptz default now()
 );
+
+create unique index if not exists orders_access_token_hash_idx
+  on orders (access_token_hash)
+  where access_token_hash is not null;
 
 create table if not exists order_items (
   id uuid primary key default gen_random_uuid(),
