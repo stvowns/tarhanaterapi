@@ -59,9 +59,9 @@ export const IngredientsModal: React.FC<IngredientsModalProps> = ({
                   {item.number}
                 </div>
                 <div>
-                  <h4 className="font-title-md text-sm text-on-surface font-semibold">
+                  <h3 className="font-title-md text-sm text-on-surface font-semibold">
                     {item.name}
-                  </h4>
+                  </h3>
                   <span className="text-[11px] text-outline font-medium flex items-center gap-1 mt-0.5">
                     <span className="material-symbols-outlined text-[13px] text-secondary">
                       pin_drop

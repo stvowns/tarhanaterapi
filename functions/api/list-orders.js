@@ -1,9 +1,4 @@
-/**
- * Cloudflare Pages Function — GET /api/list-orders
- * Sadece admin e-postalarına açıktır (Supabase access token doğrulanır).
- */
-
-const ADMIN_EMAILS = ['layeredstudio78@gmail.com'];
+import { getAdmin } from '../_lib/admin.js';
 
 const json = (body, status = 200) =>
   new Response(JSON.stringify(body), {
@@ -11,45 +6,9 @@ const json = (body, status = 200) =>
     headers: { 'Content-Type': 'application/json' },
   });
 
-function tokenAal(token) {
-  try {
-    const part = token.split('.')[1];
-    if (!part) return null;
-    const base64 = part.replace(/-/g, '+').replace(/_/g, '/');
-    const padded = base64 + '='.repeat((4 - (base64.length % 4)) % 4);
-    return JSON.parse(atob(padded))?.aal || null;
-  } catch {
-    return null;
-  }
-}
-
-async function getAdminEmail(env, authHeader) {
-  if (!authHeader || !authHeader.startsWith('Bearer ')) return null;
-  const token = authHeader.slice(7).trim();
-  if (!token) return null;
-
-  const anonKey = env.VITE_SUPABASE_ANON_KEY || env.SUPABASE_ANON_KEY;
-  const res = await fetch(`${env.SUPABASE_URL}/auth/v1/user`, {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-      apikey: anonKey,
-      Authorization: `Bearer ${token}`,
-    },
-  });
-  if (!res.ok) return null;
-  const user = await res.json();
-  if (!user?.email_confirmed_at && !user?.confirmed_at) return null;
-  // ADMIN_MFA_REQUIRED=true iken yalnızca aal2 oturumları yönetici API'lerini kullanabilir.
-  if (env.ADMIN_MFA_REQUIRED === 'true' && tokenAal(token) !== 'aal2') return null;
-
-  const email = String(user?.email || '').toLowerCase();
-  return ADMIN_EMAILS.includes(email) ? email : null;
-}
-
 export async function onRequestGet({ request, env }) {
-  const adminEmail = await getAdminEmail(env, request.headers.get('authorization'));
-  if (!adminEmail) {
+  const admin = await getAdmin(request, env);
+  if (!admin) {
     return json({ error: 'Yetkisiz istek' }, 401);
   }
 

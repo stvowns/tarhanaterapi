@@ -397,9 +397,7 @@ export const AdminModal: React.FC<AdminModalProps> = ({
     return true;
   });
 
-  const isAuthorized = Boolean(
-    currentUser?.isAdmin || currentUser?.email === 'layeredstudio78@gmail.com'
-  );
+  const isAuthorized = Boolean(currentUser?.isAdmin);
   const hasVerifiedMfa = mfaFactors.some((factor) => factor.status === 'verified');
 
   if (!isOpen) return null;
@@ -478,26 +476,30 @@ export const AdminModal: React.FC<AdminModalProps> = ({
     URL.revokeObjectURL(url);
   };
 
-  // Export Complete Database JSON
+  // Export application data as JSON. This is not a byte-for-byte Supabase backup.
   const exportFullDatabaseJSON = () => {
+    const exportReviews = [...approvedReviews, ...pendingReviews];
     const fullDatabase = {
       exportMetadata: {
         appName: 'TarhanaTerapi E-Ticaret',
         exportedAt: new Date().toISOString(),
-        version: '1.0.0',
+        version: '1.1.0',
+        note: 'Bu dosya uygulama verisi dışa aktarımıdır. Supabase auth kullanıcıları, şifre hashleri, oturumlar, storage ve şema bu dosyada yer almaz. Tam yedek için Supabase Dashboard > Database > Backups veya pg_dump kullanın.',
         counts: {
           orders: orders.length,
           subscribers: subscribers.length,
-          registeredUsers: storedUsers.length,
+          reviews: exportReviews.length,
+          localUsers: storedUsers.length,
           products: PRODUCTS.length,
         },
-        storageKeys: ['tt_orders', 'tt_subscribers', 'tt_users', 'tt_current_user'],
+        localStorageKeys: ['tt_subscribers', 'tt_users', 'tt_current_user'],
       },
       tables: {
         orders: orders,
         subscribers: subscribers,
-        users: storedUsers,
+        reviews: exportReviews,
         products: PRODUCTS,
+        localUsers: storedUsers,
       },
     };
 
@@ -506,7 +508,7 @@ export const AdminModal: React.FC<AdminModalProps> = ({
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.href = url;
-    link.download = `tarhanaterapi_tam_veritabani_${Date.now()}.json`;
+    link.download = `tarhanaterapi_veri_export_${Date.now()}.json`;
     link.click();
     URL.revokeObjectURL(url);
   };
@@ -827,9 +829,9 @@ CREATE TABLE subscribers (
           <div className="p-6 overflow-y-auto grow">
             <div className="flex items-center justify-between mb-4">
               <div>
-                <h4 className="font-title-md text-sm font-bold text-on-surface">
+                <h3 className="font-title-md text-sm font-bold text-on-surface">
                   Yorum Yönetimi
-                </h4>
+                </h3>
                 <p className="text-xs text-outline">
                   Onay bekleyenleri onaylayın; yayındaki yorumları silebilirsiniz.
                 </p>
@@ -964,9 +966,9 @@ CREATE TABLE subscribers (
           <div className="p-6 overflow-y-auto grow">
             <div className="flex items-center justify-between mb-4">
               <div>
-                <h4 className="font-title-md text-sm font-bold text-on-surface">
+                <h3 className="font-title-md text-sm font-bold text-on-surface">
                   E-Kitap ve Bülten Üzerinden Toplanan E-Postalar
-                </h4>
+                </h3>
                 <p className="text-xs text-outline">
                   Ziyaretçilerin indirme ve kayıt formlarına girdiği gerçek e-postalar
                 </p>
@@ -1029,9 +1031,9 @@ CREATE TABLE subscribers (
           <div className="p-6 overflow-y-auto grow">
             <div className="flex flex-wrap items-start justify-between gap-3 mb-4">
               <div>
-                <h4 className="font-title-md text-sm font-bold text-on-surface">
+                <h3 className="font-title-md text-sm font-bold text-on-surface">
                   Şifa Bülteni Gönderimi
-                </h4>
+                </h3>
                 <p className="text-xs text-outline">
                   Resend kontaktlarını seçin, taslağı düzenleyin ve gönderin.
                 </p>
@@ -1292,11 +1294,11 @@ CREATE TABLE subscribers (
           <div className="p-6 overflow-y-auto grow flex flex-col gap-6">
             {/* Quick Export Cards */}
             <div>
-              <h4 className="font-title-md text-sm font-bold text-on-surface mb-1">
+              <h3 className="font-title-md text-sm font-bold text-on-surface mb-1">
                 Veritabanı Yedekleme ve Dışa Aktarma (Export)
-              </h4>
+              </h3>
               <p className="text-xs text-outline mb-4">
-                Tüm siparişleri, e-posta listelerini ve müşteri verilerini tek tıkla Excel veya JSON formatında bilgisayarınıza indirebilirsiniz.
+                Siparişleri, e-posta listelerini ve yorumları Excel veya JSON olarak indirebilirsiniz. JSON dosyası uygulama verisi dışa aktarımıdır; Supabase auth kullanıcıları, şifreler ve şema dahil değildir.
               </p>
 
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
@@ -1306,10 +1308,10 @@ CREATE TABLE subscribers (
                 >
                   <div className="flex items-center gap-2 text-primary font-bold text-xs mb-2">
                     <span className="material-symbols-outlined text-[20px]">file_download</span>
-                    <span>Tam Veritabanı Yedeği</span>
+                    <span>Veri Dışa Aktarma (JSON)</span>
                   </div>
                   <p className="text-[11px] text-on-surface-variant mb-3">
-                    Siparişler, e-postalar, kullanıcılar ve ürünleri içeren tek bir .json dosyası.
+                    Siparişler, e-postalar, yorumlar, ürünler ve bu cihazdaki kullanıcı önbelleği.
                   </p>
                   <span className="text-xs font-semibold text-primary underline">
                     JSON Olarak İndir →
@@ -1371,7 +1373,7 @@ CREATE TABLE subscribers (
                   <strong className="text-base text-secondary font-bold">{subscribers.length}</strong>
                 </div>
                 <div className="p-2.5 rounded-lg bg-surface border border-outline-variant/20">
-                  <span className="text-outline text-[10px] block">Kayıtlı Üyeler</span>
+                  <span className="text-outline text-[10px] block">Bu Cihazdaki Üye Önbelleği</span>
                   <strong className="text-base text-tertiary font-bold">{storedUsers.length}</strong>
                 </div>
                 <div className="p-2.5 rounded-lg bg-surface border border-outline-variant/20">
@@ -1381,7 +1383,7 @@ CREATE TABLE subscribers (
               </div>
 
               <p className="text-[11px] text-outline leading-relaxed">
-                <strong>Nasıl Saklanıyor?</strong> Siparişler ve bülten/e-kitap e-postaları <strong>Supabase</strong> veritabanında kalıcı olarak saklanır; bülten kayıtları ayrıca Resend audience'a eklenir. Yönetici panelindeki CSV dışa aktarma ile Excel'e alabilirsiniz. Üyelere ait yerel oturum bilgileri tarayıcıda (<code className="bg-surface-container px-1 py-0.5 rounded text-[10px]">localStorage</code>) tutulur.
+                <strong>Nasıl Saklanıyor?</strong> Siparişler, yorumlar ve bülten/e-kitap e-postaları <strong>Supabase</strong> veritabanında kalıcı olarak saklanır; bülten kayıtları ayrıca Resend audience'a eklenir. Paneldeki JSON/CSV dışa aktarma taşınabilir bir kopyadır; tam veritabanı yedeği değildir. Supabase auth kullanıcıları ve şifre hashleri bu dosyada yer almaz. Üyelere ait yerel oturum bilgileri tarayıcıda (<code className="bg-surface-container px-1 py-0.5 rounded text-[10px]">localStorage</code>) tutulur.
               </p>
             </div>
 
@@ -1423,9 +1425,9 @@ CREATE TABLE subscribers (
                   <span className="material-symbols-outlined text-[24px]">verified_user</span>
                 </div>
                 <div>
-                  <h4 className="font-title-md text-sm font-bold text-on-surface">
+                  <h3 className="font-title-md text-sm font-bold text-on-surface">
                     İki Adımlı Doğrulama (MFA)
-                  </h4>
+                  </h3>
                   <p className="text-xs text-outline leading-relaxed">
                     Yönetici hesabına girişte şifreye ek olarak Google Authenticator, Authy veya
                     benzeri bir uygulamadan 6 haneli kod istenir. Bu, hesap şifresi çalınsa bile

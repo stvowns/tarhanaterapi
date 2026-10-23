@@ -50,6 +50,10 @@ export const IngredientsSection: React.FC<IngredientsSectionProps> = ({
               alt="Ahşap masa üzerinde tarhana, domates, biber, tuz ve taze baharatlar"
               className="w-full h-full object-cover group-hover:scale-102 transition-transform duration-700"
               src={ASSETS.flatlayIngredients}
+              srcSet="/images/ingredients-flatlay-2026-400.webp 400w, /images/ingredients-flatlay-2026-700.webp 700w, /images/ingredients-flatlay-2026.webp 760w"
+              sizes="(min-width: 1024px) 58vw, 100vw"
+              width={760}
+              height={523}
               loading="lazy"
             />
           </div>
@@ -66,7 +70,7 @@ export const IngredientsSection: React.FC<IngredientsSectionProps> = ({
                   {item.number}
                 </div>
                 <div>
-                  <h4 className="font-title-md text-on-surface text-sm">{item.name}</h4>
+                  <h3 className="font-title-md text-on-surface text-sm">{item.name}</h3>
                   <p className="font-body-sm text-on-surface-variant mt-0.5 text-xs leading-relaxed">
                     {item.description}
                   </p>

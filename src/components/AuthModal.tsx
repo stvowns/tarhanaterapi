@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { User } from '../types';
 import { supabase } from '../lib/supabase';
+import { isAdminUser } from '../lib/admin';
 
 interface AuthModalProps {
   isOpen: boolean;
@@ -94,7 +95,7 @@ const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
             fullName: u.user_metadata?.full_name || u.email?.split('@')[0] || 'Kullanıcı',
             email: u.email || '',
             points: Number(u.user_metadata?.points ?? 100),
-            isAdmin: u.email?.toLowerCase() === 'layeredstudio78@gmail.com',
+            isAdmin: isAdminUser(u),
             createdAt: new Date().toLocaleDateString('tr-TR'),
           };
           await finishAuth(user);
@@ -154,7 +155,7 @@ const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
         email: u.email || '',
         phone: (u.user_metadata?.phone as string) || '',
         points: Number(u.user_metadata?.points ?? 100),
-        isAdmin: u.email?.toLowerCase() === 'layeredstudio78@gmail.com',
+        isAdmin: isAdminUser(u),
         createdAt: new Date().toLocaleDateString('tr-TR'),
       };
       await finishAuth(user);

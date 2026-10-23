@@ -65,9 +65,11 @@ export const ProductPage: React.FC<ProductPageProps> = ({ product, onAddToCart }
             <img
               ref={imageRef}
               src={product.image}
+              srcSet={`${product.image.replace('.webp', '-400.webp')} 400w, ${product.image.replace('.webp', '-700.webp')} 700w, ${product.image} 1000w`}
+              sizes="(min-width: 1024px) 50vw, 100vw"
               alt={`${product.name} — ${product.weight}`}
-              width={512}
-              height={279}
+              width={1000}
+              height={1000}
               className="w-full h-auto object-cover"
             />
           </div>

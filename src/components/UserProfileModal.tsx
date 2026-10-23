@@ -167,12 +167,12 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({
 
           {/* Saved Address Info */}
           <div className="p-4 rounded-xl bg-surface-container-lowest border border-outline-variant/30">
-            <h4 className="text-xs font-bold uppercase tracking-wider text-on-surface mb-2 flex items-center gap-1.5">
+            <h3 className="text-xs font-bold uppercase tracking-wider text-on-surface mb-2 flex items-center gap-1.5">
               <span className="material-symbols-outlined text-[16px] text-primary">
                 location_on
               </span>
               Kayıtlı Teslimat Adresi
-            </h4>
+            </h3>
             <p className="text-xs text-on-surface leading-relaxed">
               {user.address ? (
                 <>
@@ -189,7 +189,7 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({
 
           {/* Orders History */}
           <div>
-            <h4 className="text-xs font-bold uppercase tracking-wider text-on-surface mb-3 flex items-center gap-1.5">
+            <h3 className="text-xs font-bold uppercase tracking-wider text-on-surface mb-3 flex items-center gap-1.5">
               <span className="material-symbols-outlined text-[16px] text-primary">
                 receipt_long
               </span>
@@ -199,7 +199,7 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({
                   ({userOrders.length})
                 </span>
               )}
-            </h4>
+            </h3>
 
             {userOrders.length === 0 ? (
               <div className="text-center py-6 border border-dashed border-outline-variant/40 rounded-xl">

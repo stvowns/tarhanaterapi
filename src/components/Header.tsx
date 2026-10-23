@@ -99,9 +99,7 @@ export const Header: React.FC<HeaderProps> = ({
         {/* Action Zone: User Membership + Cart + Admin Panel (Admin Only) + Mobile Hamburger */}
         <div className="flex items-center gap-2 sm:gap-3 shrink-0">
           {/* Admin Management Dashboard Button - Only visible to admin users */}
-          {Boolean(
-            currentUser?.isAdmin || currentUser?.email === 'layeredstudio78@gmail.com'
-          ) && (
+          {currentUser?.isAdmin && (
             <button
               onClick={onOpenAdminModal}
               className="relative hidden sm:inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-surface-container text-on-surface-variant hover:text-primary hover:bg-surface-container-high transition-colors text-xs font-semibold cursor-pointer border border-outline-variant/30"
@@ -155,7 +153,7 @@ export const Header: React.FC<HeaderProps> = ({
             data-fly-target="cart"
             onClick={onOpenCart}
             className="relative inline-flex items-center gap-1.5 bg-primary-container text-on-primary-container px-3.5 sm:px-4 py-2 sm:py-2.5 rounded-lg font-title-md text-xs sm:text-sm shadow-xs hover:bg-primary transition-all duration-200 cursor-pointer active:scale-95 shrink-0"
-            aria-label="Sepeti aç"
+            aria-label="Sipariş ver, sepeti aç"
           >
             <span className="material-symbols-outlined text-[19px]">shopping_bag</span>
             <span className="hidden xs:inline sm:inline font-semibold">Sipariş Ver</span>
@@ -236,9 +234,7 @@ export const Header: React.FC<HeaderProps> = ({
                 </button>
               )}
 
-              {Boolean(
-                currentUser?.isAdmin || currentUser?.email === 'layeredstudio78@gmail.com'
-              ) && (
+              {currentUser?.isAdmin && (
                 <button
                   onClick={() => {
                     setMobileMenuOpen(false);

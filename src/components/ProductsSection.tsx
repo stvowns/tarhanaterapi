@@ -68,7 +68,11 @@ export const ProductsSection: React.FC<ProductsSectionProps> = ({
                 <div className="relative w-full aspect-square rounded-xl bg-surface-container overflow-hidden mb-4">
                   <img
                     src={product.image}
+                    srcSet={`${product.image.replace('.webp', '-400.webp')} 400w, ${product.image.replace('.webp', '-700.webp')} 700w, ${product.image} 1000w`}
+                    sizes="(min-width: 640px) 420px, 92vw"
                     alt={product.name}
+                    width={1000}
+                    height={1000}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                     loading="lazy"
                   />

@@ -49,7 +49,11 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
           <div className="md:col-span-5 bg-surface-container relative min-h-[300px] md:min-h-full">
             <img
               src={product.image}
+              srcSet={`${product.image.replace('.webp', '-400.webp')} 400w, ${product.image.replace('.webp', '-700.webp')} 700w, ${product.image} 1000w`}
+              sizes="(min-width: 768px) 40vw, 100vw"
               alt={product.name}
+              width={1000}
+              height={1000}
               className="w-full h-full object-cover"
             />
             {product.tag && (
@@ -99,12 +103,12 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
 
               {/* Nutrition Grid */}
               <div className="p-4 rounded-xl bg-surface-container-low border border-outline-variant/30 mb-6">
-                <h4 className="text-xs font-bold uppercase tracking-wider text-on-surface mb-3 flex items-center gap-1.5">
+                <h3 className="text-xs font-bold uppercase tracking-wider text-on-surface mb-3 flex items-center gap-1.5">
                   <span className="material-symbols-outlined text-[16px] text-primary">
                     nutrition
                   </span>
                   100 g İçin Yaklaşık Besin Değerleri
-                </h4>
+                </h3>
                 <div className="grid grid-cols-4 gap-2 text-center text-xs">
                   <div className="p-2 bg-surface rounded-lg">
                     <span className="text-outline block text-[10px]">Kalori</span>

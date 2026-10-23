@@ -43,17 +43,17 @@
     />
     <meta name="twitter:image" content="https://tarhanaterapi.com/og-image-2026.jpg" />
 
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preload" as="font" type="font/woff2" href="/fonts/plus-jakarta-sans-normal-400-700-latin-ext.woff2" crossorigin />
+    <link rel="preload" as="font" type="font/woff2" href="/fonts/playfair-display-normal-600-700-latin-ext.woff2" crossorigin />
+    <link rel="preload" as="font" type="font/woff2" href="/fonts/material-symbols-outlined.woff2" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,600&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
-      rel="stylesheet"
+      rel="preload"
+      as="image"
+      href="/images/hero-tarhana-2026.webp"
+      imagesrcset="/images/hero-tarhana-2026-400.webp 400w, /images/hero-tarhana-2026-700.webp 700w, /images/hero-tarhana-2026.webp 1000w"
+      imagesizes="(min-width: 1024px) 480px, 92vw"
+      fetchpriority="high"
     />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
-      rel="stylesheet"
-    />
-    <link rel="preload" as="image" href="/images/hero-tarhana-2026.webp" fetchpriority="high" />
 
     <style>
       /* JS yüklenene kadar ve JS kapalıyken görünen statik içerik. */
@@ -61,17 +61,17 @@
         max-width: 1120px;
         margin: 0 auto;
         padding: 24px 20px 48px;
-        font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+        font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
         color: #2d2424;
         line-height: 1.65;
         background: #fbf7ef;
       }
       .static-shell a { color: #963726; }
       .static-shell header { display: flex; flex-wrap: wrap; gap: 16px; align-items: center; justify-content: space-between; border-bottom: 1px solid #e7ddd0; padding-bottom: 16px; margin-bottom: 28px; }
-      .static-shell .static-brand { font-family: 'Playfair Display', Georgia, serif; font-size: 24px; font-weight: 700; text-decoration: none; }
+      .static-shell .static-brand { font-family: Georgia, 'Times New Roman', serif; font-size: 24px; font-weight: 700; text-decoration: none; }
       .static-shell nav { display: flex; flex-wrap: wrap; gap: 14px; font-size: 14px; }
-      .static-shell h1 { font-family: 'Playfair Display', Georgia, serif; font-size: clamp(30px, 4vw, 44px); line-height: 1.15; margin: 0 0 16px; }
-      .static-shell h2 { font-family: 'Playfair Display', Georgia, serif; font-size: 26px; margin: 36px 0 12px; }
+      .static-shell h1 { font-family: Georgia, 'Times New Roman', serif; font-size: clamp(30px, 4vw, 44px); line-height: 1.15; margin: 0 0 16px; }
+      .static-shell h2 { font-family: Georgia, 'Times New Roman', serif; font-size: 26px; margin: 36px 0 12px; }
       .static-shell .static-definition { border-left: 3px solid #c84b31; padding-left: 16px; font-size: 17px; }
       .static-shell .static-cta { display: inline-block; background: #c84b31; color: #fff; padding: 12px 20px; border-radius: 8px; text-decoration: none; font-weight: 600; margin: 8px 0 4px; }
       .static-shell table { width: 100%; border-collapse: collapse; font-size: 14px; margin: 12px 0 8px; }

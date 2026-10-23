@@ -7,6 +7,7 @@ import { useState, useEffect, useCallback, useMemo } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { ActiveTab, CartItem, Product, Review, User, Order, SubscriberLead } from './types';
 import { supabase } from './lib/supabase';
+import { isAdminUser } from './lib/admin';
 import { PRODUCTS, REVIEWS } from './data/mockData';
 import { Header } from './components/Header';
 import { Hero } from './components/Hero';
@@ -92,6 +93,7 @@ function playNotificationChime() {
 type SessionUser = {
   id: string;
   email?: string;
+  app_metadata?: Record<string, any>;
   user_metadata?: Record<string, any>;
 };
 
@@ -105,7 +107,7 @@ function buildUserFromSession(user: SessionUser): User {
     // Yerel önbellek yoksa devam et.
   }
 
-  const isAdmin = user.email?.toLowerCase() === 'layeredstudio78@gmail.com';
+  const isAdmin = isAdminUser(user);
   const storedPoints = Number(user.user_metadata?.points ?? cached?.points);
   const points = isAdmin
     ? 999
@@ -257,10 +259,7 @@ useEffect(() => {
   }, [subscribers]);
 
   useEffect(() => {
-    const isAdmin = Boolean(
-      currentUser?.isAdmin || currentUser?.email === 'layeredstudio78@gmail.com'
-    );
-    if (!isAdmin) return;
+    if (!currentUser?.isAdmin) return;
 
     let active = true;
     (async () => {
@@ -756,10 +755,7 @@ useEffect(() => {
         jsonLd={seo.jsonLd}
       />
       {/* Admin Real-Time Alert Notification Bar (Only visible to logged-in administrator) */}
-      {adminAlertBanner &&
-        Boolean(
-          currentUser?.isAdmin || currentUser?.email === 'layeredstudio78@gmail.com'
-        ) && (
+      {adminAlertBanner && currentUser?.isAdmin && (
           <div className="bg-primary text-on-primary px-4 py-2.5 text-xs font-semibold text-center flex items-center justify-between sticky top-0 z-60 shadow-md">
             <div className="flex items-center justify-center gap-2 mx-auto">
               <span className="material-symbols-outlined text-[18px] animate-pulse">

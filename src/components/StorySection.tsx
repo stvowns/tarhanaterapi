@@ -17,6 +17,10 @@ export const StorySection: React.FC<StorySectionProps> = ({ onReadMoreStory }) =
                 alt="Sıcak ve şifalı çorbadan ilk kaşığı alan huzurlu an"
                 className="w-full h-full object-cover"
                 src={ASSETS.womanTasting}
+                srcSet="/images/woman-tasting-400.webp 400w, /images/woman-tasting.webp 512w"
+                sizes="(min-width: 1024px) 50vw, 92vw"
+                width={512}
+                height={512}
                 loading="lazy"
               />
             </div>

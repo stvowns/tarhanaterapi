@@ -113,8 +113,10 @@ export const Hero: React.FC<HeroProps> = ({
                 alt="Pamuk torbada geleneksel tarhana"
                 className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700"
                 src={ASSETS.heroSteamingBowl}
-                width={1024}
-                height={1024}
+                srcSet="/images/hero-tarhana-2026-400.webp 400w, /images/hero-tarhana-2026-700.webp 700w, /images/hero-tarhana-2026.webp 1000w"
+                sizes="(min-width: 1024px) 480px, 92vw"
+                width={1000}
+                height={1000}
                 loading="eager"
                 fetchPriority="high"
               />
@@ -128,9 +130,9 @@ export const Hero: React.FC<HeroProps> = ({
                     </span>
                   </div>
                   <div>
-                    <h4 className="font-title-md text-on-surface text-sm sm:text-base">
+                    <p className="font-title-md text-on-surface text-sm sm:text-base">
                       Pamuk Torbada Tazelik
-                    </h4>
+                    </p>
                     <p className="font-body-sm text-on-surface-variant text-xs sm:text-sm">
                       1 kg geleneksel tarhana
                     </p>

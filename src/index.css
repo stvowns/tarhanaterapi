@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@import "./fonts.css";
 
 @theme {
   --font-serif: "Playfair Display", Georgia, serif;
@@ -44,7 +45,7 @@
 
   --color-on-surface: #221a1a;
   --color-on-surface-variant: #58413c;
-  --color-outline: #8c716b;
+  --color-outline: #7a5e58;
   --color-outline-variant: #e0bfb9;
   --color-inverse-surface: #382e2e;
   --color-inverse-on-surface: #feedec;

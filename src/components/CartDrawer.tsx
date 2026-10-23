@@ -150,16 +150,21 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                   >
                     {/* Thumbnail */}
                     <img
-                      src={item.product.image}
+                      src={item.product.image.replace('.webp', '-400.webp')}
+                      srcSet={`${item.product.image.replace('.webp', '-400.webp')} 400w, ${item.product.image.replace('.webp', '-700.webp')} 700w`}
+                      sizes="72px"
                       alt={item.product.name}
+                      width={72}
+                      height={72}
+                      loading="lazy"
                       className="w-18 h-18 object-cover rounded-lg bg-surface-container shrink-0"
                     />
 
                     {/* Info */}
                     <div className="flex-1 min-w-0">
-                      <h4 className="font-title-md text-sm text-on-surface truncate font-semibold group-hover:text-primary transition-colors">
+                      <h3 className="font-title-md text-sm text-on-surface truncate font-semibold group-hover:text-primary transition-colors">
                         {item.product.name}
-                      </h4>
+                      </h3>
                       <p className="text-xs text-outline mt-0.5">{item.product.weight}</p>
                       <div className="font-headline-sm text-sm text-primary font-bold mt-1">
                         ₺{item.product.price * item.quantity}

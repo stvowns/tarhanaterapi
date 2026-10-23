@@ -188,12 +188,12 @@ export const IngredientsPage: React.FC<IngredientsPageProps> = ({ onGoToShop }) 
                   {selected.description}
                 </p>
 
-                <h4 className="text-xs font-bold uppercase tracking-wider text-on-surface mb-3 flex items-center gap-1.5">
+                <h3 className="text-xs font-bold uppercase tracking-wider text-on-surface mb-3 flex items-center gap-1.5">
                   <span className="material-symbols-outlined text-[16px] text-emerald-600">
                     health_and_safety
                   </span>
                   Ürüne Katkısı
-                </h4>
+                </h3>
 
                 <div className="space-y-2 mb-6">
                   {selected.benefits.map((b, i) => (

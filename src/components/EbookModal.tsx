@@ -128,12 +128,12 @@ export const EbookModal: React.FC<EbookModalProps> = ({
 
           {/* Ingredients list */}
           <div className="mb-5">
-            <h4 className="text-xs font-bold uppercase tracking-wider text-on-surface mb-2 flex items-center gap-1.5">
+            <h3 className="text-xs font-bold uppercase tracking-wider text-on-surface mb-2 flex items-center gap-1.5">
               <span className="material-symbols-outlined text-[16px] text-primary">
                 kitchen
               </span>
               Malzemeler
-            </h4>
+            </h3>
             <ul className="space-y-1.5">
               {activeRecipe.ingredients.map((ing, i) => (
                 <li key={i} className="text-xs text-on-surface flex items-start gap-2">
@@ -146,12 +146,12 @@ export const EbookModal: React.FC<EbookModalProps> = ({
 
           {/* Steps */}
           <div className="mb-5">
-            <h4 className="text-xs font-bold uppercase tracking-wider text-on-surface mb-2 flex items-center gap-1.5">
+            <h3 className="text-xs font-bold uppercase tracking-wider text-on-surface mb-2 flex items-center gap-1.5">
               <span className="material-symbols-outlined text-[16px] text-secondary">
                 format_list_numbered
               </span>
               Adım Adım Hazırlanışı
-            </h4>
+            </h3>
             <div className="space-y-2">
               {activeRecipe.steps.map((st, i) => (
                 <div key={i} className="flex gap-2.5 text-xs text-on-surface-variant">
