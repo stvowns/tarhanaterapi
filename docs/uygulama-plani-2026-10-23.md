@@ -40,7 +40,10 @@
 
 ### P2 — Performans ve dayanıklılık
 
-- [ ] `AdminModal` ve ağır modalları `React.lazy` / dinamik import ile böl; tek `index-*.js` paketini küçült.
+- [x] `AdminModal` ve `OrderAccessModal` `React.lazy` / dinamik import ile bölündü.
+  - Ana paket: ~760,21 KB → ~702,46 KB (gzip ~203,49 → ~191,61 KB).
+  - `AdminModal` ayrı chunk ~52,81 KB; `OrderAccessModal` ~5,32 KB.
+- [ ] Ana paket hâlâ 500 KB üzeri; ağır alt bileşenler/route'lar için ek code-splitting değerlendir.
 - [ ] `update-order-status` geçişini atomik yap (koşullu `PATCH` veya RPC + idempotency); çift “Kargoya Verildi” e-postasını engelle.
 - [ ] `list-orders` sayfalama ekle; PII döndüren endpoint'lere `no-store`.
 - [ ] Rate limit'leri kalıcılaştır (Cloudflare Rate Limiting / KV / Durable Object); in-memory `Map` temizliği.

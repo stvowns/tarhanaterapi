@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { useState, useEffect, useCallback, useMemo } from 'react';
+import { useState, useEffect, useCallback, useMemo, lazy, Suspense } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { ActiveTab, CartItem, Product, Review, User, Order, SubscriberLead } from './types';
 import { supabase } from './lib/supabase';
@@ -29,9 +29,19 @@ import { Toast } from './components/Toast';
 import { SeoHead } from './components/SeoHead';
 import { FaqSection } from './components/FaqSection';
 import { AuthModal } from './components/AuthModal';
-import { OrderAccessModal } from './components/OrderAccessModal';
 import { UserProfileModal } from './components/UserProfileModal';
-import { AdminModal } from './components/AdminModal';
+
+// Yalnızca ihtiyaç anında yüklenen paneller ana bundle'ı şişirmesin.
+const AdminModal = lazy(() =>
+  import('./components/AdminModal').then((module) => ({
+    default: module.AdminModal,
+  }))
+);
+const OrderAccessModal = lazy(() =>
+  import('./components/OrderAccessModal').then((module) => ({
+    default: module.OrderAccessModal,
+  }))
+);
 
 // Specific screen pages
 import { IngredientsPage } from './pages/IngredientsPage';
@@ -906,15 +916,17 @@ useEffect(() => {
         }
       />
 
-      <OrderAccessModal
-        isOpen={orderAccess.isOpen}
-        onClose={() =>
-          setOrderAccess((prev) => ({ ...prev, isOpen: false }))
-        }
-        order={orderAccess.order}
-        loading={orderAccess.loading}
-        error={orderAccess.error}
-      />
+      <Suspense fallback={null}>
+        <OrderAccessModal
+          isOpen={orderAccess.isOpen}
+          onClose={() =>
+            setOrderAccess((prev) => ({ ...prev, isOpen: false }))
+          }
+          order={orderAccess.order}
+          loading={orderAccess.loading}
+          error={orderAccess.error}
+        />
+      </Suspense>
 
       <IngredientsModal
         isOpen={isIngredientsModalOpen}
@@ -939,16 +951,18 @@ useEffect(() => {
       />
 
       {/* Store Admin & Email Leads Modal */}
-      <AdminModal
-        isOpen={isAdminModalOpen}
-        onClose={() => setIsAdminModalOpen(false)}
-        orders={orders}
-        subscribers={subscribers}
-        currentUser={currentUser}
-        onUpdateOrderStatus={handleUpdateOrderStatus}
-        onSimulateIncomingOrder={handleSimulateIncomingOrder}
-        onClearNewOrderAlert={() => setNewOrdersCount(0)}
-      />
+      <Suspense fallback={null}>
+        <AdminModal
+          isOpen={isAdminModalOpen}
+          onClose={() => setIsAdminModalOpen(false)}
+          orders={orders}
+          subscribers={subscribers}
+          currentUser={currentUser}
+          onUpdateOrderStatus={handleUpdateOrderStatus}
+          onSimulateIncomingOrder={handleSimulateIncomingOrder}
+          onClearNewOrderAlert={() => setNewOrdersCount(0)}
+        />
+      </Suspense>
 
       <LegalModal
         isOpen={legalModal.isOpen}
