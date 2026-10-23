@@ -54,7 +54,8 @@
   - `list-subscribers` ve diğer PII endpoint'lerinde `Cache-Control: no-store` mevcut.
 - [ ] Rate limit'leri kalıcılaştır (Cloudflare Rate Limiting / KV / Durable Object); in-memory `Map` temizliği.
 - [ ] `subscribe.js` Resend contact/segment hatasını sessizce yutma; Supabase ile Resend arasında uzlaştırma/retry ekle.
-- [ ] CSP'yi sıkılaştır: `style-src 'unsafe-inline'` ve `img-src https:` alanlarını daralt.
+- [x] CSP `img-src` daraltıldı: `https:` → `'self' data:`. Harici görsel yok; tüm ürün/OG görselleri kendi domaininde.
+- [ ] `style-src 'unsafe-inline'` kaldırmak için React inline `style` kullanımları nonce/hash veya CSS sınıflarına taşınmalı; şimdilik bırakıldı.
 - [ ] Realtime toast'ı email bazlı RLS ile düzeltme; önce `user_id`/token sahiplik modeli kur.
 
 ### Ölçüm — GA4 kararı

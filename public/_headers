@@ -31,7 +31,7 @@
   Cross-Origin-Opener-Policy: same-origin-allow-popups
   Content-Signal: search=yes, ai-input=yes, ai-train=yes
   Vary: Accept
-  Content-Security-Policy: default-src 'self'; script-src 'self' https://accounts.google.com https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: https:; connect-src 'self' https://*.supabase.co wss://*.supabase.co https://accounts.google.com https://cloudflareinsights.com; frame-src https://accounts.google.com; frame-ancestors 'none'; form-action 'self'; object-src 'none'; base-uri 'self'; upgrade-insecure-requests
+  Content-Security-Policy: default-src 'self'; script-src 'self' https://accounts.google.com https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data:; connect-src 'self' https://*.supabase.co wss://*.supabase.co https://accounts.google.com https://cloudflareinsights.com; frame-src https://accounts.google.com; frame-ancestors 'none'; form-action 'self'; object-src 'none'; base-uri 'self'; upgrade-insecure-requests
 
 /
   Link: </index.md>; rel="alternate"; type="text/markdown", </llms.txt>; rel="describedby"; type="text/plain", </sitemap.xml>; rel="describedby"; type="application/xml"
