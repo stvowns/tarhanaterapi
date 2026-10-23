@@ -83,13 +83,14 @@
 
 - `src/components/UserProfileModal.tsx` sipariş kartında ürün görseli, adı, gramajı, adedi, birim fiyatı, satır toplamı, ara toplam, kargo, indirim, genel toplam, teslimat notu ve **tarih + saat** gösteriyor.
 - Canlıda `TT-48214` test siparişinde doğrulandı.
+- **23 Ekim 2026:** `my-orders` sahiplik açığı nedeniyle geçici olarak kapatıldı. Endpoint `410 Gone` döndürüyor, `App.tsx` artık çağırmıyor; e-posta + oturum, `mailer_autoconfirm: true` altında sahiplik kanıtı değil. Token/magic-link akışı gelene kadar profil sipariş geçmişi kapalı.
 
 ### MFA
 
 - Supabase TOTP tabanlı MFA istemci tarafında tamamlandı: girişte TOTP challenge, Admin → **Güvenlik** sekmesinde enrollment.
-- 7 yönetici API'sinde `tokenAal` ve `ADMIN_MFA_REQUIRED` kontrolü var; `ADMIN_MFA_REQUIRED=on` iken `aal2` olmayan oturumlar reddediliyor.
-- `./set-admin-mfa.sh on|off` ile enforcement açılıp kapatılıyor.
-- Şu an `ADMIN_MFA_REQUIRED` ayarlı değil; Supabase'de Confirm email kapalı (`mailer_autoconfirm: true`) ve admin hesabında TOTP faktörü yok. Kullanıcı enrollment'ı erteledi; sırasıyla Supabase Confirm email/TOTP/URL ayarları, Admin → Güvenlik enrollment, `./set-admin-mfa.sh on`, deploy yapılmalı.
+- 7 yönetici API'sinde `tokenAal` ve `ADMIN_MFA_REQUIRED` kontrolü var; `ADMIN_MFA_REQUIRED=true` iken `aal2` olmayan oturumlar reddediliyor. Kod tam olarak `'true'` değerini arar; `on` yazmak enforcement'ı açmaz.
+- `./set-admin-mfa.sh on|off` ile enforcement açılıp kapatılıyor; script `on` değerini `true` olarak yazar.
+- Şu an `ADMIN_MFA_REQUIRED` ayarlı değil; Supabase'de Confirm email kapalı (`mailer_autoconfirm: true`) ve admin hesabında TOTP faktörü yok. Kullanıcı enrollment'ı erteledi; sırasıyla Supabase Confirm email/TOTP/URL ayarları, Admin → Güvenlik enrollment, `./set-admin-mfa.sh on`, yeni deploy yapılmalı.
 
 ### `/urunler` listeleme sayfası
 
@@ -103,7 +104,7 @@
 |---|---|
 | Ana sayfa | `200` |
 | E-kitap PDF | `200` |
-| `/api/my-orders` yetkisiz | `401` |
+| `/api/my-orders` (geçici kapalı) | `410` |
 | `/api/update-order-status` yetkisiz | `401` |
 | Geçersiz `/api/unsubscribe` | `400` |
 | `/urunler` | `301` → `/urunler/tarhana-classic` |
@@ -160,7 +161,7 @@ Server-side:
 - `UNSUBSCRIBE_SECRET`
 - `TELEGRAM_BOT_TOKEN`, `TELEGRAM_ADMIN_CHAT_ID`, `TELEGRAM_WEBHOOK_SECRET`
 - `ALLOW_COD=true` (yalnızca gerçekten kapıda ödeme açılacaksa)
-- `ADMIN_MFA_REQUIRED=on` (MFA zorunluluğu; varsayılan kapalı)
+- `ADMIN_MFA_REQUIRED=true` (MFA zorunluluğu; varsayılan kapalı)
 - `BANK_TRANSFER_BANK`, `BANK_TRANSFER_ACCOUNT_NAME`, `BANK_TRANSFER_IBAN` (yalnızca gerçek değerler)
 
 > `SUPABASE_SERVICE_ROLE_KEY`, `RESEND_API_KEY`, `TELEGRAM_BOT_TOKEN` ve `UNSUBSCRIBE_SECRET` asla frontend'e veya repoya yazılmamalı.

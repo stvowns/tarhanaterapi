@@ -7,6 +7,8 @@
 
 **İşaretler:** `[ ]` yapılacak · `[x]` bitti · **(Ben)** asistan · **(Sen)** kullanıcı · **(Birlikte)**
 
+> **Güncel sıra (23 Ekim 2026):** Bu dosyadaki eski P0/P1 sıralaması yerine `docs/uygulama-plani-2026-10-23.md` esas alınır. Özellikle MFA artık ilk madde değil; önce `my-orders` sahiplik açığı kapatılıyor.
+
 ---
 
 ## Özet
@@ -133,7 +135,7 @@ Teknik GEO altyapısı, hosting taşıması, e-posta/bülten altyapısı, secret
 - [ ] **Supabase Auth / MFA enrollment** — **(Sen + Ben)** — *şimdilik ertelendi*
   - Auth → Providers → Email → “Confirm email”ı aç; Site URL ve redirect URL'leri `https://tarhanaterapi.com` olarak ayarla.
   - Supabase Auth → MFA → TOTP'yi etkinleştir; admin hesabında TOTP enrollment yap.
-  - Sonra `./set-admin-mfa.sh on` çalıştır ve deploy et; `ADMIN_MFA_REQUIRED=on` ile yönetici API'leri `aal2` istesin.
+  - Sonra `./set-admin-mfa.sh on` çalıştır ve deploy et; script `ADMIN_MFA_REQUIRED=true` yazar, yönetici API'leri `aal2` ister.
 
 - [ ] **API token'ı revoke et** — **(Sen)**
   - Sohbete yazılan Cloudflare token'ı artık gereksiz; deploy'lar `wrangler` oturumuyla yapılıyor.

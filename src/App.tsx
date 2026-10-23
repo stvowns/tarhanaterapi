@@ -625,84 +625,10 @@ useEffect(() => {
     };
   }, [currentUser]);
 
-  useEffect(() => {
-    if (!currentUser?.email || currentUser.isAdmin) return;
-    let active = true;
-
-    supabase.auth.getSession().then(({ data }) => {
-      const token = data.session?.access_token;
-      if (!token) return;
-
-      fetch('/api/my-orders', {
-        headers: { Authorization: `Bearer ${token}` },
-      })
-        .then((res) => (res.ok ? res.json() : null))
-        .then((payload) => {
-          if (!active || !Array.isArray(payload?.orders)) return;
-          const fetched = payload.orders as Order[];
-          setOrders((prev) => {
-            const existing = new Set(fetched.map((order) => order.id));
-            return [...prev.filter((order) => !existing.has(order.id)), ...fetched];
-          });
-
-          const latest = fetched[0];
-          const shouldFillAddress =
-            Boolean(latest?.customerAddress) && !currentUser.address;
-          const earnedPoints = 100 + fetched.length * 25;
-          const nextPoints = Math.max(currentUser.points, earnedPoints);
-
-          if (nextPoints !== currentUser.points || shouldFillAddress) {
-            const updatedUser = {
-              ...currentUser,
-              points: nextPoints,
-              phone: currentUser.phone || latest?.customerPhone,
-              city: currentUser.city || latest?.customerCity,
-              district: currentUser.district || latest?.customerDistrict,
-              address: currentUser.address || latest?.customerAddress,
-            };
-            setCurrentUser(updatedUser);
-            localStorage.setItem('tt_current_user', JSON.stringify(updatedUser));
-            if (nextPoints !== currentUser.points) {
-              supabase.auth.updateUser({ data: { points: nextPoints } }).catch(() => {});
-            }
-          }
-        })
-        .catch(() => {});
-    });
-
-    return () => {
-      active = false;
-    };
-  }, [currentUser?.email, currentUser?.isAdmin, isProfileModalOpen]);
-
-  useEffect(() => {
-    if (!currentUser?.email) return;
-    const channel = supabase
-      .channel(`customer-orders-${currentUser.email}`)
-      .on(
-        'postgres_changes',
-        {
-          event: 'UPDATE',
-          schema: 'public',
-          table: 'orders',
-          filter: `customer_email=eq.${currentUser.email}`,
-        },
-        (payload: any) => {
-          const status = payload?.new?.status;
-          if (status) showToast(`Siparişiniz güncellendi: ${status}`);
-          setOrders((prev) =>
-            prev.map((o) =>
-              o.id === payload?.new?.id ? { ...o, status: status || o.status } : o
-            )
-          );
-        }
-      )
-      .subscribe();
-
-    return () => {
-      supabase.removeChannel(channel);
-    };
-  }, [currentUser?.email]);
+  // Sipariş geçmişi ve gerçek zamanlı sipariş aboneliği, my-orders için
+  // token/magic-link sahiplik doğrulaması eklenene kadar kapalı.
+  // E-posta + oturum, autoconfirm altında yeterli değil; e-posta bazlı
+  // Realtime aboneliği de aynı sahiplik sorununu taşır.
 
   const seo = useMemo(() => {
     if (currentGuide) {
@@ -923,6 +849,7 @@ useEffect(() => {
         onClose={() => setIsProfileModalOpen(false)}
         user={currentUser}
         orders={orders}
+        ordersUnavailable
         onLogout={handleLogout}
       />
 

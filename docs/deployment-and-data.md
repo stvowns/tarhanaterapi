@@ -76,7 +76,7 @@ Son doğrulanan prod code commit: `1176edcba0f5170de26fbb17ba14a20aa30972be`.
 | `TELEGRAM_ADMIN_CHAT_ID` | Yönetici sohbeti |
 | `TELEGRAM_WEBHOOK_SECRET` | Webhook doğrulama; yoksa webhook fail-closed |
 | `ALLOW_COD` | `true` değilse Kapıda Ödeme kabul edilmez |
-| `ADMIN_MFA_REQUIRED` | `on` ise yönetici API'leri `aal2` MFA oturumu ister; varsayılan kapalı |
+| `ADMIN_MFA_REQUIRED` | `true` ise yönetici API'leri `aal2` MFA oturumu ister; varsayılan kapalı. `on` yazmak enforcement'ı açmaz. |
 | `BANK_TRANSFER_BANK`, `BANK_TRANSFER_ACCOUNT_NAME`, `BANK_TRANSFER_IBAN` | Havale/EFT bilgileri (yalnızca gerçek değer) |
 
 > `SUPABASE_SERVICE_ROLE_KEY`, `RESEND_API_KEY`, `TELEGRAM_BOT_TOKEN`, `TELEGRAM_WEBHOOK_SECRET` ve `UNSUBSCRIBE_SECRET` frontend'e sızmamalı; repoya yazılmamalı.
@@ -140,7 +140,7 @@ Deploy sonrası en az şunlar kontrol edilmeli:
 
 - [ ] Ana sayfa `200`
 - [ ] `/kadim-corba-rituelleri-ve-sifali-tarifler.pdf` `200`
-- [ ] `/api/my-orders` yetkisiz `401`
+- [ ] `/api/my-orders` (geçici kapalı) `410`
 - [ ] `/api/update-order-status` yetkisiz `401`
 - [ ] Geçersiz `/api/unsubscribe` `400`
 - [ ] Secret'sız `/api/telegram-webhook` `401`

@@ -6,6 +6,7 @@ interface UserProfileModalProps {
   onClose: () => void;
   user: User | null;
   orders: Order[];
+  ordersUnavailable?: boolean;
   onLogout: () => void;
 }
 
@@ -14,6 +15,7 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({
   onClose,
   user,
   orders,
+  ordersUnavailable = false,
   onLogout,
 }) => {
   if (!isOpen || !user) return null;
@@ -143,7 +145,7 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({
                     <span className="font-headline-sm text-lg text-outline font-bold">—</span>
                   </div>
                   <span className="text-[10px] text-outline mt-1 block">
-                    Henüz siparişiniz yok
+                    {ordersUnavailable ? 'Geçici olarak kapalı' : 'Henüz siparişiniz yok'}
                   </span>
                 </>
               )}
@@ -203,10 +205,21 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({
 
             {userOrders.length === 0 ? (
               <div className="text-center py-6 border border-dashed border-outline-variant/40 rounded-xl">
-                <p className="text-xs text-outline">Henüz bir siparişiniz bulunmamaktadır.</p>
-                <p className="text-[10px] text-outline mt-1">
-                  İlk siparişinizde +25 Şifa Puanı kazanırsınız.
-                </p>
+                {ordersUnavailable ? (
+                  <>
+                    <p className="text-xs text-outline">Sipariş geçmişi geçici olarak kapalı.</p>
+                    <p className="text-[10px] text-outline mt-1">
+                      Sipariş durumunuz için e-posta bildirimlerini kullanabilirsiniz.
+                    </p>
+                  </>
+                ) : (
+                  <>
+                    <p className="text-xs text-outline">Henüz bir siparişiniz bulunmamaktadır.</p>
+                    <p className="text-[10px] text-outline mt-1">
+                      İlk siparişinizde +25 Şifa Puanı kazanırsınız.
+                    </p>
+                  </>
+                )}
               </div>
             ) : (
               <div className="flex flex-col gap-3">
