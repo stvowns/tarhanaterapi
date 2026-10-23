@@ -191,7 +191,7 @@ Server-side:
 - **Bülten:** Double opt-in yok; biri başkasının e-postasını formdan ekleyebilir.
 - Yönetici yetkisi Supabase `app_metadata.role = 'admin'` ile yönetiliyor; e-posta allowlist'i kaldırıldı.
 - Banka/IBAN bilgileri, Shopier onayı ve ödeme linki, muhasebe onayı ve kargo teklifi hâlâ kullanıcı tarafından netleştirilmeli.
-- Cloudflare Web Analytics kurulumu ve Yandex Webmaster doğrulaması kullanıcı tarafında bekliyor.
+- Cloudflare Web Analytics aktif: canlı HTML'de `static.cloudflareinsights.com/beacon.min.js` yükleniyor. Yandex Webmaster doğrulaması hâlâ kullanıcı tarafında bekliyor.
 
 ## Yerel çalıştırma
 

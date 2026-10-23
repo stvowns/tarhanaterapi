@@ -58,7 +58,7 @@
 - **Zararı:** KVKK için analitik çerez onayı ve aydınlatma gerekir; Google’a veri aktarımı; CSP’ye `googletagmanager.com`/`google-analytics.com` eklemek gerekir; React SPA’da route değişimlerini ayrıca `page_view` olarak göndermek gerekir; Lighthouse’a üçüncü taraf maliyeti ekler. AI crawler’ları JS çalıştırmadığı için GEO bot trafiğini göstermez.
 - **Şimdilik alternatif:** Cloudflare Web Analytics (çerezsiz, ücretsiz, Pages’te tek tık) + GSC/Bing + Supabase sipariş sayısı. AI botları için Cloudflare logları/analytics; AI cevaplarında marka geçişi için manuel kontrol.
 - **Snippet uyarısı:** Paylaşılan GA4 kodunu doğrudan `index.html`’e yapıştırma. Mevcut CSP `googletagmanager.com` ve `google-analytics.com` adreslerine izin vermiyor; ayrıca kod onay alınmadan çalışır ve SPA route’larını saymaz.
-- [ ] **Cloudflare Web Analytics'i aç** (Pages → Metrics → Enable) ve beacon'ın yüklendiğini doğrula. CSP buna hazır.
+- [x] **Cloudflare Web Analytics açık.** Canlı HTML'de `static.cloudflareinsights.com/beacon.min.js` ve `dc0457db0d5044e7803def9dea6411b4` token'ı yükleniyor; CSP hazır.
 - [ ] Haftalık ölçüm: GSC/Bing gösterim-tıklama, Cloudflare sayfa görüntüleme/referrer, Supabase sipariş sayısı.
 - [ ] GA4'e ancak Google Ads/remarketing veya gelişmiş funnel gerekirse geç; o zaman onay yönetimi + Consent Mode v2 + CSP + KVKK güncellemesiyle birlikte kur.
 
