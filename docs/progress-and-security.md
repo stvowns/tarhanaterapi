@@ -35,6 +35,15 @@
   - Son sayfadaki eski `Gedelek Köyü Mevkii No: 28` adresi **Muradiye Mh., Orhangazi / Bursa** olarak düzeltildi.
   - Canlı PDF: `https://tarhanaterapi.com/kadim-corba-rituelleri-ve-sifali-tarifler.pdf` (200).
 
+#### KVKK açık rıza (23 Ekim 2026)
+
+- `NewsletterSection`, `EbookModal` ve `Footer` formlarına **varsayılan işaretsiz** onay kutuları eklendi.
+- E-kitap formunda e-posta vermek bülten onayı sayılmıyor; bülten için ayrı isteğe bağlı kutu var.
+- `POST /api/subscribe` artık `consent: true` olmadan kayıt kabul etmiyor; bülten için `marketingConsent: true` da zorunlu.
+- Supabase `subscribers` tablosuna `marketing_consent`, `consent_at`, `consent_version`, `consent_source` eklendi; migration canlıya uygulandı.
+- Resend contacts/segmentine yalnızca pazarlama onayı olan kayıtlar ekleniyor.
+- **Dikkat:** Eski abonelerde `marketing_consent = false`. Yeni bülten gönderiminden önce yeniden onay alınmalı veya Resend segmenti ayrıştırılmalı.
+
 ### Supabase / RLS
 
 - `supabase/security-hardening.sql` uygulandı ve doğrulandı.

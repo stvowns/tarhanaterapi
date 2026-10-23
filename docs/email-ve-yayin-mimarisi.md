@@ -133,8 +133,9 @@ Bu limitler içinde kalındığı sürece **ücret yansımaz**. Sipariş onaylar
 
 ## 4. Bülten kayıtları ve yönetici panelinden gönderim
 
-- Kayıtlar: Supabase `subscribers` tablosu.
-- Her yeni abone, Resend global kontaktlarına ve `decff556-906f-4dd1-93c1-3009796ab097` segmentine eklenir.
+- Kayıtlar: Supabase `subscribers` tablosu (`marketing_consent`, `consent_at`, `consent_version`, `consent_source` dahil).
+- Resend global kontaktlarına ve `decff556-906f-4dd1-93c1-3009796ab097` segmentine yalnızca **pazarlama onayı (`marketing_consent = true`)** olan kayıtlar eklenir; e-kitap için e-posta vermek bülten onayı sayılmaz.
+- 23 Ekim 2026 öncesi abonelerde `marketing_consent = false`; yeni bülten gönderiminden önce yeniden onay alınmalı veya segment ayrıştırılmalı.
 - Yönetici paneli → **E-Posta Listesi** → CSV indirme.
 - Yönetici paneli → **Bülten Gönder**:
   - Resend kontaktları listelenir; abonelikten çıkanlar işaretlenemez.

@@ -95,6 +95,14 @@ Tablolar:
 - `reviews`
 - `faq`
 
+### KVKK / açık rıza (23 Ekim 2026)
+
+- `subscribers` tablosuna `marketing_consent`, `consent_at`, `consent_version`, `consent_source` alanları eklendi (`supabase/migrations/20261023193000_subscriber_consent.sql`, canlıya uygulandı).
+- Bülten ve e-kitap formlarında **varsayılan işaretsiz** onay kutuları var.
+- `/api/subscribe` `consent: true` olmadan kayıt kabul etmiyor; bülten için `marketingConsent: true` da zorunlu.
+- Resend contacts/segmentine yalnızca `marketing_consent = true` olan kayıtlar ekleniyor. E-kitap için e-posta vermek bülten onayı sayılmıyor.
+- Eski abonelerde `marketing_consent` varsayılan `false`; yeni bülten gönderiminden önce yeniden onay toplanmalı veya Resend segmenti ayrıştırılmalı.
+
 ### RLS / erişim kuralları (22 Ekim 2026)
 
 - `orders`, `order_items`, `subscribers` ve `reviews` üzerinde **anon INSERT politikası yok**.
@@ -128,7 +136,8 @@ Sipariş numarası sıralı `TT-XXXXXX` formatındadır.
 
 ## 7. Bülten ve abonelikten çıkma
 
-- Abone kaydı: `POST /api/subscribe` → Supabase `subscribers` + Resend contacts.
+- Abone kaydı: `POST /api/subscribe` → Supabase `subscribers`; Resend contacts/segment yalnızca `marketing_consent = true` ise.
+- `consent: true` sunucuda zorunlu; bülten için `marketingConsent: true` ayrıca zorunlu. E-kitap e-postası bülten onayı değildir.
 - Gönderim: yönetici paneli → `POST /api/send-newsletter`.
 - Her alıcıya özel HMAC token'lı `GET/POST /api/unsubscribe?token=...` bağlantısı eklenir.
 - `List-Unsubscribe` / `List-Unsubscribe-Post` başlıkları e-posta istemcisinin tek tıkla çıkma özelliğini destekler.
@@ -145,6 +154,8 @@ Deploy sonrası en az şunlar kontrol edilmeli:
 - [ ] Geçersiz `/api/unsubscribe` `400`
 - [ ] Secret'sız `/api/telegram-webhook` `401`
 - [ ] Geçersiz `create-order` / `subscribe` `400`
+- [ ] `/api/subscribe` `consent: false` → `400`; `source: newsletter` + `marketingConsent: false` → `400`
+- [ ] Bülten/e-kitap formlarında onay kutusu varsayılan işaretsiz; onaysız submit engelli
 - [ ] `/urunler` `301` → `/urunler/tarhana-classic`
 - [ ] `/urunler/tarhana-classic` `200`
 - [ ] İletişim formu testi `200`; Resend e-postası teslim edildi

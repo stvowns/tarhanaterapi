@@ -76,6 +76,10 @@ export interface SubscriberLead {
   email: string;
   source: 'ebook' | 'newsletter';
   createdAt: string;
+  marketingConsent?: boolean;
+  consentAt?: string;
+  consentVersion?: string;
+  consentSource?: string;
 }
 
 export interface Review {

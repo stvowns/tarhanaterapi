@@ -22,11 +22,12 @@
 
 ### P1-B — KVKK açık rıza (aynı sprint)
 
-- [ ] `NewsletterSection` formuna varsayılan işaretsiz KVKK onay kutusu ve `/kvkk` linki ekle.
-- [ ] `EbookModal` e-posta formuna aynı onay kutusunu ekle; e-kitap gönderimi ile bülten aboneliğini ayır.
-- [ ] `Footer` bülten formuna aynı onay kutusunu ekle.
-- [ ] Onay olmadan submit'i engelle; `subscribers` tablosunda onay zamanı/sürümü/kaynağı sakla.
+- [x] `NewsletterSection` formuna varsayılan işaretsiz KVKK onay kutusu ve `/kvkk` linki ekle.
+- [x] `EbookModal` e-posta formuna aynı onay kutusunu ekle; e-kitap gönderimi ile bülten aboneliğini ayır.
+- [x] `Footer` bülten formuna aynı onay kutusunu ekle.
+- [x] Onay olmadan submit'i engelle; `subscribers` tablosunda onay zamanı/sürümü/kaynağı sakla (`marketing_consent`, `consent_at`, `consent_version`, `consent_source`).
 - [ ] KVKK metnini ve çerez/analitik açıklamalarını hukukçuya kontrol ettir.
+- [ ] Eski aboneleri (`marketing_consent = false`) yeni bülten gönderiminden önce yeniden onaya tabi tut veya Resend segmentini ayrıştır.
 
 ### P1-C — MFA (operasyonel, enrollment sonrası)
 

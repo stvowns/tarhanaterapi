@@ -8,7 +8,7 @@ interface FooterProps {
   setActiveTab: (tab: ActiveTab) => void;
   onShowToast: (msg: string) => void;
   onOpenLegalModal: (title: string, text: string) => void;
-  onSubscribe: (email: string) => void;
+  onSubscribe: (email: string, marketingConsent: boolean) => void;
 }
 
 export const Footer: React.FC<FooterProps> = ({
@@ -18,6 +18,7 @@ export const Footer: React.FC<FooterProps> = ({
   onSubscribe,
 }) => {
   const [bulletinEmail, setBulletinEmail] = useState('');
+  const [bulletinConsent, setBulletinConsent] = useState(false);
 
   const handleSubscribe = (e: React.FormEvent) => {
     e.preventDefault();
@@ -25,9 +26,14 @@ export const Footer: React.FC<FooterProps> = ({
       onShowToast('Lütfen geçerli bir e-posta adresi giriniz.');
       return;
     }
-    onSubscribe(bulletinEmail.trim());
+    if (!bulletinConsent) {
+      onShowToast('Bültene kaydolmak için KVKK onay kutusunu işaretleyin.');
+      return;
+    }
+    onSubscribe(bulletinEmail.trim(), true);
     onShowToast('Şifa bültenimize başarıyla kaydoldunuz! Teşekkürler.');
     setBulletinEmail('');
+    setBulletinConsent(false);
   };
 
   const handleNav = (tab: ActiveTab) => {
@@ -219,6 +225,27 @@ export const Footer: React.FC<FooterProps> = ({
                   required
                 />
               </div>
+              <label className="flex items-start gap-2 text-[10px] leading-relaxed text-on-surface-variant cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={bulletinConsent}
+                  onChange={(e) => setBulletinConsent(e.target.checked)}
+                  required
+                  className="mt-0.5 h-3.5 w-3.5 shrink-0 rounded border-outline-variant text-primary focus:ring-primary/40"
+                />
+                <span>
+                  <a
+                    href="/kvkk"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-primary underline underline-offset-2"
+                  >
+                    KVKK Aydınlatma Metni
+                  </a>
+                  'ni okudum; şifa bültenine abone olmak ve ticari elektronik ileti
+                  almak istiyorum.
+                </span>
+              </label>
               <button
                 className="bg-primary text-on-primary font-label-lg rounded-lg py-2.5 px-4 text-center hover:bg-primary-container transition-colors cursor-pointer shadow-2xs active:scale-98"
                 type="submit"

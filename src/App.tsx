@@ -481,7 +481,11 @@ useEffect(() => {
   };
 
   // Email collection handler for lead generation
-  const handleCollectEmail = (email: string, source: 'ebook' | 'newsletter' = 'ebook') => {
+  const handleCollectEmail = (
+    email: string,
+    source: 'ebook' | 'newsletter' = 'ebook',
+    marketingConsent = false
+  ) => {
     if (!email || !email.includes('@')) return;
     const cleanEmail = email.trim().toLowerCase();
 
@@ -501,18 +505,27 @@ useEffect(() => {
     fetch('/api/subscribe', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email: cleanEmail, source }),
+      body: JSON.stringify({
+        email: cleanEmail,
+        source,
+        consent: true,
+        marketingConsent,
+      }),
     }).catch(() => {
       // Yerel kayıt korunur; sunucu hatası kullanıcı akışını bozmaz.
     });
   };
 
   // Ebook trigger
-  const handleDownloadEbook = (email: string) => {
+  const handleDownloadEbook = (email: string, marketingConsent: boolean) => {
     setEbookEmail(email);
-    handleCollectEmail(email, 'ebook');
+    handleCollectEmail(email, 'ebook', marketingConsent);
     setIsEbookModalOpen(true);
-    showToast('Reçete e-kitabınız hazırlandı! E-posta listenize kaydedildi.');
+    showToast(
+      marketingConsent
+        ? 'Reçete e-kitabınız hazırlandı! Bülten kaydınız da alındı.'
+        : 'Reçete e-kitabınız hazırlandı!'
+    );
   };
 
   // Add review — yönetici onayına gönderilir, doğrudan yayınlanmaz.
@@ -792,7 +805,9 @@ useEffect(() => {
         onOpenLegalModal={(title, content) =>
           setLegalModal({ isOpen: true, title, content })
         }
-        onSubscribe={(email) => handleCollectEmail(email, 'newsletter')}
+        onSubscribe={(email, marketingConsent) =>
+          handleCollectEmail(email, 'newsletter', marketingConsent)
+        }
       />
 
       {/* 4. Interactive Modals & Drawers */}
@@ -828,7 +843,9 @@ useEffect(() => {
         isOpen={isEbookModalOpen}
         onClose={() => setIsEbookModalOpen(false)}
         userEmail={ebookEmail}
-        onCollectEmail={(email) => handleCollectEmail(email, 'ebook')}
+        onCollectEmail={(email, marketingConsent) =>
+          handleCollectEmail(email, 'ebook', marketingConsent)
+        }
       />
 
       <IngredientsModal

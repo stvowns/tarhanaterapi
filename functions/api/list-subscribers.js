@@ -11,7 +11,7 @@ export async function onRequestGet({ request, env }) {
   if (!admin) return json({ error: 'Yetkisiz istek' }, 401);
 
   const res = await fetch(
-    `${env.SUPABASE_URL}/rest/v1/subscribers?select=id,email,source,created_at&order=created_at.desc&limit=5000`,
+    `${env.SUPABASE_URL}/rest/v1/subscribers?select=id,email,source,created_at,marketing_consent,consent_at,consent_version,consent_source&order=created_at.desc&limit=5000`,
     {
       headers: {
         apikey: env.SUPABASE_SERVICE_ROLE_KEY,
@@ -36,6 +36,10 @@ export async function onRequestGet({ request, env }) {
       createdAt: row.created_at
         ? new Date(row.created_at).toLocaleDateString('tr-TR')
         : '',
+      marketingConsent: Boolean(row.marketing_consent),
+      consentAt: row.consent_at || '',
+      consentVersion: row.consent_version || '',
+      consentSource: row.consent_source || '',
     })),
   });
 }

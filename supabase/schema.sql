@@ -58,6 +58,10 @@ create table if not exists subscribers (
   email text unique not null,
   source text not null check (source in ('ebook', 'newsletter')),
   unsubscribed_at timestamptz,
+  marketing_consent boolean not null default false,
+  consent_at timestamptz,
+  consent_version text,
+  consent_source text,
   created_at timestamptz default now()
 );
 

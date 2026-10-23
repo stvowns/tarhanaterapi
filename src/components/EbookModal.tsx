@@ -5,7 +5,7 @@ interface EbookModalProps {
   isOpen: boolean;
   onClose: () => void;
   userEmail?: string;
-  onCollectEmail?: (email: string) => void;
+  onCollectEmail?: (email: string, marketingConsent: boolean) => void;
 }
 
 export const EbookModal: React.FC<EbookModalProps> = ({
@@ -17,15 +17,27 @@ export const EbookModal: React.FC<EbookModalProps> = ({
   const [selectedRecipeIdx, setSelectedRecipeIdx] = useState(0);
   const [emailInput, setEmailInput] = useState(userEmail || '');
   const [downloadSuccess, setDownloadSuccess] = useState(false);
+  const [consent, setConsent] = useState(false);
+  const [marketingConsent, setMarketingConsent] = useState(false);
+  const [error, setError] = useState('');
   const activeRecipe = RECIPES_EBOOK[selectedRecipeIdx];
 
   if (!isOpen) return null;
 
   const handleDownloadFile = () => {
-    if (emailInput && onCollectEmail) {
-      onCollectEmail(emailInput);
+    const cleanEmail = emailInput.trim();
+
+    if (cleanEmail) {
+      if (!consent) {
+        setError('E-posta adresinizi kaydetmek için KVKK onay kutusunu işaretleyin.');
+        return;
+      }
+      if (onCollectEmail) {
+        onCollectEmail(cleanEmail, marketingConsent);
+      }
     }
 
+    setError('');
     const link = document.createElement('a');
     link.href = '/kadim-corba-rituelleri-ve-sifali-tarifler.pdf';
     link.download = 'TarhanaTerapi_Kadim_Corba_Rituelleri_ve_Sifali_Tarifler.pdf';
@@ -94,7 +106,8 @@ export const EbookModal: React.FC<EbookModalProps> = ({
           {downloadSuccess && (
             <div className="p-3 mb-4 rounded-xl bg-emerald-100 text-emerald-800 text-xs font-semibold flex items-center gap-2">
               <span className="material-symbols-outlined text-[18px]">check_circle</span>
-              E-Kitap dosyanız başarıyla cihazınıza indirildi! E-postanız şifa listemize kaydedildi.
+              E-Kitap dosyanız indirildi!
+              {emailInput.trim() ? ' E-posta adresiniz kaydedildi.' : ''}
             </div>
           )}
 
@@ -193,24 +206,69 @@ export const EbookModal: React.FC<EbookModalProps> = ({
         </div>
 
         {/* Footer with email verification & download */}
-        <div className="p-4 bg-surface-container-low border-t border-surface-container-high flex flex-col sm:flex-row justify-between items-center gap-3">
-          <div className="w-full sm:w-auto flex-1 max-w-sm">
-            <input
-              type="email"
-              value={emailInput}
-              onChange={(e) => setEmailInput(e.target.value)}
-              placeholder="E-postanızı girin..."
-              className="w-full px-3 py-2 text-xs rounded-lg bg-surface border border-outline-variant/40"
-            />
+        <div className="p-4 bg-surface-container-low border-t border-surface-container-high flex flex-col gap-3">
+          <div className="flex flex-col sm:flex-row justify-between items-center gap-3">
+            <div className="w-full sm:w-auto flex-1 max-w-sm">
+              <input
+                type="email"
+                value={emailInput}
+                onChange={(e) => setEmailInput(e.target.value)}
+                placeholder="E-postanızı girin..."
+                className="w-full px-3 py-2 text-xs rounded-lg bg-surface border border-outline-variant/40"
+              />
+            </div>
+
+            <button
+              onClick={handleDownloadFile}
+              className="w-full sm:w-auto px-5 py-2.5 bg-primary-container hover:bg-primary text-on-primary-container rounded-lg text-xs font-semibold flex items-center justify-center gap-1.5 transition-colors cursor-pointer shadow-xs active:scale-95 whitespace-nowrap"
+            >
+              <span className="material-symbols-outlined text-[18px]">download</span>
+              <span>E-Kitabı PDF İndir</span>
+            </button>
           </div>
 
-          <button
-            onClick={handleDownloadFile}
-            className="w-full sm:w-auto px-5 py-2.5 bg-primary-container hover:bg-primary text-on-primary-container rounded-lg text-xs font-semibold flex items-center justify-center gap-1.5 transition-colors cursor-pointer shadow-xs active:scale-95 whitespace-nowrap"
-          >
-            <span className="material-symbols-outlined text-[18px]">download</span>
-            <span>E-Kitabı PDF İndir</span>
-          </button>
+          <label className="flex items-start gap-2 text-[10px] leading-relaxed text-on-surface-variant cursor-pointer">
+            <input
+              type="checkbox"
+              checked={consent}
+              onChange={(e) => {
+                setConsent(e.target.checked);
+                if (e.target.checked) setError('');
+              }}
+              className="mt-0.5 h-3.5 w-3.5 shrink-0 rounded border-outline-variant text-primary focus:ring-primary/40"
+            />
+            <span>
+              <a
+                href="/kvkk"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-primary underline underline-offset-2"
+              >
+                KVKK Aydınlatma Metni
+              </a>
+              'ni okudum; e-posta adresimin e-kitap talebimin yönetilmesi için
+              işlenmesine onay veriyorum. E-posta vermeden de indirebilirsiniz.
+            </span>
+          </label>
+
+          <label className="flex items-start gap-2 text-[10px] leading-relaxed text-on-surface-variant cursor-pointer">
+            <input
+              type="checkbox"
+              checked={marketingConsent}
+              onChange={(e) => setMarketingConsent(e.target.checked)}
+              className="mt-0.5 h-3.5 w-3.5 shrink-0 rounded border-outline-variant text-primary focus:ring-primary/40"
+            />
+            <span>
+              Şifa Bülteni'ne abone olmak ve ticari elektronik ileti almak istiyorum.
+              <span className="text-outline"> (isteğe bağlı)</span>
+            </span>
+          </label>
+
+          {error && (
+            <p className="text-[10px] text-red-700" role="alert">
+              {error}
+            </p>
+          )}
         </div>
       </div>
     </div>
