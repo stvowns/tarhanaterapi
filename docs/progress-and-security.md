@@ -20,6 +20,8 @@
 - Müşteriye e-posta **yalnızca durum `Kargoya Verildi` olduğunda ve bu geçiş ilk kez yapıldığında** gidiyor.
 - Aynı durumun tekrar kaydedilmesi, diğer durum değişiklikleri ve durum dışı alan güncellemeleri e-posta göndermiyor.
 - `functions/api/telegram-webhook.js` aynı davranışı uyguluyor; Telegram üzerinden verilen “Kargoya Verildi” komutu da yalnızca geçiş anında mail atıyor.
+- **23 Ekim 2026 — atomik geçiş:** Panel ve Telegram yollarında “Kargoya Verildi” için koşullu `PATCH` (`status=neq.Kargoya Verildi`) kullanılıyor. Aynı anda gelen iki istekten yalnızca biri satırı güncelleyip e-posta gönderiyor; diğeri `notified: false` dönüyor.
+- SQL düzeyinde test edildi: ilk koşullu güncelleme satır döndürdü, ikinci güncelleme boş döndü; sentetik `TT-00002` kaydı silindi.
 - Böylece panelden veya Telegram'dan yapılan tekrar işlemlerde mükerrer kargo e-postası engellendi.
 
 ### Bülten ve e-kitap

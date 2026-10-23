@@ -89,14 +89,24 @@ export async function onRequestPost({ request, env }) {
   const current = Array.isArray(rows) ? rows[0] : null;
   if (!current) return json({ error: 'Sipariş bulunamadı' }, 404);
 
-  const res = await fetch(`${env.SUPABASE_URL}/rest/v1/orders?id=eq.${orderId}`, {
+  // "Kargoya Verildi" geçişini koşullu PATCH ile atomik yap:
+  // aynı anda gelen iki istekten yalnızca biri satırı güncelleyebilir.
+  // Böylece iki kez kargo e-postası gitmez.
+  const patchUrl =
+    status === 'Kargoya Verildi'
+      ? `${env.SUPABASE_URL}/rest/v1/orders?id=eq.${orderId}&status=neq.${encodeURIComponent(
+          'Kargoya Verildi'
+        )}`
+      : `${env.SUPABASE_URL}/rest/v1/orders?id=eq.${orderId}`;
+
+  const res = await fetch(patchUrl, {
     method: 'PATCH',
     headers: {
       ...authHeaders,
       'Content-Type': 'application/json',
       Prefer: 'return=representation',
     },
-    body: JSON.stringify({ status }),
+    body: JSON.stringify({ status, updated_at: new Date().toISOString() }),
   });
 
   if (!res.ok) {
@@ -106,9 +116,10 @@ export async function onRequestPost({ request, env }) {
 
   const data = await res.json();
   const updated = Array.isArray(data) ? data[0] : null;
+  const transitionedToShipped = status === 'Kargoya Verildi' && Boolean(updated);
 
   let notified = false;
-  if (status === 'Kargoya Verildi' && current.status !== 'Kargoya Verildi') {
+  if (transitionedToShipped) {
     const customerName = String(current.customer_name || 'Müşteri');
     const orderNumber = String(current.order_number || '');
     notified = await notifyEmail(
@@ -122,7 +133,7 @@ export async function onRequestPost({ request, env }) {
     );
   }
 
-  return json({ success: true, notified, order: updated });
+  return json({ success: true, notified, order: updated || current });
 }
 
 export async function onRequestGet() {

@@ -274,12 +274,20 @@ export async function onRequestPost({ request, env }) {
           env,
           `orders?id=eq.${id}&select=status,order_number,customer_name,customer_email`
         );
-        const previousStatus = Array.isArray(current.data) ? current.data[0]?.status : '';
-        await supabase(env, `orders?id=eq.${id}`, {
+        const patchPath =
+          status === 'Kargoya Verildi'
+            ? `orders?id=eq.${id}&status=neq.${encodeURIComponent('Kargoya Verildi')}`
+            : `orders?id=eq.${id}`;
+        const patch = await supabase(env, patchPath, {
           method: 'PATCH',
+          headers: { Prefer: 'return=representation' },
           body: JSON.stringify({ status, updated_at: new Date().toISOString() }),
         });
-        if (status === 'Kargoya Verildi' && previousStatus !== 'Kargoya Verildi') {
+        const transitionedToShipped =
+          status === 'Kargoya Verildi' &&
+          Array.isArray(patch.data) &&
+          patch.data.length > 0;
+        if (transitionedToShipped) {
           await notifyShippedEmail(env, Array.isArray(current.data) ? current.data[0] : null);
         }
         await sendOrderDetail(env, chatId, messageId, id);

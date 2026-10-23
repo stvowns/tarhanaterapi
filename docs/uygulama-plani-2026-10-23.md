@@ -44,7 +44,10 @@
   - Ana paket: ~760,21 KB → ~702,46 KB (gzip ~203,49 → ~191,61 KB).
   - `AdminModal` ayrı chunk ~52,81 KB; `OrderAccessModal` ~5,32 KB.
 - [ ] Ana paket hâlâ 500 KB üzeri; ağır alt bileşenler/route'lar için ek code-splitting değerlendir.
-- [ ] `update-order-status` geçişini atomik yap (koşullu `PATCH` veya RPC + idempotency); çift “Kargoya Verildi” e-postasını engelle.
+- [x] `update-order-status` ve Telegram durum geçişini atomik yap.
+  - “Kargoya Verildi” için `PATCH ...&status=neq.Kargoya Verildi` kullanılıyor; yalnızca satırı güncelleyen istek e-posta gönderiyor.
+  - İkinci/paralel istek `200` dönse de `notified: false` oluyor.
+  - SQL düzeyinde ilk koşullu güncelleme satır döndürdü, ikinci güncelleme boş döndü; sentetik `TT-00002` kaydı silindi.
 - [ ] `list-orders` sayfalama ekle; PII döndüren endpoint'lere `no-store`.
 - [ ] Rate limit'leri kalıcılaştır (Cloudflare Rate Limiting / KV / Durable Object); in-memory `Map` temizliği.
 - [ ] `subscribe.js` Resend contact/segment hatasını sessizce yutma; Supabase ile Resend arasında uzlaştırma/retry ekle.
