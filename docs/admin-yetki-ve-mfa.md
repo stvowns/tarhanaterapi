@@ -70,6 +70,14 @@ alabilir; rol kontrolü tek başına bunu engellemez. Bu nedenle:
 
 birlikte kullanılmalıdır.
 
+### Confirm email bilinçli olarak kapalı
+
+Tek ürünlü, küçük hacimli mağazada zorunlu e-posta doğrulaması kullanıcıyı
+kaçırabilir. Bu nedenle Supabase'de `mailer_autoconfirm: true` bırakıldı.
+Admin güvenliği Google oturumu + `app_metadata.role = "admin"` ile sağlanıyor;
+confirm email'in admin yetkisine etkisi yok. İleride form spam'i artarsa
+zorunlu doğrulama yerine Turnstile veya bülten double opt-in tercih edilmeli.
+
 ## 3. Panel dışa aktarma ile gerçek veritabanı yedeği farkı
 
 Paneldeki **Veri Dışa Aktarma (JSON)** şunları içerir:
