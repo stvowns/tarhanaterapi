@@ -130,7 +130,7 @@ Teknik GEO altyapısı, hosting taşıması, e-posta/bülten altyapısı, secret
 - [x] **Resend API key'ini rotate et** — **(Birlikte)**
   - Yeni anahtar `tarhanaterapi-prod-2026-10-22` (Full access); Cloudflare `RESEND_API_KEY` güncellendi, test maili teslim edildi. Resend panelinde başka anahtar görünmüyor.
 
-- [ ] **Supabase Auth / MFA enrollment** — **(Sen + Ben)**
+- [ ] **Supabase Auth / MFA enrollment** — **(Sen + Ben)** — *şimdilik ertelendi*
   - Auth → Providers → Email → “Confirm email”ı aç; Site URL ve redirect URL'leri `https://tarhanaterapi.com` olarak ayarla.
   - Supabase Auth → MFA → TOTP'yi etkinleştir; admin hesabında TOTP enrollment yap.
   - Sonra `./set-admin-mfa.sh on` çalıştır ve deploy et; `ADMIN_MFA_REQUIRED=on` ile yönetici API'leri `aal2` istesin.

@@ -167,7 +167,7 @@ Server-side:
 
 ## Bilinen sınırlamalar / açık işler
 
-- **Supabase Auth / MFA:** Confirm email şu an kapalı (`mailer_autoconfirm: true`); admin hesabında TOTP faktörü yok. `ADMIN_MFA_REQUIRED` da ayarlı değil. Enrollment sonrası `./set-admin-mfa.sh on` ile enforcement açılmalı.
+- **Supabase Auth / MFA:** Confirm email şu an kapalı (`mailer_autoconfirm: true`); admin hesabında TOTP faktörü yok. Kullanıcı MFA kurulumunu 23 Ekim 2026'da şimdilik erteledi; `ADMIN_MFA_REQUIRED` kapalı. Kurulum yapılırsa `./set-admin-mfa.sh on` ile enforcement açılmalı.
 - **Rate limit kapsamı:** Cloudflare Free planında tek kural ve yalnızca 10 saniyelik period/duration var. Daha ayrıntılı limit veya CAPTCHA gerekiyorsa Turnstile/üst plan değerlendirilmeli.
 - **Bülten:** Double opt-in yok; biri başkasının e-postasını formdan ekleyebilir.
 - Yönetici yetkisi Supabase `app_metadata.role = 'admin'` ile yönetiliyor; e-posta allowlist'i kaldırıldı.

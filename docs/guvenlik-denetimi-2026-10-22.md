@@ -77,8 +77,7 @@ Doğrulama (public publishable anahtarıyla):
 - Admin yetkisi artık Supabase `app_metadata.role = 'admin'` ile rol tabanlı; e-posta allowlist'i kaldırıldı. MFA henüz zorunlu değil.
 - Public formlarda CAPTCHA/Turnstile yok. Edge rate limit `POST /api/*` için 5 istek/10 sn,
   ancak Free plan nedeniyle yalnızca 10 saniyelik pencere ve tek kural var.
-- MFA altyapısı hazır olsa da `ADMIN_MFA_REQUIRED` kapalı ve Supabase Confirm email kapalı;
-  enrollment yapılmadan admin paneli yalnızca Google/şifre oturumu ile korunuyor.
+- MFA altyapısı hazır olsa da `ADMIN_MFA_REQUIRED` kapalı ve Supabase Confirm email kapalı; kullanıcı MFA kurulumunu şimdilik erteledi. Admin paneli bu süre boyunca Google/şifre oturumu + rol kontrolüyle korunuyor.
 - Bülten aboneliğinde double opt-in yok; biri başkasının e-postasını formdan ekleyebilir.
 - CSP'de `script-src 'unsafe-inline'` kaldırıldı; `style-src 'unsafe-inline'` React inline
   stilleri ve statik kabuk nedeniyle duruyor.

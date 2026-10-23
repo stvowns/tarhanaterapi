@@ -52,6 +52,14 @@ gerekir.
 Yani MFA günlük panel kullanımını her tıklamada zorlaştırmaz; yalnızca yeni
 oturum açılışında devreye girer.
 
+### Mevcut durum (23 Ekim 2026)
+
+MFA kurulumu kullanıcı tarafından **şimdilik ertelendi**. Supabase'de admin
+hesabında TOTP faktörü yok ve `ADMIN_MFA_REQUIRED` kapalı. Bu nedenle yönetici
+paneli şu an yalnızca Google/şifre oturumu + `app_metadata.role = "admin"`
+kontrolüyle korunuyor. Google hesabında 2FA/passkey açık tutulmalı; MFA
+kurulana kadar bu, kalan en önemli risk.
+
 Google ile giriş kullanılıyorsa Google hesabının kendi 2 adımlı doğrulaması da
 açık olmalıdır. Google hesabı ele geçirilirse saldırgan geçerli bir oturum
 alabilir; rol kontrolü tek başına bunu engellemez. Bu nedenle:
@@ -105,3 +113,7 @@ Supabase ücretsiz planda otomatik günlük yedek olmayabilir. Kalıcı çözüm
 
 Yine de daha önce sohbette paylaşılan Cloudflare API token'ı için panelden
 **Revoke** yapılması önerilir. Deploy artık `wrangler` oturumuyla yapılıyor.
+
+23 Ekim 2026: Cloudflare API token'ı kullanıcı tarafından **silindi/iptal
+edildi**. `wrangler whoami` OAuth oturumunun çalıştığı doğrulandı; deploy
+erişimi devam ediyor.
