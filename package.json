@@ -8,12 +8,13 @@
     "build": "vite build && tsx scripts/prerender.ts",
     "preview": "vite preview",
     "cf:dev": "npm run build && npx wrangler pages dev dist",
-    "cf:deploy": "npm run build && npx wrangler pages deploy dist --project-name tarhanaterapi --branch main",
+    "cf:deploy": "npm run check:build-env && npm run build && npx wrangler pages deploy dist --project-name tarhanaterapi --branch main",
     "clean": "rm -rf dist server.js",
     "lint": "tsc --noEmit",
     "indexnow": "tsx scripts/indexnow.ts",
     "ebook": "tsx scripts/generate-ebook.ts",
-    "check:ai": "node scripts/check-ai-access.mjs"
+    "check:ai": "node scripts/check-ai-access.mjs",
+    "check:build-env": "node scripts/check-build-env.mjs"
   },
   "dependencies": {
     "@google/genai": "^2.4.0",

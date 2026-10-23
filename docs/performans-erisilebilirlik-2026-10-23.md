@@ -43,40 +43,53 @@
   düzeltildi; auth kullanıcıları, şifreler ve şemanın dahil olmadığı açıkça
   yazıldı.
 
-## Lighthouse sonucu (yerel, mobil)
+## Lighthouse sonucu (canlı, mobil)
 
-`python3 -m http.server` + Lighthouse 13.5, varsayılan mobil throttling:
+`https://tarhanaterapi.com/` üzerinde Lighthouse 13.5, varsayılan mobil
+throttling, 23 Ekim 2026:
 
 | Kategori | Skor |
 |---|---:|
-| Performans | 85 |
+| Performans | 89 |
 | Erişilebilirlik | 100 |
-| En İyi Uygulamalar | 96 |
+| En İyi Uygulamalar | 100 |
 | SEO | 100 |
 
 Ölçülenler:
 
-- Toplam sayfa ağırlığı: **477 KiB** (önceki tam fontlu sürümde yaklaşık
+- Toplam sayfa ağırlığı: **597 KiB** (önceki tam fontlu sürümde yaklaşık
   4,5 MB)
-- FCP: 2,6 s
-- LCP: 3,7 s
-- CLS: 0,002
-- TBT: 0 ms
+- FCP: 2,5 s
+- LCP: 3,2 s
+- CLS: 0,006
+- TBT: 40 ms
+- Konsol hatası: **0**
 
-“En İyi Uygulamalar” 96 çıkmasının nedeni yerel önizlemede
-`VITE_SUPABASE_URL` / `VITE_SUPABASE_ANON_KEY` tanımlı olmamasıdır; canlı
-sitede bu hata beklenmez.
+İlk canlı denemede `VITE_SUPABASE_URL` / `VITE_SUPABASE_ANON_KEY` build
+sırasında tanımlı olmadığı için uygulama açılışta hata veriyordu. Değerler
+git'e girmeyen `.env.local` dosyasına kondu, build tekrarlandı ve canlı
+sürüm düzeltildi. Bir daha olmaması için `npm run cf:deploy` artık önce
+`npm run check:build-env` çalıştırıyor; eksik değer varsa deploy başlamadan
+duruyor.
+
+> `.env.local` **commit edilmemeli**. İçinde yalnızca tarayıcıya açık
+> Supabase URL/publishable key ve Google OAuth client ID bulunur; service-role
+> anahtarı veya başka bir gizli anahtar bulunmamalı.
 
 ## Canlıya çıkışta kontrol listesi
 
-1. `npm run lint`
-2. `npm run build`
-3. `npx wrangler pages functions build` (import hatası yok)
-4. `npm run cf:deploy`
-5. Canlıda `Content-Security-Policy` başlığında `fonts.googleapis.com` ve
+1. `.env.local` içinde `VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY`,
+   `VITE_SITE_URL` ve `VITE_GOOGLE_CLIENT_ID` var mı?
+2. `npm run check:build-env`
+3. `npm run lint`
+4. `npm run build`
+5. `npx wrangler pages functions build` (import hatası yok)
+6. `npm run cf:deploy` (kontrolü kendisi de çalıştırır)
+7. Canlıda `Content-Security-Policy` başlığında `fonts.googleapis.com` ve
    `fonts.gstatic.com` olmadığını doğrula.
-6. `/fonts/plus-jakarta-sans-normal-400-700-latin-ext.woff2` 200 dönüyor mu?
-7. Ana sayfada Material ikonları görünüyor mu? (özellikle sepet, yönetici,
+8. `/fonts/plus-jakarta-sans-normal-400-700-latin-ext.woff2` 200 dönüyor mu?
+9. Ana sayfada Material ikonları görünüyor mu? (özellikle sepet, yönetici,
    yorum yıldızları)
-8. Yetkisiz `/api/list-orders` isteği 401 dönüyor mu?
-9. Mobil Lighthouse'u canlı URL'de tekrar çalıştır.
+10. Yetkisiz `/api/list-orders` isteği 401 dönüyor mu?
+11. Tarayıcı konsolunda hata var mı?
+12. Mobil Lighthouse'u canlı URL'de tekrar çalıştır.
