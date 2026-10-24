@@ -1,5 +1,7 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { User, Order } from '../types';
+import { OrderStatusTimeline } from './OrderStatusTimeline';
+import { OrderDetailModal } from './OrderDetailModal';
 
 interface UserProfileModalProps {
   isOpen: boolean;
@@ -20,6 +22,12 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({
   ordersError = '',
   onLogout,
 }) => {
+  const [detailOrder, setDetailOrder] = useState<Order | null>(null);
+
+  useEffect(() => {
+    if (!isOpen) setDetailOrder(null);
+  }, [isOpen]);
+
   if (!isOpen || !user) return null;
 
   const orderTime = (value: string) => {
@@ -43,6 +51,29 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({
   const activeOrders = userOrders.filter((order) => !completedStatuses.includes(order.status));
   const pastOrders = userOrders.filter((order) => completedStatuses.includes(order.status));
   const lastOrder = userOrders[0];
+  const latestActiveOrder = activeOrders[0] || null;
+  const latestAddressOrder = userOrders.find((order) =>
+    String(order.customerAddress || '').trim()
+  );
+  const savedAddress = {
+    address: user.address || latestAddressOrder?.customerAddress || '',
+    district: user.district || latestAddressOrder?.customerDistrict || '',
+    city: user.city || latestAddressOrder?.customerCity || '',
+  };
+  const hasSavedAddress = Boolean(savedAddress.address.trim());
+
+  const activeStatusText = (status: string) => {
+    switch (status) {
+      case 'Yeni Sipariş':
+        return 'Siparişiniz alındı';
+      case 'Hazırlanıyor':
+        return 'Siparişiniz hazırlanıyor';
+      case 'Kargoya Verildi':
+        return 'Siparişiniz kargoda';
+      default:
+        return status;
+    }
+  };
 
   const formatOrderDate = (value: string) => {
     const date = new Date(value);
@@ -83,7 +114,17 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({
     return (
       <div
         key={ord.id}
-        className="p-4 rounded-xl bg-surface-container-lowest border border-outline-variant/30 flex flex-col gap-3"
+        role="button"
+        tabIndex={0}
+        onClick={() => setDetailOrder(ord)}
+        onKeyDown={(event) => {
+          if (event.key === 'Enter' || event.key === ' ') {
+            event.preventDefault();
+            setDetailOrder(ord);
+          }
+        }}
+        className="p-4 rounded-xl bg-surface-container-lowest border border-outline-variant/30 flex flex-col gap-3 text-left hover:border-primary/40 transition-colors cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/40"
+        aria-label={`${ord.orderNumber} sipariş detayını aç`}
       >
         <div className="flex justify-between items-center gap-2 text-xs">
           <span className="font-bold text-on-surface">{ord.orderNumber}</span>
@@ -102,6 +143,10 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({
             ₺{ord.total}
           </span>
         </div>
+
+        {!completedStatuses.includes(ord.status) && (
+          <OrderStatusTimeline status={ord.status} compact />
+        )}
 
         <div className="flex flex-col gap-2">
           {items.length === 0 ? (
@@ -122,7 +167,10 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({
                     loading="lazy"
                   />
                 ) : (
-                  <span className="material-symbols-outlined text-[20px] text-primary shrink-0">
+                  <span
+                    className="material-symbols-outlined text-[20px] text-primary shrink-0"
+                    aria-hidden="true"
+                  >
                     inventory_2
                   </span>
                 )}
@@ -172,12 +220,22 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({
             {ord.deliveryNote}
           </p>
         )}
+
+        <div className="flex justify-end">
+          <span className="inline-flex items-center gap-0.5 text-[10px] font-semibold text-primary">
+            Detayı gör
+            <span className="material-symbols-outlined text-[14px]" aria-hidden="true">
+              arrow_forward
+            </span>
+          </span>
+        </div>
       </div>
     );
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 overflow-y-auto">
+    <>
+      <div className="fixed inset-0 z-50 flex items-center justify-center p-4 overflow-y-auto">
       {/* Backdrop */}
       <div
         className="fixed inset-0 bg-inverse-surface/70 backdrop-blur-xs transition-opacity"
@@ -202,12 +260,53 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({
             onClick={onClose}
             className="p-1 rounded-full text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-colors cursor-pointer shrink-0"
           >
-            <span className="material-symbols-outlined text-[20px]">close</span>
+            <span className="material-symbols-outlined text-[20px]" aria-hidden="true">
+              close
+            </span>
           </button>
         </div>
 
         {/* Body */}
         <div className="p-4 sm:p-6 max-h-[70vh] overflow-y-auto flex flex-col gap-6">
+          {latestActiveOrder && (
+            <button
+              type="button"
+              onClick={() => setDetailOrder(latestActiveOrder)}
+              className="w-full rounded-xl bg-emerald-700 px-4 py-3.5 text-left text-white shadow-sm transition-transform hover:-translate-y-0.5 hover:bg-emerald-800 hover:shadow-md focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/50 cursor-pointer"
+              aria-label={`${latestActiveOrder.orderNumber} aktif sipariş detayını aç`}
+            >
+              <span className="flex items-center justify-between gap-3">
+                <span className="flex min-w-0 items-center gap-3">
+                  <span
+                    className="material-symbols-outlined shrink-0 text-[24px]"
+                    aria-hidden="true"
+                  >
+                    local_shipping
+                  </span>
+                  <span className="min-w-0">
+                    <span className="block text-[10px] font-semibold uppercase tracking-wider text-emerald-50/85">
+                      Aktif siparişiniz
+                    </span>
+                    <span className="block truncate text-sm font-bold">
+                      {latestActiveOrder.orderNumber} · {activeStatusText(latestActiveOrder.status)}
+                    </span>
+                  </span>
+                </span>
+                <span
+                  className="material-symbols-outlined shrink-0 text-[20px]"
+                  aria-hidden="true"
+                >
+                  arrow_forward
+                </span>
+              </span>
+              <span className="mt-2 block text-[10px] text-emerald-50/90">
+                {activeOrders.length > 1
+                  ? `${activeOrders.length - 1} aktif siparişiniz daha var.`
+                  : 'Sipariş sürecini ve detayları görmek için dokunun.'}
+              </span>
+            </button>
+          )}
+
           {/* Loyalty & Status Cards */}
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
             <div className="p-4 rounded-xl bg-surface-container-low border border-outline-variant/30">
@@ -271,20 +370,34 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({
           {/* Saved Address Info */}
           <div className="p-4 rounded-xl bg-surface-container-lowest border border-outline-variant/30">
             <h3 className="text-xs font-bold uppercase tracking-wider text-on-surface mb-2 flex items-center gap-1.5">
-              <span className="material-symbols-outlined text-[16px] text-primary">
+              <span
+                className="material-symbols-outlined text-[16px] text-primary"
+                aria-hidden="true"
+              >
                 location_on
               </span>
-              Kayıtlı Teslimat Adresi
+              Teslimat Adresi
             </h3>
             <p className="text-xs text-on-surface leading-relaxed">
-              {user.address ? (
+              {hasSavedAddress ? (
                 <>
-                  {user.address} <br />
-                  {user.district} / {user.city}
+                  {savedAddress.address}
+                  {(savedAddress.district || savedAddress.city) && (
+                    <>
+                      <br />
+                      {[savedAddress.district, savedAddress.city].filter(Boolean).join(' / ')}
+                    </>
+                  )}
+                  {!user.address && latestAddressOrder && (
+                    <span className="mt-1 block text-[10px] text-outline">
+                      Son siparişinizde kullandığınız adres.
+                    </span>
+                  )}
                 </>
               ) : (
                 <span className="text-outline italic">
-                  Henüz kayıtlı bir adresiniz yok. Sipariş verirken otomatik kaydedilecektir.
+                  Henüz kayıtlı bir adresiniz yok. Sipariş verirken girdiğiniz adres burada
+                  görünecek.
                 </span>
               )}
             </p>
@@ -292,18 +405,6 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({
 
           {/* Orders */}
           <div>
-            <h3 className="text-xs font-bold uppercase tracking-wider text-on-surface mb-3 flex items-center gap-1.5">
-              <span className="material-symbols-outlined text-[16px] text-primary">
-                receipt_long
-              </span>
-              Siparişlerim
-              {userOrders.length > 0 && (
-                <span className="ml-1 text-[10px] font-semibold text-outline">
-                  ({userOrders.length})
-                </span>
-              )}
-            </h3>
-
             {ordersLoading ? (
               <div className="text-center py-6 border border-dashed border-outline-variant/40 rounded-xl">
                 <p className="text-xs text-outline">Siparişler yükleniyor...</p>
@@ -326,7 +427,10 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({
               <div className="flex flex-col gap-6">
                 <section>
                   <h4 className="text-[11px] font-bold uppercase tracking-wider text-on-surface mb-2 flex items-center gap-1.5">
-                    <span className="material-symbols-outlined text-[16px] text-primary">
+                    <span
+                      className="material-symbols-outlined text-[16px] text-primary"
+                      aria-hidden="true"
+                    >
                       local_shipping
                     </span>
                     Aktif Siparişler
@@ -347,7 +451,10 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({
 
                 <section>
                   <h4 className="text-[11px] font-bold uppercase tracking-wider text-on-surface mb-2 flex items-center gap-1.5">
-                    <span className="material-symbols-outlined text-[16px] text-primary">
+                    <span
+                      className="material-symbols-outlined text-[16px] text-primary"
+                      aria-hidden="true"
+                    >
                       history
                     </span>
                     Geçmiş Siparişlerim
@@ -381,7 +488,9 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({
             }}
             className="text-xs text-error font-semibold hover:underline flex items-center gap-1 cursor-pointer"
           >
-            <span className="material-symbols-outlined text-[16px]">logout</span>
+            <span className="material-symbols-outlined text-[16px]" aria-hidden="true">
+              logout
+            </span>
             <span>Çıkış Yap</span>
           </button>
 
@@ -394,5 +503,12 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({
         </div>
       </div>
     </div>
-  );
+
+    <OrderDetailModal
+      isOpen={Boolean(detailOrder)}
+      order={detailOrder}
+      onClose={() => setDetailOrder(null)}
+    />
+  </>
+);
 };

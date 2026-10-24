@@ -162,7 +162,7 @@ export const orderShippedHtml = (order = {}, orderNumber = '', shippedAt = new D
                 <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
                   <tr>
                     ${timelineStep('Sipariş Alındı', 'completed')}
-                    ${timelineStep('Hazırlandı', 'completed')}
+                    ${timelineStep('Hazırlanıyor', 'completed')}
                     ${timelineStep('Kargoda', 'current')}
                     ${timelineStep('Teslimat', 'pending')}
                   </tr>

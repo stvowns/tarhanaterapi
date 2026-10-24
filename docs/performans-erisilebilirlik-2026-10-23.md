@@ -16,7 +16,7 @@
   kabuk nedeniyle `'unsafe-inline'` kaldı.
 - `/fonts/*` için 1 yıl `immutable` cache eklendi.
 
-> Yeni bir Material ikonu eklenirse `public/fonts/material-symbols-outlined.woff2`
+> Yeni bir Material ikonu eklenirse `public/fonts/material-symbols-outlined-v2.woff2`
 > alt kümesinin yeniden üretilmesi gerekir. Aksi halde ikon görünmez.
 
 ### 2. Duyarlı görseller

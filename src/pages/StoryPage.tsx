@@ -80,7 +80,7 @@ export const StoryPage: React.FC<StoryPageProps> = ({ onGoToShop }) => {
 
           <div className="p-8 rounded-2xl bg-surface-container-low border border-outline-variant/30 flex flex-col gap-3">
             <div className="w-12 h-12 rounded-xl bg-secondary-fixed text-secondary flex items-center justify-center">
-              <span className="material-symbols-outlined text-[26px]">diversity_1</span>
+              <span className="material-symbols-outlined text-[26px]" aria-hidden="true">diversity_1</span>
             </div>
             <h3 className="font-title-lg text-on-surface font-bold">Kadın Kooperatifleri İmecesi</h3>
             <p className="font-body-sm text-on-surface-variant leading-relaxed">
