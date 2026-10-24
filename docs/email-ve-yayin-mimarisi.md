@@ -95,6 +95,15 @@ Sipariş durumu güncellenirken müşteriye **her değişiklikte** mail gitmez. 
 
 Müşteri sipariş e-postasına cevap verirse bu mesaj **Northwest mailbox'ına** (`satis@tarhanaterapi.com`) düşer. Resend yalnızca otomatik gönderim içindir; gelen kutusu değildir.
 
+### Webmail girişi (`mail.tarhanaterapi.com`)
+
+- Adres: `https://mail.tarhanaterapi.com` (Roundcube)
+- Kullanıcı adı: `satis@tarhanaterapi.com`
+- Şifre: **posta kutusunun şifresi** — site/Supabase hesabıyla ilgisi yoktur.
+- Northwest panelindeki **Web Login** düğmesi SSO ile panele girer; bu yüzden posta kutusu şifresini sormaz. Roundcube'a doğrudan girildiğinde şifre istenir.
+- Posta kutusu şifresi bilinmiyorsa Northwest Business Identity panelinden `tarhanaterapi.com` → `satis@` posta kutusu → **şifre sıfırla** adımıyla yenilenir. Panel erişimi yoksa Northwest desteğinden istenir.
+- Şifre repoda tutulmaz; yalnızca Northwest panelinde saklanır.
+
 ## 3. Ücretsiz e-posta limitleri
 
 ### Northwest / Business Identity (domain sağlayıcısı)
